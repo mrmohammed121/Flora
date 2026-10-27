@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#10b981" />
+
+    <!-- Primary Search Intent & Technical SEO -->
+    <title>FloraScan AI – AI Plant Disease Detection from Images</title>
+    <meta name="title" content="FloraScan AI – AI Plant Disease Detection from Images" />
+    <meta name="description" content="FloraScan AI is an AI-powered plant disease detection platform. Upload or snap leaf photos to instantly identify crop diseases, calculate lesion severity, and get verified organic & chemical treatment prescriptions." />
+    <meta name="keywords" content="plant disease detection, plant disease detection AI, AI plant disease detection, plant disease identification, plant leaf disease detection, plant disease scanner, plant disease identification from image, crop disease detection, leaf disease identification, plant health analysis, AI agriculture, agricultural AI, crop health monitoring" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <link rel="canonical" href="https://florascan.ai/" />
+    <meta name="author" content="FloraScan AI Research" />
+
+    <!-- Open Graph / Facebook / WhatsApp -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://florascan.ai/" />
+    <meta property="og:site_name" content="FloraScan AI" />
+    <meta property="og:title" content="FloraScan AI – AI Plant Disease Detection from Images" />
+    <meta property="og:description" content="Instant visual plant disease diagnosis & precision foliar pathology. Upload or photograph any leaf specimen to compute lesion severity and receive verified agronomic treatments." />
+    <meta property="og:image" content="https://florascan.ai/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="FloraScan AI - Precision Foliar Pathology & AI Plant Disease Scanner" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter / X Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://florascan.ai/" />
+    <meta name="twitter:title" content="FloraScan AI – AI Plant Disease Detection from Images" />
+    <meta name="twitter:description" content="Instant visual plant disease diagnosis & precision foliar pathology. Upload or photograph any leaf specimen to compute lesion severity and receive verified treatments." />
+    <meta name="twitter:image" content="https://florascan.ai/og-image.png" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Schema.org Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://florascan.ai/#website",
+          "url": "https://florascan.ai/",
+          "name": "FloraScan AI",
+          "description": "AI-powered plant leaf disease detection and precision foliar pathology platform.",
+          "inLanguage": "en-US",
+          "publisher": {
+            "@id": "https://florascan.ai/#organization"
+          }
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://florascan.ai/#organization",
+          "name": "FloraScan AI",
+          "url": "https://florascan.ai/",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://florascan.ai/favicon.svg"
+          },
+          "sameAs": [
+            "https://github.com",
+            "https://linkedin.com"
+          ]
+        },
+        {
+          "@type": "SoftwareApplication",
+          "@id": "https://florascan.ai/#application",
+          "name": "FloraScan AI Diagnostic Studio",
+          "operatingSystem": "All Web Browsers (Chrome, Safari, Firefox, Edge)",
+          "applicationCategory": "BusinessApplication",
+          "applicationSubCategory": "AgriculturalApplication",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "description": "AI-assisted foliar pathology platform providing instant crop disease identification, OpenCV lesion surface area calculation, and verified chemical and organic prescription schedules.",
+          "featureList": [
+            "AI Plant Disease Detection from leaf photos and live camera",
+            "Botanical host verification and biological gating",
+            "Digital Image Processing with OpenCV HSV lesion thresholding",
+            "FRAC-aligned fungicide active ingredient recommendations",
+            "Pre-Harvest Interval (PHI) and Restricted-Entry Interval (REI) guidance",
+            "Organic bio-fungicide and cultural sanitation advice",
+            "Multilingual farmer support in English, Kannada, and Hindi"
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://florascan.ai/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is AI plant disease detection and how does FloraScan AI work?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "AI plant disease detection uses computer vision and deep learning models to analyze leaf photos. FloraScan AI employs a two-tier pipeline: it first identifies the botanical host species to eliminate biologically impossible predictions, then uses MobileNetV2 alongside OpenCV lesion color segmentation to pinpoint specific fungal, bacterial, or oomycete pathogens and measure affected leaf area."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I accurately identify a crop disease from a single leaf photo?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. When leaf photos show clear symptom margins (such as concentric target rings of Early Blight, water-soaked dark lesions of Late Blight, or feathery black spots of Rose Black Spot), AI models achieve over 90% diagnostic accuracy. For ambiguous field samples, FloraScan AI incorporates human-in-the-loop verification and multimodal AI vision inspection."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What crops and plant diseases does FloraScan AI support?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "FloraScan AI provides calibrated diagnostics for major food crops and ornamentals including Tomatoes, Potatoes, Bell Peppers, Apples, Citrus, Cucumbers, and Roses. Supported foliar conditions include Early Blight, Late Blight, Bacterial Spot, Rose Black Spot, Apple Scab, Black Rot, Citrus Greening (HLB), Powdery Mildew, Downy Mildew, and Healthy specimens."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can FloraScan AI replace a certified agricultural extension officer or agronomist?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. FloraScan AI is an assistive decision-support tool designed for rapid initial screening in the field. Critical chemical interventions or large-scale acreage spraying should always be verified with local agronomic extension specialists or plant pathology laboratories."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Are my uploaded leaf photos stored or publicly indexed?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. Your privacy is paramount. FloraScan AI processes images locally in the browser or securely through temporary inference endpoints without making user-uploaded images publicly searchable or indexable by search engines."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+
+    <!-- Theme State Initializer -->
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('theme');
+          if (saved === 'light') {
+            document.documentElement.classList.remove('dark');
+          } else if (saved === 'dark') {
+            document.documentElement.classList.add('dark');
+          } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+            document.documentElement.classList.remove('dark');
+          } else {
+            document.documentElement.classList.add('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body class="bg-[#f8fafc] text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen antialiased selection:bg-emerald-500 selection:text-slate-950 font-sans transition-colors duration-300">
+    <!-- Non-JavaScript Crawler Fallback Content for Search Indexing -->
+    <noscript>
+      <div style="padding: 2rem; max-width: 900px; margin: 0 auto; font-family: sans-serif; line-height: 1.6;">
+        <h1>FloraScan AI – AI Plant Disease Detection from Images</h1>
+        <p>FloraScan AI provides precision agricultural disease diagnostics using deep learning and digital image processing. Farmers, agronomists, and gardeners can upload or capture foliar leaf images to detect fungal, bacterial, and oomycete infections including Early Blight (Alternaria solani), Late Blight (Phytophthora infestans), Bacterial Spot (Xanthomonas), Rose Black Spot, and Powdery Mildew.</p>
+        <h2>Key Platform Features</h2>
+        <ul>
+          <li>Instant AI Plant Disease Identification from leaf photos</li>
+          <li>Two-tier botanical host verification to prevent cross-species misdiagnosis</li>
+          <li>OpenCV HSV lesion segmentation measuring affected foliar area percentage</li>
+          <li>FRAC-aligned chemical fungicides, knapsack dilution rates, PHI, and REI safety intervals</li>
+          <li>Certified organic bio-fungicide remedies and cultural field sanitation practices</li>
+          <li>Multilingual farmer support in English, Kannada, and Hindi</li>
+        </ul>
+        <p>Please enable JavaScript to launch the full interactive FloraScan AI Diagnostic Studio.</p>
+      </div>
+    </noscript>
+
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

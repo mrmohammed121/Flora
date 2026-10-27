@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <defs>
+    <linearGradient id="leafGrad" x1="6" y1="42" x2="42" y2="6" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#059669" />
+      <stop offset="50%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#34d399" />
+    </linearGradient>
+    <linearGradient id="scanGrad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#6366f1" />
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="#064e3b" />
+  <!-- Leaf path -->
+  <path d="M12 36C12 36 12 18 28 12C36 9 37 9 37 9C37 9 36 18 30 26C24 34 16 36 12 36Z" fill="url(#leafGrad)" />
+  <path d="M14 34C20 28 26 22 34 14" stroke="#d1fae5" stroke-width="2" stroke-linecap="round" />
+  <path d="M21 27L26 29" stroke="#d1fae5" stroke-width="1.5" stroke-linecap="round" />
+  <path d="M25 23L29 24" stroke="#d1fae5" stroke-width="1.5" stroke-linecap="round" />
+  <!-- Reticle target points -->
+  <circle cx="28" cy="18" r="2.5" fill="#f59e0b" />
+  <circle cx="28" cy="18" r="5" stroke="#f59e0b" stroke-width="1" stroke-dasharray="2 2" />
+  <!-- Crosshairs -->
+  <path d="M6 14H10M6 14V18" stroke="#34d399" stroke-width="2" stroke-linecap="round" />
+  <path d="M42 14H38M42 14V18" stroke="#34d399" stroke-width="2" stroke-linecap="round" />
+  <path d="M6 34H10M6 34V30" stroke="#34d399" stroke-width="2" stroke-linecap="round" />
+  <path d="M42 34H38M42 34V30" stroke="#34d399" stroke-width="2" stroke-linecap="round" />
+</svg>

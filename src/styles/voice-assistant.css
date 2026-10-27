@@ -1,0 +1,439 @@
+/* ==========================================================================
+   Voice Assistant Card — FloraScan AI
+   Agricultural Emerald & Slate Theme
+   ========================================================================== */
+
+:root {
+  --stage-bg: #020617;
+  --stage-surface: #0f172a;
+  --stage-fg: #f8fafc;
+  --stage-muted: #94a3b8;
+  --stage-border: rgba(16, 185, 129, 0.2);
+  --stage-accent: #10b981;
+  --stage-accent-glow: rgba(16, 185, 129, 0.35);
+  --stage-on-accent: #ffffff;
+  --stage-danger: #f43f5e;
+  --stage-warning: #f59e0b;
+}
+
+html:not(.dark) {
+  --stage-bg: #ffffff;
+  --stage-surface: #f8fafc;
+  --stage-fg: #0f172a;
+  --stage-muted: #64748b;
+  --stage-border: rgba(16, 185, 129, 0.25);
+  --stage-accent: #059669;
+  --stage-accent-glow: rgba(5, 150, 105, 0.25);
+  --stage-on-accent: #ffffff;
+}
+
+/* Base Card Shell */
+.va-card-wrapper {
+  position: relative;
+  width: 100%;
+  border-radius: 1.5rem;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+
+.va-card {
+  position: relative;
+  width: 100%;
+  background: var(--stage-surface);
+  border: 1px solid var(--stage-border);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  color: var(--stage-fg);
+  overflow: hidden;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--stage-border);
+  transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.va-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--stage-accent), transparent);
+  opacity: 0.7;
+}
+
+/* Header */
+.va-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  gap: 1rem;
+}
+
+.va-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.va-avatar-wrap {
+  position: relative;
+}
+
+.va-avatar {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.875rem;
+  background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: #ffffff;
+  box-shadow: 0 4px 14px var(--stage-accent-glow);
+  letter-spacing: 0.5px;
+  transition: transform 0.3s ease;
+}
+
+.va-status-dot {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background: var(--stage-accent);
+  border: 2px solid var(--stage-surface);
+  box-shadow: 0 0 6px var(--stage-accent);
+}
+
+.va-status-dot.listening {
+  background: #38bdf8;
+  box-shadow: 0 0 8px #38bdf8;
+  animation: va-ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.va-status-dot.thinking {
+  background: #fbbf24;
+  box-shadow: 0 0 8px #fbbf24;
+  animation: va-spin 2s linear infinite;
+}
+
+.va-status-dot.speaking {
+  background: #10b981;
+  box-shadow: 0 0 10px #10b981;
+  animation: va-pulse 1s ease-in-out infinite alternate;
+}
+
+.va-title-wrap h3 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.va-title-wrap p {
+  font-size: 0.75rem;
+  color: var(--stage-muted);
+  margin: 0.15rem 0 0 0;
+}
+
+.va-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  border: 1px solid var(--stage-border);
+  background: rgba(16, 185, 129, 0.08);
+  color: var(--stage-accent);
+}
+
+/* Chat & Transcript Canvas */
+.va-content-canvas {
+  min-height: 140px;
+  max-height: 240px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.875rem;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  margin-bottom: 1.25rem;
+  scroll-behavior: smooth;
+}
+
+html:not(.dark) .va-content-canvas {
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Speech Bubbles */
+.va-bubble {
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  font-size: 0.84rem;
+  line-height: 1.45;
+  position: relative;
+  max-width: 90%;
+  animation: va-fade-up 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.va-bubble-flora {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  color: var(--stage-fg);
+  border-bottom-left-radius: 0.25rem;
+  align-self: flex-start;
+}
+
+.va-bubble-user {
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: var(--stage-fg);
+  border-bottom-right-radius: 0.25rem;
+  align-self: flex-end;
+}
+
+.va-transcript {
+  font-style: italic;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.va-transcript-live-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: #38bdf8;
+  animation: va-ping 1s infinite;
+}
+
+/* Prompt Chips */
+.va-chips-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.va-chip {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--stage-border);
+  color: var(--stage-muted);
+  font-size: 0.72rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.va-chip:hover {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--stage-fg);
+  border-color: var(--stage-accent);
+  transform: translateY(-1px);
+}
+
+/* Controls & Mic Area */
+.va-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  padding-top: 0.5rem;
+}
+
+.va-mic-btn {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  box-shadow: 0 4px 20px var(--stage-accent-glow);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, background 0.3s ease;
+}
+
+.va-mic-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 25px var(--stage-accent-glow);
+}
+
+.va-mic-btn:active {
+  transform: scale(0.96);
+}
+
+.va-mic-btn.listening {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  box-shadow: 0 0 25px rgba(56, 189, 248, 0.6);
+  animation: va-pulse-ring 1.8s infinite;
+}
+
+.va-mic-btn.thinking {
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.5);
+  cursor: wait;
+}
+
+.va-mic-btn.speaking {
+  background: linear-gradient(135deg, #10b981 0%, #0d9488 100%);
+  box-shadow: 0 0 30px rgba(16, 185, 129, 0.7);
+}
+
+.va-caption {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--stage-muted);
+  text-align: center;
+  letter-spacing: 0.01em;
+  transition: color 0.2s ease;
+}
+
+.va-caption.active {
+  color: var(--stage-fg);
+  font-weight: 600;
+}
+
+/* Audio Wave Bars */
+.va-wave-wrap {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 20px;
+}
+
+.va-wave-bar {
+  width: 3px;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--stage-accent);
+  transition: height 0.1s ease;
+}
+
+.va-wave-bar.speaking {
+  animation: va-wave-dance 0.7s infinite alternate ease-in-out;
+}
+
+.va-wave-bar:nth-child(2) { animation-delay: 0.1s; }
+.va-wave-bar:nth-child(3) { animation-delay: 0.2s; }
+.va-wave-bar:nth-child(4) { animation-delay: 0.3s; }
+.va-wave-bar:nth-child(5) { animation-delay: 0.4s; }
+
+/* Text Input Fallback Row */
+.va-input-row {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+  margin-top: 0.75rem;
+}
+
+.va-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--stage-border);
+  color: var(--stage-fg);
+  border-radius: 0.75rem;
+  padding: 0.5rem 0.875rem;
+  font-size: 0.8125rem;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.va-input:focus {
+  border-color: var(--stage-accent);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.va-send-btn {
+  padding: 0.5rem 0.875rem;
+  border-radius: 0.75rem;
+  background: var(--stage-accent);
+  color: var(--stage-on-accent);
+  border: none;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: opacity 0.2s ease, transform 0.15s ease;
+}
+
+.va-send-btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.va-send-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Animations */
+@keyframes va-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes va-pulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.15); opacity: 1; }
+}
+
+@keyframes va-pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.6); }
+  70% { box-shadow: 0 0 0 16px rgba(56, 189, 248, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+}
+
+@keyframes va-spin {
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes va-ping {
+  75%, 100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+@keyframes va-wave-dance {
+  0% { height: 4px; }
+  100% { height: 18px; }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .va-card-wrapper,
+  .va-card,
+  .va-mic-btn,
+  .va-bubble,
+  .va-status-dot,
+  .va-wave-bar {
+    animation: none !important;
+    transition: opacity 0.2s ease !important;
+  }
+}

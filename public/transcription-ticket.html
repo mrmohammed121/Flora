@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Transcription Ticket Card - Dynamic JSON Loader</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --card-width: 180px;
+      --card-height: 320px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #0b1120 0%, #0f172a 50%, #1e293b 100%);
+      color: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2.5rem 1rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+      max-width: 600px;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: linear-gradient(to right, #38bdf8, #818cf8, #f472b6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      color: #94a3b8;
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .main-layout {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2.5rem;
+      justify-content: center;
+      align-items: flex-start;
+      max-width: 900px;
+      width: 100%;
+    }
+
+    /* ── Controls / Inspector Box ── */
+    .controls-card {
+      flex: 1;
+      min-width: 300px;
+      max-width: 480px;
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+    }
+
+    .controls-card h2 {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .status-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.2rem 0.6rem;
+      border-radius: 9999px;
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .json-preview {
+      width: 100%;
+      height: 150px;
+      background: #020617;
+      color: #38bdf8;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+      font-family: monospace;
+      font-size: 0.8rem;
+      resize: vertical;
+      line-height: 1.4;
+      margin-bottom: 1rem;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 0.5rem 1rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border-radius: 0.5rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: #38bdf8;
+      color: #0f172a;
+    }
+    .btn-primary:hover {
+      background: #7dd3fc;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: #f8fafc;
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* ── Target Interactive Ticket Card (From Uiverse.io by dexter-st) ── */
+    .card-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .card {
+      --width: 180px;
+      --height: 320px;
+      --perforation-size: 12px;
+      --cutouts-adjust: 68px;
+
+      position: relative;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 0.5rem;
+      grid-template-areas:
+        "header"
+        "body"
+        "footer";
+
+      width: var(--width);
+      height: var(--height);
+      padding: var(--perforation-size) 0;
+
+      font-family: "Inter", sans-serif;
+      font-size: 1rem;
+      user-select: none;
+      overflow: hidden;
+
+      filter: drop-shadow(0 2px 1px #00000025) drop-shadow(0 4px 3px #00000025)
+        drop-shadow(0 10px 9px #00000025) drop-shadow(0 20px 20px #00000025)
+        drop-shadow(0 40px 40px #00000025);
+      animation: ticket-hover 3s ease infinite;
+      will-change: transform, filter;
+    }
+
+    @keyframes ticket-hover {
+      50% {
+        filter: drop-shadow(0 4px 3px #00000015) drop-shadow(0 6px 6px #00000015)
+          drop-shadow(0 16px 14px #00000015) drop-shadow(0 30px 28px #00000015)
+          drop-shadow(0 60px 60px #00000015);
+        transform: translateY(-7px) scale(1.02);
+      }
+    }
+
+    .card .bg {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background-color: #fff;
+      -webkit-mask:
+        radial-gradient(circle at 50% 0, #fff0 calc(var(--perforation-size) - 5px), #000 calc(var(--perforation-size) - 4px)),
+        radial-gradient(circle at 50% 100%, #fff0 calc(var(--perforation-size) - 5px), #000 calc(var(--perforation-size) - 4px)),
+        radial-gradient(circle 8px at left center, #000 98%, #0000 100%),
+        radial-gradient(circle 8px at right center, #000 98%, #0000 100%),
+        repeating-linear-gradient(90deg, #000 10px, #000 15px, #0000 16px, #0000 24px);
+      mask:
+        radial-gradient(circle at 50% 0, #fff0 calc(var(--perforation-size) - 5px), #000 calc(var(--perforation-size) - 4px)),
+        radial-gradient(circle at 50% 100%, #fff0 calc(var(--perforation-size) - 5px), #000 calc(var(--perforation-size) - 4px)),
+        radial-gradient(circle 8px at left center, #000 98%, #0000 100%),
+        radial-gradient(circle 8px at right center, #000 98%, #0000 100%),
+        repeating-linear-gradient(90deg, #000 10px, #000 15px, #0000 16px, #0000 24px);
+
+      -webkit-mask-repeat: repeat-x, repeat-x, no-repeat, no-repeat, repeat-x;
+      mask-repeat: repeat-x, repeat-x, no-repeat, no-repeat, repeat-x;
+
+      -webkit-mask-size:
+        calc(var(--perforation-size) * 2) 100%,
+        calc(var(--perforation-size) * 2) 100%,
+        16px 16px,
+        16px 16px,
+        10px 2px;
+      mask-size:
+        calc(var(--perforation-size) * 2) 100%,
+        calc(var(--perforation-size) * 2) 100%,
+        16px 16px,
+        16px 16px,
+        10px 2px;
+
+      -webkit-mask-position:
+        calc(0.5 * var(--perforation-size)) top,
+        calc(0.5 * var(--perforation-size)) bottom,
+        left var(--cutouts-adjust),
+        right var(--cutouts-adjust),
+        0 calc(var(--cutouts-adjust) + 7px);
+      mask-position:
+        calc(0.5 * var(--perforation-size)) top,
+        calc(0.5 * var(--perforation-size)) bottom,
+        left var(--cutouts-adjust),
+        right var(--cutouts-adjust),
+        0 calc(var(--cutouts-adjust) + 7px);
+
+      -webkit-mask-composite: source-in, xor, source-over, source-over;
+      mask-composite: intersect, exclude, add, add;
+    }
+
+    .card .holographic {
+      background-image: linear-gradient(to bottom, #fe58, 90%, #0002),
+        conic-gradient(at 60% 50%, #ccc, #ff6bfe, #00f9f8, #ddd, #0081fd, #eef0bc, #0081fd, #ff6bfe, #0002, #0081fd, #ddd, #01fefb, #ccc);
+    }
+
+    .card .holographic::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: radial-gradient(circle at 70% 20%, #f0f, #0000),
+        repeating-radial-gradient(circle at 30% 80%, #fff, #f4a 48px, #eeeeee 150px);
+      mix-blend-mode: color-burn;
+    }
+
+    .card .holographic::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(to bottom, #f205, #f00, #0f0, #f205);
+      mix-blend-mode: difference;
+      animation: ticket-bg-pos 3s ease-in-out infinite alternate;
+      background-position: 0 0;
+      background-size: 100% 300%;
+      background-repeat: repeat;
+    }
+
+    @keyframes ticket-bg-pos {
+      to {
+        background-position: 0 500px;
+      }
+    }
+
+    .card .header {
+      position: relative;
+      grid-area: header;
+      margin: 0 8px;
+      text-align: center;
+      z-index: 1;
+      font-family: "Impact", sans-serif;
+      font-size: 2.75rem;
+      letter-spacing: 2px;
+      color: #ffffff9f;
+      text-shadow: 0 0 0 #000;
+      -webkit-text-stroke: #fff 0.5px;
+      mix-blend-mode: difference;
+    }
+
+    .card .symbol {
+      position: absolute;
+      top: 1.3em;
+      right: 0px;
+      rotate: 185deg;
+      font-size: 1.1em;
+      color: #fff;
+      line-height: 0.5;
+      opacity: 0.2;
+    }
+
+    /* ── Requirements: Layout Integrity for Long Strings ── */
+    .card .body {
+      grid-area: body;
+      margin: 0 1.1em;
+      padding: 0.2em 0;
+      font-weight: 300;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      line-height: 1.35;
+      color: #1e293b;
+      font-size: 0.88rem;
+      overflow: hidden; /* Constrain inside ticket dimensions */
+    }
+
+    #card-pass-type {
+      font-style: italic;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #0f172a;
+      margin-bottom: 0.2rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: block;
+    }
+
+    #card-date {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: #1e293b;
+      margin-bottom: 0.25rem;
+      letter-spacing: 0.02em;
+      display: block;
+    }
+
+    #card-venue {
+      font-size: 0.8rem;
+      font-weight: 400;
+      color: #334155;
+      line-height: 1.3;
+      /* Safe multiline wrap & clamp */
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    .card .footer {
+      grid-area: footer;
+      z-index: 1;
+      margin: 0 1em 1em 1em;
+    }
+
+    .card .number {
+      margin-bottom: 0.4rem;
+      text-align: center;
+      border-radius: 999px 0;
+      color: #000;
+      font-size: 0.9rem;
+      font-weight: 400;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card .number .bold {
+      font-weight: 700;
+    }
+
+    .card .barcode {
+      justify-self: center;
+      width: 0;
+      height: 32px;
+      box-shadow:
+        0px 0 0 1px #000, 5px 0 0 1px #000, 7px 0 0 1px #000, 11px 0 0 1px #000,
+        15px 0 0 1px #000, 16px 0 0 1px #000, 22px 0 0 1px #000, 27px 0 0 1px #000,
+        30px 0 0 1px #000, 35px 0 0 1px #000, 36px 0 0 1px #000, 39px 0 0 1px #000,
+        43px 0 0 1px #000, 47px 0 0 1px #000, 50px 0 0 1px #000, 55px 0 0 1px #000,
+        59px 0 0 1px #000, 60px 0 0 1px #000, 64px 0 0 1px #000, 69px 0 0 1px #000,
+        70px 0 0 1px #000, 74px 0 0 1px #000;
+      transform: translateX(37px);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Audio Transcription Ticket</h1>
+    <p>Dynamic data mapping from Whisper/transcription JSON (<code>twww_3.json</code>) into the holographic ticket card component.</p>
+  </header>
+
+  <div class="main-layout">
+    <!-- JSON Control & Preview Panel -->
+    <div class="controls-card">
+      <h2>
+        <span>Source Data (<code>twww_3.json</code>)</span>
+        <span id="load-status" class="status-badge">Loaded</span>
+      </h2>
+      <textarea id="json-input" class="json-preview" spellcheck="false"></textarea>
+
+      <div class="btn-group">
+        <button class="btn-primary" onclick="applyJsonFromEditor()">Apply Editor JSON</button>
+        <button class="btn-secondary" onclick="loadDefaultTranscription()">Reset (twww_3.json)</button>
+        <button class="btn-secondary" onclick="testLongTranscription()">Test Long Sentence</button>
+      </div>
+    </div>
+
+    <!-- Target Ticket Card DOM Structure (As Required) -->
+    <div class="card-wrapper">
+      <div class="card">
+        <div class="header">
+          TICKET
+          <div class="symbol">✁</div>
+        </div>
+        <div class="body">
+          <em id="card-pass-type">Day pass</em><br />
+          <span id="card-date">May 14<sup>th</sup> 2026</span><br />
+          <span id="card-venue">Venue address, State, #####</span>
+        </div>
+        <div class="footer">
+          <div class="number">Seat <span class="bold" id="card-seat">E7</span></div>
+          <div class="barcode"></div>
+        </div>
+        <div class="bg holographic"></div>
+      </div>
+      <div style="font-size: 0.8rem; color: #64748b;">Dynamic Ticket Component (180 × 320 px)</div>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * Fallback inline transcription data matching twww_3.json schema
+     */
+    const defaultTranscriptionData = {
+      "text": " You",
+      "segments": [
+        {
+          "id": 0,
+          "seek": 0,
+          "start": 0.0,
+          "end": 2.0,
+          "text": " You",
+          "tokens": [50364, 509, 50464],
+          "temperature": 0.0,
+          "avg_logprob": -0.6639969944953918,
+          "compression_ratio": 0.2727272727272727,
+          "no_speech_prob": 0.9320021271705627
+        }
+      ],
+      "language": "en"
+    };
+
+    /**
+     * Helper to format seconds into mm:ss timestamp (e.g. 0.0 -> 00:00, 2.0 -> 00:02)
+     */
+    function formatTime(seconds) {
+      if (typeof seconds !== 'number' || isNaN(seconds)) return '00:00';
+      const totalSec = Math.max(0, Math.floor(seconds));
+      const mins = Math.floor(totalSec / 60);
+      const secs = totalSec % 60;
+      return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
+    /**
+     * Populate target ticket DOM elements from transcription data object
+     * @param {Object} data - Schema with text, segments[], language
+     */
+    function populateTicketCard(data) {
+      if (!data) return;
+
+      const passTypeEl = document.getElementById('card-pass-type');
+      const dateEl = document.getElementById('card-date');
+      const venueEl = document.getElementById('card-venue');
+      const seatEl = document.getElementById('card-seat');
+
+      // 1. Extract Primary Segment & Transcribed Text
+      const firstSegment = (data.segments && data.segments.length > 0) ? data.segments[0] : null;
+      const rawText = (firstSegment && firstSegment.text) || data.text || 'No transcription available';
+      const cleanText = rawText.trim();
+
+      // 2. Format Duration Timestamp (e.g. 00:00 - 00:02)
+      let timeStr = '00:00 - 00:00';
+      if (firstSegment && typeof firstSegment.start === 'number' && typeof firstSegment.end === 'number') {
+        timeStr = `${formatTime(firstSegment.start)} - ${formatTime(firstSegment.end)}`;
+      }
+
+      // 3. Format Language & Segment Identification
+      const detectedLang = (data.language || 'EN').toUpperCase();
+      const segmentId = firstSegment && typeof firstSegment.id !== 'undefined' ? firstSegment.id : 0;
+
+      // 4. Update Target Elements
+      if (passTypeEl) {
+        passTypeEl.textContent = `Clip #${segmentId} • ${detectedLang}`;
+        passTypeEl.title = `Segment ID: ${segmentId} | Language: ${detectedLang}`;
+      }
+
+      if (dateEl) {
+        dateEl.textContent = timeStr;
+      }
+
+      if (venueEl) {
+        // Enclose transcript in quotes and set as inner text
+        venueEl.textContent = `“${cleanText}”`;
+        venueEl.title = cleanText; // Full text on hover if truncated
+      }
+
+      if (seatEl) {
+        // Display detected language or segment code
+        seatEl.textContent = `#${String(segmentId).padStart(2, '0')}`;
+      }
+    }
+
+    /**
+     * Load JSON file dynamically via fetch() with fallback to local object
+     */
+    async function loadTranscriptionData(url = '/twww_3.json') {
+      const statusBadge = document.getElementById('load-status');
+      const jsonTextarea = document.getElementById('json-input');
+
+      try {
+        if (statusBadge) statusBadge.textContent = 'Fetching...';
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`HTTP error ${response.status}`);
+        }
+        const data = await response.json();
+
+        // Populate card & update inspector preview
+        populateTicketCard(data);
+        if (jsonTextarea) jsonTextarea.value = JSON.stringify(data, null, 2);
+        if (statusBadge) {
+          statusBadge.textContent = 'Loaded: twww_3.json';
+          statusBadge.style.color = '#34d399';
+        }
+      } catch (err) {
+        console.warn('Fetch failed or running locally, using default data:', err);
+        populateTicketCard(defaultTranscriptionData);
+        if (jsonTextarea) jsonTextarea.value = JSON.stringify(defaultTranscriptionData, null, 2);
+        if (statusBadge) {
+          statusBadge.textContent = 'Loaded (Inline)';
+          statusBadge.style.color = '#38bdf8';
+        }
+      }
+    }
+
+    /**
+     * Interactive Helper: Apply edited JSON from the textarea
+     */
+    function applyJsonFromEditor() {
+      const jsonTextarea = document.getElementById('json-input');
+      const statusBadge = document.getElementById('load-status');
+      try {
+        const parsed = JSON.parse(jsonTextarea.value);
+        populateTicketCard(parsed);
+        if (statusBadge) {
+          statusBadge.textContent = 'Custom JSON Applied';
+          statusBadge.style.color = '#a78bfa';
+        }
+      } catch (e) {
+        alert('Invalid JSON format: ' + e.message);
+      }
+    }
+
+    /**
+     * Reset to default twww_3.json
+     */
+    function loadDefaultTranscription() {
+      loadTranscriptionData('/twww_3.json');
+    }
+
+    /**
+     * Test a long transcription string to verify layout integrity
+     */
+    function testLongTranscription() {
+      const longData = {
+        text: "The high-resolution neural network diagnostic system detected early signs of Alternaria solani blight on the lower canopy leaves with 94.8% confidence.",
+        segments: [
+          {
+            id: 12,
+            seek: 0,
+            start: 14.5,
+            end: 22.8,
+            text: "The high-resolution neural network diagnostic system detected early signs of Alternaria solani blight on the lower canopy leaves with 94.8% confidence.",
+            tokens: [50364, 509, 50464],
+            temperature: 0.0,
+            avg_logprob: -0.42,
+            compression_ratio: 0.31,
+            no_speech_prob: 0.05
+          }
+        ],
+        language: "en"
+      };
+      const jsonTextarea = document.getElementById('json-input');
+      if (jsonTextarea) jsonTextarea.value = JSON.stringify(longData, null, 2);
+      populateTicketCard(longData);
+      const statusBadge = document.getElementById('load-status');
+      if (statusBadge) {
+        statusBadge.textContent = 'Long Text Applied';
+        statusBadge.style.color = '#f472b6';
+      }
+    }
+
+    // Initialize on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      loadTranscriptionData('/twww_3.json');
+    });
+  </script>
+</body>
+</html>

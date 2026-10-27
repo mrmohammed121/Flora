@@ -1,0 +1,67 @@
+/* Smooth Custom Cursor Styles */
+@media (pointer: fine) {
+  /* Hide standard system cursor on desktop mouse devices */
+  body, button, a, input, select, textarea, [role="button"], label {
+    cursor: none !important;
+  }
+}
+
+/* Small dot that snaps directly to mouse coordinates */
+.cursor-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #38bdf8;
+  border-radius: 50%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none; /* Prevents cursor from blocking clicks */
+  z-index: 99999;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.2s ease, transform 0.15s ease;
+  will-change: left, top;
+}
+
+/* Outer trailing ring with smooth easing */
+.cursor-outline {
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgba(56, 189, 248, 0.6);
+  border-radius: 50%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 99998;
+  transform: translate(-50%, -50%);
+  transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              height 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.25s ease,
+              border-color 0.25s ease,
+              opacity 0.2s ease;
+  will-change: left, top;
+}
+
+/* Hover scale effect when pointing at links/buttons */
+.cursor-outline.hovered {
+  width: 65px;
+  height: 65px;
+  background-color: rgba(56, 189, 248, 0.15);
+  border-color: #38bdf8;
+}
+
+/* Click pulse state */
+.cursor-outline.clicked {
+  transform: translate(-50%, -50%) scale(0.85);
+  background-color: rgba(56, 189, 248, 0.28);
+}
+
+.cursor-dot.clicked {
+  transform: translate(-50%, -50%) scale(0.7);
+}
+
+/* Hidden when outside window or on touch devices */
+.cursor-hidden {
+  opacity: 0 !important;
+  pointer-events: none;
+}

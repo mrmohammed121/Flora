@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dynamic Holographic Event Ticket Generator</title>
+  <!-- Google Fonts: Inter & Impact -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- html2canvas for High-Res Image Export -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --card-bg: #1e293b;
+      --accent: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #0b1120 0%, #0f172a 50%, #1e293b 100%);
+      color: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+      max-width: 650px;
+    }
+
+    header h1 {
+      font-size: 1.85rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(to right, #34d399, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    header p {
+      color: #94a3b8;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 960px;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    @media (max-width: 820px) {
+      .app-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ── Controls & JSON Panel ── */
+    .panel {
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+    }
+
+    .panel-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .file-upload-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 0.4rem 0.75rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .file-upload-label:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+    #jsonFileInput {
+      display: none;
+    }
+
+    textarea {
+      width: 100%;
+      height: 220px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.82rem;
+      background: #090d16;
+      color: #38bdf8;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 0.75rem;
+      padding: 0.85rem;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    textarea:focus {
+      border-color: #34d399;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    button {
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.65rem 1.15rem;
+      border-radius: 0.6rem;
+      border: none;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: #e2e8f0;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* ── Ticket Preview Stage ── */
+    .preview-stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2.5rem 1rem;
+      background: radial-gradient(circle at center, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.9) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 1rem;
+      min-height: 440px;
+    }
+
+    /* ── From Uiverse.io by dexter-st (Exact Style Specification) ── */
+    .card {
+      --width: 180px;
+      --height: 320px;
+      --perforation-size: 12px;
+      --cutouts-adjust: 68px;
+
+      position: relative;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 0.5rem;
+      grid-template-areas:
+        "header"
+        "body"
+        "footer";
+
+      width: var(--width);
+      height: var(--height);
+      padding: var(--perforation-size) 0;
+
+      font-family: "Inter", sans-serif;
+      font-size: 1rem;
+      user-select: none;
+      overflow: hidden;
+
+      filter: drop-shadow(0 2px 1px #00000025) drop-shadow(0 4px 3px #00000025)
+        drop-shadow(0 10px 9px #00000025) drop-shadow(0 20px 20px #00000025)
+        drop-shadow(0 40px 40px #00000025);
+      animation: hover 3s ease infinite;
+      will-change: transform, filter;
+    }
+
+    @keyframes hover {
+      50% {
+        filter: drop-shadow(0 4px 3px #00000015) drop-shadow(0 6px 6px #00000015)
+          drop-shadow(0 16px 14px #00000015) drop-shadow(0 30px 28px #00000015)
+          drop-shadow(0 60px 60px #00000015);
+        transform: translateY(-7px) scale(1.02);
+      }
+    }
+
+    .filter {
+      position: absolute;
+    }
+
+    .bg {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background-color: #fff;
+      filter: url(#bump);
+      -webkit-mask:
+        radial-gradient(
+          circle at 50% 0,
+          #fff0 calc(var(--perforation-size) - 5px),
+          #000 calc(var(--perforation-size) - 4px)
+        ),
+        radial-gradient(
+          circle at 50% 100%,
+          #fff0 calc(var(--perforation-size) - 5px),
+          #000 calc(var(--perforation-size) - 4px)
+        ),
+        radial-gradient(circle 8px at left center, #000 98%, #0000 100%),
+        radial-gradient(circle 8px at right center, #000 98%, #0000 100%),
+        repeating-linear-gradient(
+          90deg,
+          #000 10px,
+          #000 15px,
+          #0000 16px,
+          #0000 24px
+        );
+      mask:
+        radial-gradient(
+          circle at 50% 0,
+          #fff0 calc(var(--perforation-size) - 5px),
+          #000 calc(var(--perforation-size) - 4px)
+        ),
+        radial-gradient(
+          circle at 50% 100%,
+          #fff0 calc(var(--perforation-size) - 5px),
+          #000 calc(var(--perforation-size) - 4px)
+        ),
+        radial-gradient(circle 8px at left center, #000 98%, #0000 100%),
+        radial-gradient(circle 8px at right center, #000 98%, #0000 100%),
+        repeating-linear-gradient(
+          90deg,
+          #000 10px,
+          #000 15px,
+          #0000 16px,
+          #0000 24px
+        );
+
+      -webkit-mask-repeat: repeat-x, repeat-x, no-repeat, no-repeat, repeat-x;
+      mask-repeat: repeat-x, repeat-x, no-repeat, no-repeat, repeat-x;
+
+      -webkit-mask-size:
+        calc(var(--perforation-size) * 2) 100%,
+        calc(var(--perforation-size) * 2) 100%,
+        16px 16px,
+        16px 16px,
+        10px 2px;
+      mask-size:
+        calc(var(--perforation-size) * 2) 100%,
+        calc(var(--perforation-size) * 2) 100%,
+        16px 16px,
+        16px 16px,
+        10px 2px;
+
+      -webkit-mask-position:
+        calc(0.5 * var(--perforation-size)) top,
+        calc(0.5 * var(--perforation-size)) bottom,
+        left var(--cutouts-adjust),
+        right var(--cutouts-adjust),
+        0 calc(var(--cutouts-adjust) + 7px);
+      mask-position:
+        calc(0.5 * var(--perforation-size)) top,
+        calc(0.5 * var(--perforation-size)) bottom,
+        left var(--cutouts-adjust),
+        right var(--cutouts-adjust),
+        0 calc(var(--cutouts-adjust) + 7px);
+
+      -webkit-mask-composite: source-in, xor, source-over, source-over;
+      mask-composite: intersect, exclude, add, add;
+    }
+
+    .holographic {
+      background-image: linear-gradient(to bottom, #fe58, 90%, #0002),
+        conic-gradient(
+          at 60% 50%,
+          #ccc,
+          #ff6bfe,
+          #00f9f8,
+          #ddd,
+          #0081fd,
+          #eef0bc,
+          #0081fd,
+          #ff6bfe,
+          #0002,
+          #0081fd,
+          #ddd,
+          #01fefb,
+          #ccc
+        );
+    }
+    .holographic::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: radial-gradient(circle at 70% 20%, #f0f, #0000),
+        repeating-radial-gradient(circle at 30% 80%, #fff, #f4a 48px, #eeeeee 150px);
+      mix-blend-mode: color-burn;
+    }
+    .holographic::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(to bottom, #f205, #f00, #0f0, #f205);
+      mix-blend-mode: difference;
+
+      animation: bg-pos 3s ease-in-out infinite alternate;
+      background-position: 0 0;
+      background-size: 100% 300%;
+      background-repeat: repeat;
+    }
+
+    @keyframes bg-pos {
+      to {
+        background-position: 0 500px;
+      }
+    }
+
+    .header {
+      position: relative;
+      grid-area: header;
+      margin: 0 8px;
+      text-align: center;
+      z-index: 1;
+      font-family: "Impact", sans-serif;
+      font-size: 2.75rem;
+      letter-spacing: 2px;
+      color: #ffffff9f;
+      text-shadow: 0 0 0 #000;
+      -webkit-text-stroke: #fff 0.5px;
+      mix-blend-mode: difference;
+    }
+
+    .body {
+      grid-area: body;
+      margin: 0 1em;
+      padding: 0.5em 0.2em;
+      font-weight: 200;
+      z-index: 1;
+      line-height: 1.35;
+      color: #1e293b;
+      font-size: 0.95rem;
+    }
+
+    .body em {
+      font-style: italic;
+      font-weight: 500;
+      font-size: 1.05rem;
+      color: #0f172a;
+    }
+
+    .footer {
+      grid-area: footer;
+      z-index: 1;
+      margin: 0 1em 1em 1em;
+    }
+
+    .number {
+      margin-bottom: 0.5rem;
+      text-align: center;
+      border-radius: 999px 0;
+      color: #000;
+      font-weight: 200;
+      font-size: 0.95rem;
+    }
+    .number .bold {
+      font-weight: 700;
+    }
+
+    .barcode {
+      justify-self: center;
+      width: 0;
+      height: 32px;
+      box-shadow:
+        0px 0 0 1px #000,
+        5px 0 0 1px #000,
+        7px 0 0 1px #000,
+        11px 0 0 1px #000,
+        15px 0 0 1px #000,
+        16px 0 0 1px #000,
+        22px 0 0 1px #000,
+        27px 0 0 1px #000,
+        30px 0 0 1px #000,
+        35px 0 0 1px #000,
+        36px 0 0 1px #000,
+        39px 0 0 1px #000,
+        43px 0 0 1px #000,
+        47px 0 0 1px #000,
+        50px 0 0 1px #000,
+        55px 0 0 1px #000,
+        59px 0 0 1px #000,
+        60px 0 0 1px #000,
+        64px 0 0 1px #000,
+        69px 0 0 1px #000,
+        70px 0 0 1px #000,
+        74px 0 0 1px #000;
+      transform: translateX(37px);
+    }
+
+    .symbol {
+      position: absolute;
+      top: 1.3em;
+      right: 0px;
+      rotate: 185deg;
+      font-size: 1.1em;
+      color: #fff;
+      line-height: 0.5;
+      opacity: 0.2;
+    }
+
+    .notes {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      font-size: 5rem;
+      color: #e7e7e7;
+      mix-blend-mode: color-burn;
+      transform: translateY(20%);
+      z-index: 1;
+    }
+    .notes:nth-child(2) {
+      transform: translateY(40%);
+    }
+    .notes:nth-child(3) {
+      transform: translateY(60%);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Dynamic Event Ticket Generator</h1>
+    <p>Populate the holographic ticket template from JSON data and export high-resolution PNG image cards.</p>
+  </header>
+
+  <main class="app-container">
+
+    <!-- ── Left: JSON Schema & Ingestion Controls ── -->
+    <section class="panel">
+      <div class="panel-title">
+        <span>JSON Data Input</span>
+        <label class="file-upload-label" for="jsonFileInput">
+          📁 Load JSON File
+        </label>
+        <input type="file" id="jsonFileInput" accept=".json" />
+      </div>
+
+      <textarea id="jsonEditor" spellcheck="false"></textarea>
+
+      <div class="btn-row">
+        <button class="btn-primary" onclick="updateTicketFromJson()">
+          ⚡ Populate Ticket
+        </button>
+        <button class="btn-secondary" onclick="resetDefaultJson()">
+          🔄 Reset Default
+        </button>
+      </div>
+
+      <!-- JSON Schema Documentation Reference -->
+      <div style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid rgba(255,255,255,0.08); font-size: 0.8rem; color: #94a3b8; line-height: 1.5;">
+        <strong style="color: #f1f5f9;">JSON Schema Mapping:</strong>
+        <ul style="margin-top: 0.5rem; padding-left: 1.25rem;">
+          <li><code>header</code> ➔ Bold uppercase title (<code>TICKET</code>)</li>
+          <li><code>passType</code> ➔ Italic pass subtitle (<code>*Day pass*</code>)</li>
+          <li><code>date</code> ➔ Event date (<code>May 14th 2026</code>)</li>
+          <li><code>venue</code> ➔ Multi-line venue / address block</li>
+          <li><code>seat</code> ➔ Seat code (<code>Seat <strong>E7</strong></code>)</li>
+          <li><code>barcode</code> ➔ Rendered security barcode</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ── Right: Live Ticket Card Display & Export ── -->
+    <section class="preview-stage">
+      <div id="ticketCaptureWrapper" style="padding: 15px;">
+        <div class="card" id="ticketCard">
+          <div class="notes">♪♪♪♪♪</div>
+          <div class="notes">♪♪♪♪</div>
+          <div class="notes">♪♪♪♪♪</div>
+
+          <!-- Header -->
+          <div class="header">
+            <span id="ticketHeader">TICKET</span>
+            <div class="symbol">✁</div>
+          </div>
+
+          <!-- Body (Middle Section) -->
+          <div class="body" id="ticketBody">
+            <em id="ticketPassType">Day pass</em><br />
+            <span id="ticketDate">May 14<sup>th</sup> 2026</span><br />
+            <span id="ticketVenue">Venue address,<br />State, #####</span>
+          </div>
+
+          <!-- Footer (Bottom Section) -->
+          <div class="footer">
+            <div class="number">Seat <span class="bold" id="ticketSeat">E7</span></div>
+            <div class="barcode" id="ticketBarcode"></div>
+          </div>
+
+          <!-- Background & Hologram Bump Filter -->
+          <div class="bg holographic"></div>
+          <svg class="filter" width="0" height="0" style="position: absolute;">
+            <filter id="bump">
+              <feTurbulence
+                result="noise"
+                numOctaves="3"
+                baseFrequency="0.7"
+                type="fractalNoise"
+              ></feTurbulence>
+              <feSpecularLighting
+                in="noise"
+                result="specular"
+                lighting-color="#fffffc"
+                specularExponent="25"
+                specularConstant="0.8"
+                surfaceScale="0.15"
+              >
+                <fePointLight z="210" y="100" x="100"></fePointLight>
+              </feSpecularLighting>
+              <feComposite
+                result="noise2"
+                operator="in"
+                in="specular"
+                in2="SourceGraphic"
+              ></feComposite>
+              <feBlend mode="screen" in2="noise2" in="SourceGraphic"></feBlend>
+            </filter>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Export Actions -->
+      <div class="btn-row" style="margin-top: 1.5rem;">
+        <button class="btn-primary" onclick="exportTicket('png')">
+          📸 Download PNG Card
+        </button>
+        <button class="btn-secondary" onclick="exportTicket('jpeg')">
+          Download JPG
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // Default Template JSON
+    const defaultData = {
+      "header": "TICKET",
+      "passType": "Day pass",
+      "date": "May 14th 2026",
+      "venue": "Venue address,\nState, #####",
+      "seat": "E7",
+      "barcode": "98421074523"
+    };
+
+    const jsonEditor = document.getElementById('jsonEditor');
+    jsonEditor.value = JSON.stringify(defaultData, null, 2);
+
+    // Format ordinal dates (e.g. 14th -> 14<sup>th</sup>)
+    function formatSuperscriptDate(dateStr) {
+      if (!dateStr) return '';
+      return dateStr.replace(/(\d+)(st|nd|rd|th)/gi, '$1<sup>$2</sup>');
+    }
+
+    // Populate the ticket card DOM from JSON object
+    function renderTicket(data) {
+      document.getElementById('ticketHeader').textContent = data.header || 'TICKET';
+      document.getElementById('ticketPassType').textContent = data.passType || 'Day pass';
+      document.getElementById('ticketDate').innerHTML = formatSuperscriptDate(data.date || 'May 14th 2026');
+
+      // Venue formatting (supports string or object)
+      let venueHtml = '';
+      if (typeof data.venue === 'string') {
+        venueHtml = data.venue.replace(/\n/g, '<br />');
+      } else if (typeof data.venue === 'object' && data.venue !== null) {
+        const parts = [];
+        if (data.venue.name) parts.push(`<strong>${data.venue.name}</strong>`);
+        if (data.venue.address) parts.push(data.venue.address);
+        const cityState = [data.venue.city, data.venue.state, data.venue.zip].filter(Boolean).join(', ');
+        if (cityState) parts.push(cityState);
+        venueHtml = parts.join('<br />');
+      } else {
+        venueHtml = 'Venue address,<br />State, #####';
+      }
+      document.getElementById('ticketVenue').innerHTML = venueHtml;
+
+      document.getElementById('ticketSeat').textContent = data.seat || 'E7';
+      const barcodeEl = document.getElementById('ticketBarcode');
+      barcodeEl.setAttribute('title', `Code: ${data.barcode || '98421074523'}`);
+    }
+
+    function updateTicketFromJson() {
+      try {
+        const parsed = JSON.parse(jsonEditor.value);
+        renderTicket(parsed);
+      } catch (err) {
+        alert('JSON syntax error: ' + err.message);
+      }
+    }
+
+    function resetDefaultJson() {
+      jsonEditor.value = JSON.stringify(defaultData, null, 2);
+      renderTicket(defaultData);
+    }
+
+    // Ingest JSON from file input
+    document.getElementById('jsonFileInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          const parsed = JSON.parse(evt.target.result);
+          jsonEditor.value = JSON.stringify(parsed, null, 2);
+          renderTicket(parsed);
+        } catch (err) {
+          alert('Could not parse uploaded JSON: ' + err.message);
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    // High-Resolution Image Export via html2canvas
+    async function exportTicket(format = 'png') {
+      const card = document.getElementById('ticketCard');
+      if (!card) return;
+
+      // Pause floating animation for crisp capture
+      const originalAnimation = card.style.animation;
+      const originalTransform = card.style.transform;
+      card.style.animation = 'none';
+      card.style.transform = 'none';
+
+      try {
+        const canvas = await html2canvas(card, {
+          scale: 3, // 3x high-DPI retina quality
+          useCORS: true,
+          backgroundColor: null,
+          logging: false
+        });
+
+        // Restore animation
+        card.style.animation = originalAnimation;
+        card.style.transform = originalTransform;
+
+        const mime = format === 'jpeg' ? 'image/jpeg' : 'image/png';
+        const image = canvas.toDataURL(mime, 0.95);
+        const link = document.createElement('a');
+        const headerText = document.getElementById('ticketHeader').textContent || 'ticket';
+        const seatText = document.getElementById('ticketSeat').textContent || 'pass';
+        link.download = `${headerText.toLowerCase()}-${seatText.toLowerCase()}-card.${format === 'jpeg' ? 'jpg' : 'png'}`;
+        link.href = image;
+        link.click();
+      } catch (e) {
+        console.error(e);
+        alert('Export error. See console for details.');
+        card.style.animation = originalAnimation;
+        card.style.transform = originalTransform;
+      }
+    }
+
+    // Initial render
+    renderTicket(defaultData);
+  </script>
+</body>
+</html>

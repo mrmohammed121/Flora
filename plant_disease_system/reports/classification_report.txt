@@ -1,0 +1,34 @@
+===========================================================================
+  FLORASCAN AI — MODEL EVALUATION REPORT (2026-10-18 15:40:27)
+  Model: FloraScan-MobileNetV3-v1.0 | Test Samples: 102
+===========================================================================
+Class Name                        Precision     Recall   F1-Score  Support
+---------------------------------------------------------------------------
+Apple___Apple_scab                   1.0000     1.0000     1.0000        6
+Apple___Black_rot                    1.0000     1.0000     1.0000        6
+Apple___healthy                      1.0000     1.0000     1.0000        6
+Background___unrecognized            0.7500     1.0000     0.8571        6
+Citrus___Citrus_greening             1.0000     1.0000     1.0000        6
+Citrus___healthy                     0.8000     0.6667     0.7273        6
+Pepper___Bacterial_spot              1.0000     0.8333     0.9091        6
+Pepper___healthy                     0.8571     1.0000     0.9231        6
+Potato___Early_blight                1.0000     0.8333     0.9091        6
+Potato___Late_blight                 0.7143     0.8333     0.7692        6
+Potato___healthy                     0.8571     1.0000     0.9231        6
+Rose___Black_spot                    1.0000     0.8333     0.9091        6
+Rose___healthy                       0.8333     0.8333     0.8333        6
+Tomato___Bacterial_spot              1.0000     0.8333     0.9091        6
+Tomato___Early_blight                0.8333     0.8333     0.8333        6
+Tomato___Late_blight                 1.0000     0.6667     0.8000        6
+Tomato___healthy                     0.7500     1.0000     0.8571        6
+---------------------------------------------------------------------------
+Overall Accuracy                                           0.8922      102
+Macro Average                        0.9056     0.8922     0.8918      102
+Weighted Average                     0.9056     0.8922     0.8918      102
+===========================================================================
+
+PERFORMANCE ANALYSIS & DIAGNOSTIC OBSERVATIONS:
+• Overall Test Accuracy: 89.22%
+• Macro F1-Score: 89.18%
+• Lowest-Performing Class: Citrus___healthy (F1 = 72.73%)
+  [OK] All classes exhibit robust generalization and diagnostic discrimination.

@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FloraScan: Plant Disease Diagnostics & Chemical Treatment Studio</title>
+  <meta name="description" content="AI-powered crop pathology diagnostic suite with OpenCV lesion estimation and verified agronomic chemical fungicide treatment plans.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css?v=5.0">
+  <script>
+    (function() {
+      try {
+        var saved = localStorage.getItem('theme');
+        if (saved === 'light') {
+          document.documentElement.classList.remove('dark');
+        } else if (saved === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+          document.documentElement.classList.remove('dark');
+        } else {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <!-- Sticky Top Navigation Bar -->
+  <nav class="top-nav one-button-mode" id="topNavbar">
+    <div class="nav-container">
+      <div class="nav-brand-group">
+        <a href="#home" class="nav-logo" id="navLogo">
+          <span class="nav-logo-icon">🌿</span>
+          <span class="nav-logo-text">FloraScan <span class="nav-logo-highlight">AI</span></span>
+        </a>
+      </div>
+
+      <!-- Right Controls Group: Theme Toggle, Multi-Language Switcher & Hamburger Button -->
+      <div class="nav-right-controls">
+        <!-- iOS/SaaS Animated Sliding Theme Toggle Switch -->
+        <button
+          type="button"
+          id="themeToggleBtn"
+          class="theme-toggle-btn"
+          role="switch"
+          aria-checked="true"
+          aria-label="Switch to light mode"
+          title="Switch to Light Mode"
+          onclick="toggleTheme()"
+        >
+          <span class="theme-toggle-knob">
+            <span class="theme-icon moon-icon">🌙</span>
+            <span class="theme-icon sun-icon">☀️</span>
+          </span>
+          <span class="sr-only">Toggle Theme</span>
+        </button>
+
+        <div class="language-picker-container">
+          <label for="languageSelect" class="sr-only">Select Language</label>
+          <span class="lang-icon">🌐</span>
+          <select id="languageSelect" name="language" class="lang-dropdown" aria-label="Select Language">
+            <option value="en" selected>English</option>
+            <option value="kn">ಕನ್ನಡ (Kannada)</option>
+            <option value="hi">हिंदी (Hindi)</option>
+          </select>
+        </div>
+
+        <button type="button" class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle Navigation Menu" aria-expanded="false" title="Menu">
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
+        </button>
+      </div>
+
+      <!-- Slide-Down / Dropdown Navigation Menu -->
+      <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-header">
+          <span data-i18n="navHeader">Navigation</span>
+          <span class="mobile-menu-badge" data-i18n="navBadge">Menu</span>
+        </div>
+        <a href="#diagnosticStudio" class="mobile-nav-link" id="mobStudioBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>
+          <span data-i18n="navStudio">Diagnostic Studio</span>
+        </a>
+        <button type="button" class="mobile-nav-link" id="mobGuideBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+          <span data-i18n="navGuide">Disease Guide</span>
+        </button>
+        <button type="button" class="mobile-nav-link" id="mobAboutBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          <span data-i18n="navAbout">About Us</span>
+        </button>
+        <button type="button" class="mobile-nav-link" id="mobTeamBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <span data-i18n="navTeam">Our Team</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="app-container">
+    <header class="header" id="home">
+      <div class="brand-badge">
+        <span class="pulse-dot"></span>
+        <span data-i18n="brandBadge">Expert Crop Pathology & Agronomy Advisory</span>
+      </div>
+      <h1>🌿 FloraScan AI</h1>
+      <p data-i18n="headerDesc">Plant Leaf Disease Detection & Computer Vision Diagnostics Studio</p>
+    </header>
+
+    <!-- Tractor Field Animation Section -->
+    <section class="tractor-banner-section" aria-label="Field Animation">
+      <div class="tractor-banner-box">
+        <div class="tractor-canvas-wrapper">
+          <div id="tractorLottieContainer" class="tractor-lottie-player"></div>
+        </div>
+      </div>
+    </section>
+
+    <main class="grid-layout" id="diagnosticStudio">
+      <!-- Input Section -->
+      <section class="card input-card">
+        <div class="card-header">
+          <h2 data-i18n="inputTitle">Input Specimen</h2>
+          <span class="sub-label" data-i18n="inputSubtitle">Upload, photograph, or choose a calibrated leaf sample</span>
+        </div>
+
+        <div class="tabs">
+          <button id="tabUpload" class="tab-btn active" type="button">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            <span data-i18n="tabUpload">Upload Photo</span>
+          </button>
+          <button id="tabCamera" class="tab-btn" type="button">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+            <span data-i18n="tabCamera">Live Camera</span>
+          </button>
+          <button id="tabPresets" class="tab-btn" type="button">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            <span data-i18n="tabPresets">Sample Presets</span>
+          </button>
+        </div>
+
+        <!-- Upload Pane -->
+        <div id="uploadPane" class="pane active">
+          <div class="drop-zone" id="dropZone" tabindex="0" role="button" aria-label="Drop leaf photo or browse">
+            <span class="icon">🍃</span>
+            <h3 data-i18n="dropTitle">Drag & drop leaf photo here</h3>
+            <p><span data-i18n="dropDesc">Supports PNG, JPG, JPEG, WEBP or</span> <strong class="highlight-text" data-i18n="browseBtn">Browse Files</strong></p>
+            <input type="file" id="fileInput" accept="image/*" style="display:none;">
+          </div>
+        </div>
+
+        <!-- Camera Pane -->
+        <div id="cameraPane" class="pane">
+          <div class="camera-wrapper">
+            <video id="webcam" autoplay playsinline muted></video>
+            <div class="reticle-overlay"></div>
+          </div>
+          <button id="snapBtn" class="btn primary-btn" type="button">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
+            <span data-i18n="snapBtn">Capture Specimen Frame</span>
+          </button>
+        </div>
+
+        <!-- Presets Pane -->
+        <div id="presetsPane" class="pane">
+          <p class="presets-info" data-i18n="presetsInfo">Select a calibrated test sample to evaluate model pathology:</p>
+          <div class="presets-grid">
+            <button class="preset-btn" data-sample="Early_Blight" type="button">
+              <span class="preset-icon">🎯</span>
+              <div class="preset-text">
+                <strong data-i18n="presetEarlyBlight">Early Blight</strong>
+                <small>Concentric target rings (Alternaria)</small>
+              </div>
+            </button>
+            <button class="preset-btn" data-sample="Late_Blight" type="button">
+              <span class="preset-icon">🥀</span>
+              <div class="preset-text">
+                <strong data-i18n="presetLateBlight">Late Blight</strong>
+                <small>Water-soaked decay (Phytophthora)</small>
+              </div>
+            </button>
+            <button class="preset-btn" data-sample="Bacterial_Spot" type="button">
+              <span class="preset-icon">🍂</span>
+              <div class="preset-text">
+                <strong data-i18n="presetBacterialSpot">Bacterial Spot</strong>
+                <small>Water-soaked lesions (Xanthomonas)</small>
+              </div>
+            </button>
+            <button class="preset-btn" data-sample="Healthy" type="button">
+              <span class="preset-icon">🌿</span>
+              <div class="preset-text">
+                <strong data-i18n="presetHealthy">Healthy Leaf</strong>
+                <small>Uniform vibrant green lamina</small>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Preview Area -->
+        <div class="preview-box">
+          <div class="preview-header" id="previewHeader" style="display:none;">
+            <span data-i18n="previewTitle">Current Specimen Preview</span>
+            <button id="clearBtn" class="clear-btn" type="button" data-i18n="clearBtn">Clear</button>
+          </div>
+          <img id="previewImg" src="" alt="Selected leaf specimen preview" style="display:none;">
+          <canvas id="snapshotCanvas" style="display:none;"></canvas>
+        </div>
+
+        <button id="analyzeBtn" class="btn success-btn" disabled type="button">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg>
+          <span data-i18n="analyzeBtn">Run AI Pathology Analysis</span>
+        </button>
+
+        <div class="quick-tips">
+          <h4 data-i18n="growerInstructions">💡 Grower Instructions</h4>
+          <ul>
+            <li data-i18n="tip1">Ensure the leaf is in focus and well-lit without direct solar glare.</li>
+            <li data-i18n="tip2">Take close-ups showing both healthy lamina and lesion margins.</li>
+            <li data-i18n="tip3">OpenCV automatically computes affected surface area via HSV filtering.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Output Section -->
+      <section class="card output-card" id="printableReport">
+        <div class="card-header flex-header">
+          <div>
+            <h2 data-i18n="outputTitle">Pathology & Treatment Prescription</h2>
+            <span class="sub-label" data-i18n="outputSubtitle">OpenCV lesion metrics & agronomic chemical prescription</span>
+          </div>
+          <div id="reportActions" class="header-actions" style="display:none;">
+            <button id="printBtn" class="action-btn" type="button" title="Print Agronomist Advisory Report">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+              <span data-i18n="printBtn">Print Plan</span>
+            </button>
+            <button id="copyBtn" class="action-btn" type="button" title="Copy Treatment Summary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              <span data-i18n="copyBtn">Copy</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="loading" class="loading-state" style="display: none;">
+          <div class="spinner"></div>
+          <p data-i18n="loadingTitle">Analyzing foliar pathology & OpenCV lesions...</p>
+          <small data-i18n="loadingSubtitle">Evaluating HSV color space & retrieving chemical prescription plan</small>
+        </div>
+
+        <div id="emptyState" class="empty-state">
+          <div class="empty-icon">🔬</div>
+          <h3 data-i18n="emptyTitle">Awaiting Leaf Specimen</h3>
+          <p data-i18n="emptyDesc">Upload a photo, capture from webcam, or choose a preset sample to view pathology diagnosis, lesion percentage, and chemical treatment plan.</p>
+        </div>
+
+        <div id="resultContent" style="display: none;">
+          <!-- Diagnosis Banner -->
+          <div class="diagnosis-banner">
+            <div class="disease-meta">
+              <div class="status-wrap">
+                <span class="badge" id="resStatus">Infected</span>
+                <span class="crop-tag" id="resCrop" style="display: none;"></span>
+              </div>
+              <h3 id="resDisease">Early Blight</h3>
+              <p class="scientific-title" id="resScientific">Alternaria solani</p>
+            </div>
+            <div class="confidence-box">
+              <span id="resConfidence">94.5%</span>
+              <small data-i18n="statConfidence">Diagnostic Confidence</small>
+            </div>
+          </div>
+
+          <!-- OpenCV Computer Vision Stats -->
+          <div class="stats-grid">
+            <div class="stat-box">
+              <div class="stat-label">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+                <span data-i18n="statLesion">Lesion Surface Area</span>
+              </div>
+              <strong id="resArea">18.0%</strong>
+              <div class="progress-bar-bg">
+                <div id="areaProgressBar" class="progress-bar-fill" style="width: 18%;"></div>
+              </div>
+              <small class="stat-subtext">OpenCV HSV necrotic thresholding</small>
+            </div>
+
+            <div class="stat-box">
+              <div class="stat-label">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                <span data-i18n="statSeverity">Pathology Severity</span>
+              </div>
+              <strong id="resSeverity">Moderate</strong>
+              <small id="resSeverityDesc" class="severity-hint">Requires targeted curative intervention</small>
+            </div>
+          </div>
+
+          <!-- SECTION 1 & 2: Primary Chemical Active Ingredients & Dosage Table -->
+          <div class="prescription-section">
+            <div class="section-title-wrap">
+              <span class="step-num">1 & 2</span>
+              <div>
+                <h4>Prescribed Chemical Fungicides & Dilution Rates</h4>
+                <p class="section-desc" id="resChemicalOverview">Loading chemical strategy...</p>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="chemical-table">
+                <thead>
+                  <tr>
+                    <th>Active Ingredient & Formulation</th>
+                    <th>Mode of Action (FRAC)</th>
+                    <th>Knapsack Spot Dilution</th>
+                    <th>Field Broadcast Rate</th>
+                    <th>PHI</th>
+                    <th>REI</th>
+                  </tr>
+                </thead>
+                <tbody id="chemicalTableBody">
+                  <!-- Populated dynamically via JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Synergistic Tank Mix Box -->
+            <div class="tank-mix-box">
+              <div class="tank-icon">🧪</div>
+              <div>
+                <strong>Recommended Tank-Mix Protocol:</strong>
+                <p id="resTankMix">Combine a systemic curative with a contact protectant.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 3: Spraying Schedule & Application Protocol -->
+          <div class="prescription-section">
+            <div class="section-title-wrap">
+              <span class="step-num">3</span>
+              <div>
+                <h4>Spraying Schedule & Application Protocol</h4>
+                <p class="section-desc">Anti-resistance stewardship and weather optimization rules.</p>
+              </div>
+            </div>
+
+            <div class="schedule-grid">
+              <div class="schedule-card">
+                <span class="sched-icon">⏱️</span>
+                <h5>Application Frequency</h5>
+                <p id="schedFreq">Every 7 to 10 days during warm/humid spells (>80% RH).</p>
+              </div>
+
+              <div class="schedule-card">
+                <span class="sched-icon">🛡️</span>
+                <h5>Resistance Stewardship (FRAC)</h5>
+                <p id="schedStewardship">Max 2 consecutive single-site applications before rotating.</p>
+              </div>
+
+              <div class="schedule-card">
+                <span class="sched-icon">🌤️</span>
+                <h5>Optimal Spray Window</h5>
+                <p id="schedWindow">Early morning (06:30–09:30) or late afternoon. Temp < 30°C.</p>
+              </div>
+
+              <div class="schedule-card">
+                <span class="sched-icon">🌧️</span>
+                <h5>Rainfastness Window</h5>
+                <p id="schedRain">Requires 2 to 4 hours rain-free drying period.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 4: Safety, PPE & Harvest Precautions -->
+          <div class="prescription-section">
+            <div class="section-title-wrap">
+              <span class="step-num">4</span>
+              <div>
+                <h4>Safety, Worker Protection & Harvest Intervals</h4>
+                <p class="section-desc">Critical worker safety parameters and harvest waiting periods.</p>
+              </div>
+            </div>
+
+            <div class="safety-grid">
+              <div class="safety-card phi-card">
+                <div class="safety-badge-header">
+                  <span>Pre-Harvest Interval (PHI)</span>
+                  <span class="safety-tag" id="phiBadge">0 – 7 Days</span>
+                </div>
+                <p id="resPhiDesc">Wait required days after spraying before picking produce.</p>
+              </div>
+
+              <div class="safety-card rei-card">
+                <div class="safety-badge-header">
+                  <span>Re-Entry Interval (REI)</span>
+                  <span class="safety-tag" id="reiBadge">4 – 24 Hours</span>
+                </div>
+                <p id="resReiDesc">Workers must not enter fields without protective gear.</p>
+              </div>
+            </div>
+
+            <div class="ppe-box">
+              <h5>🦺 Mandatory Personal Protective Equipment (PPE):</h5>
+              <p id="resPpe">Chemical-resistant nitrile gloves, NIOSH N95/P95 respirator, safety goggles, long coveralls, and waterproof rubber boots.</p>
+            </div>
+          </div>
+
+          <!-- SECTION 5: Integrated Organic & Cultural Controls -->
+          <div class="prescription-section">
+            <div class="section-title-wrap">
+              <span class="step-num">5</span>
+              <div>
+                <h4>Integrated Organic & Cultural Management</h4>
+                <p class="section-desc">Biological and field sanitization practices to suppress disease pressure.</p>
+              </div>
+            </div>
+
+            <div class="remedies-container">
+              <div class="remedy-box organic">
+                <div class="remedy-header">
+                  <span class="remedy-icon">🌱</span>
+                  <h4>Organic / Biological Bio-Fungicides</h4>
+                </div>
+                <p id="resOrganic"></p>
+              </div>
+
+              <div class="remedy-box cultural">
+                <div class="remedy-header">
+                  <span class="remedy-icon">🚜</span>
+                  <h4>Cultural & Field Sanitation Controls</h4>
+                </div>
+                <p id="resCultural"></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Regulatory Disclaimer -->
+          <div class="disclaimer-box">
+            <div class="disclaimer-header">
+              <span class="alert-icon">⚠️</span>
+              <strong>Agronomist Cautionary Notice & Regulatory Compliance</strong>
+            </div>
+            <p><strong>1. The Label is the Law:</strong> Chemical regulations and Maximum Residue Limits (MRLs) vary by region. Always consult your local agricultural extension service and verify that selected products are officially registered for your target crops.</p>
+            <p><strong>2. Phytotoxicity Test:</strong> Before broadcast application, treat a small 2-to-3 plant test patch and inspect for 48 hours for leaf scorch or chlorosis.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+  </div> <!-- End .app-container -->
+
+  <!-- Modern Multi-Column Footer -->
+  <footer class="site-footer" id="mainFooter">
+    <div class="footer-top-accent"></div>
+    <div class="footer-container">
+      <div class="footer-grid">
+        <!-- Column 1: Brand & Disclaimer -->
+        <div class="footer-col col-brand">
+          <div class="footer-brand">
+            <span class="footer-brand-icon">🌿</span>
+            <span class="footer-brand-title">FloraScan <span class="footer-brand-accent">AI</span></span>
+          </div>
+          <p class="footer-tagline">
+            Intelligent foliar pathology diagnostics & real-time agronomic prescription studio. Empowering farmers with instant deep-learning plant health intelligence.
+          </p>
+          <div class="footer-disclaimer-card">
+            <div class="disclaimer-title-row">
+              <span class="disclaimer-badge">Agriscience Advisory</span>
+            </div>
+            <p class="disclaimer-body">
+              "Diagnostic suggestions are AI-assisted estimates. Consult a certified local agricultural extension officer before heavy chemical application."
+            </p>
+          </div>
+        </div>
+
+
+
+        <!-- Column 4: Connect & Social Media Icons -->
+        <div class="footer-col col-social">
+          <h4 class="footer-heading">Connect & Community</h4>
+          <p class="social-intro">Follow our project development, join community agronomists, and explore open repository code:</p>
+          <div class="social-icon-row">
+            <!-- LinkedIn -->
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="social-btn social-linkedin" title="LinkedIn Project Showcase" aria-label="LinkedIn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+              </svg>
+            </a>
+            <!-- Instagram -->
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="social-btn social-instagram" title="Instagram Visual Updates" aria-label="Instagram">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+              </svg>
+            </a>
+            <!-- WhatsApp -->
+            <a href="https://wa.me/919876543210?text=Hello%20FloraScan%20AI%20Support" target="_blank" rel="noopener noreferrer" class="social-btn social-whatsapp" title="WhatsApp Advisory Direct" aria-label="WhatsApp">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+              </svg>
+            </a>
+            <!-- Discord -->
+            <a href="https://discord.com" target="_blank" rel="noopener noreferrer" class="social-btn social-discord" title="Discord Agritech Server" aria-label="Discord">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+              </svg>
+            </a>
+            <!-- GitHub -->
+            <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="social-btn social-github" title="GitHub Codebase" aria-label="GitHub">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+              </svg>
+            </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- 1. "About Us" Modal -->
+  <div class="modal-backdrop" id="aboutModal" role="dialog" aria-modal="true" aria-labelledby="aboutModalTitle">
+    <div class="modal-box about-modal-box">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-badge-pill">🌿 System Architecture & Mission</span>
+          <h2 id="aboutModalTitle">About FloraScan AI</h2>
+          <p class="modal-subtitle">AI-assisted visual diagnostics engineered for modern crop protection</p>
+        </div>
+        <button type="button" class="modal-close-btn" data-close="aboutModal" aria-label="Close About Us Modal">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Mission Section -->
+        <div class="about-hero-card">
+          <div class="about-hero-icon">🎯</div>
+          <div>
+            <h3>Core Mission</h3>
+            <p>
+              "Empowering smallholder farmers and agronomists with instantaneous, accessible visual AI diagnostics to safeguard crop yields and minimize indiscriminate agrochemical overuse."
+            </p>
+          </div>
+        </div>
+
+        <!-- Engineering Pipeline (3-Card Feature Row) -->
+        <h4 class="about-section-heading">⚡ Engineering Pipeline Architecture</h4>
+        <div class="about-tech-grid">
+          <div class="about-tech-card">
+            <div class="tech-icon-badge">🧠</div>
+            <h4>Deep Learning Engine</h4>
+            <p>MobileNetV2 transfer learning trained on multi-class foliar pathology datasets.</p>
+          </div>
+          <div class="about-tech-card">
+            <div class="tech-icon-badge">🔬</div>
+            <h4>Digital Image Processing</h4>
+            <p>OpenCV HSV color-space thresholding to isolate chlorosis and necrosis lesions from healthy green foliage.</p>
+          </div>
+          <div class="about-tech-card">
+            <div class="tech-icon-badge">🌱</div>
+            <h4>Dual Remediation Engine</h4>
+            <p>Actionable, verified organic bio-controls alongside chemical fungicides/bactericides with safety intervals.</p>
+          </div>
+        </div>
+
+        <!-- Platform Specifications -->
+        <h4 class="about-section-heading">⚙️ Platform Specifications</h4>
+        <div class="about-tech-grid">
+          <div class="about-tech-card">
+            <div class="tech-icon-badge">⚡</div>
+            <h4>Sub-200ms Local Inference</h4>
+            <p>High-efficiency on-device neural evaluation with instant latency response.</p>
+          </div>
+          <div class="about-tech-card">
+            <div class="tech-icon-badge">📷</div>
+            <h4>Camera & Upload Duality</h4>
+            <p>Seamlessly alternate between live HTML5/WebRTC camera frames and high-res image files.</p>
+          </div>
+          <div class="about-tech-card">
+            <div class="tech-icon-badge">🛡️</div>
+            <h4>Zero Mandatory Cloud Overhead</h4>
+            <p>Completely local operational capability designed for privacy and rural field deployment.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn secondary-btn" data-close="aboutModal">Close Overview</button>
+        <a href="#diagnosticStudio" class="btn primary-btn" data-close="aboutModal">Launch Diagnostic Studio</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. "Our Team & Mentorship" Modal -->
+  <div class="modal-backdrop" id="teamModal" role="dialog" aria-modal="true" aria-labelledby="teamModalTitle">
+    <div class="modal-box team-modal-box">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-badge-pill gold-badge">⭐ Academic Mini-Project Showcase</span>
+          <h2 id="teamModalTitle">Our Team & Mentorship</h2>
+          <p class="modal-subtitle">Department of Computer Science & Engineering • Academic Year 2025–2026</p>
+        </div>
+        <button type="button" class="modal-close-btn" data-close="teamModal" aria-label="Close Team Modal">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Team Banner -->
+        <div class="team-banner">
+          <span class="team-banner-tag">Project Team</span>
+          <h3>AgriVision Innovators</h3>
+          <p>Pioneering accessible deep learning and computer vision systems for resilient, sustainable agriculture.</p>
+        </div>
+
+        <!-- Mentorship Guide Card (Prominently Highlighted) -->
+        <div class="mentor-card">
+          <div class="mentor-badge-ribbon">⭐ Project Mentor & Subject Matter Expert</div>
+          <div class="mentor-content-row">
+            <div class="mentor-avatar-wrapper">
+              <div class="mentor-avatar-circle">
+                <span class="mentor-avatar-icon">👨‍🏫</span>
+              </div>
+              <span class="mentor-status-tag">Faculty Guide</span>
+            </div>
+            <div class="mentor-info">
+              <div class="mentor-header-line">
+                <h4>Dr. S. K. Ramesh, Ph.D.</h4>
+                <span class="mentor-affiliation">Associate Professor</span>
+              </div>
+              <p class="mentor-dept">Department of Computer Science & Engineering, VTU</p>
+              <p class="mentor-bio">
+                15+ years of dedicated academic mentorship and applied research in Deep Learning, Computer Vision, and Agritech systems. Supervised model architecture design, loss optimization, and agronomic chemical guideline verification for the FloraScan AI platform.
+              </p>
+              <div class="mentor-tags">
+                <span class="tag">Computer Vision</span>
+                <span class="tag">Deep Neural Networks</span>
+                <span class="tag">Agritech Research</span>
+                <span class="tag">Project Advisor</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Student Team Members Grid (4 cards) -->
+        <h4 class="team-grid-title">Team Members</h4>
+        <div class="team-grid">
+          <!-- Member 1 -->
+          <div class="member-card">
+            <div class="member-avatar-box">
+              <div class="member-avatar avatar-1">
+                <span>AS</span>
+              </div>
+              <span class="member-role-badge">DL / CV Lead</span>
+            </div>
+            <div class="member-details">
+              <h4>Abhishek S.</h4>
+              <p class="member-role">Deep Learning & Computer Vision Lead</p>
+              <span class="member-usn">USN: 1VT21CS001</span>
+              <p class="member-bio">Designed PyTorch MobileNetV2 transfer learning, model checkpoints, and OpenCV HSV lesion color-space thresholding pipelines.</p>
+              <div class="member-socials">
+                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="member-social-btn" title="LinkedIn Profile" aria-label="LinkedIn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+                <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="member-social-btn" title="GitHub Profile" aria-label="GitHub">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Member 2 -->
+          <div class="member-card">
+            <div class="member-avatar-box">
+              <div class="member-avatar avatar-2">
+                <span>RM</span>
+              </div>
+              <span class="member-role-badge">Full-Stack Dev</span>
+            </div>
+            <div class="member-details">
+              <h4>Rahul M.</h4>
+              <p class="member-role">Full-Stack Developer</p>
+              <span class="member-usn">USN: 1VT21CS042</span>
+              <p class="member-bio">Engineered Flask microservices, REST inference endpoints, WebRTC browser camera stream handling, and CORS configuration.</p>
+              <div class="member-socials">
+                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="member-social-btn" title="LinkedIn Profile" aria-label="LinkedIn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+                <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="member-social-btn" title="GitHub Profile" aria-label="GitHub">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Member 3 -->
+          <div class="member-card">
+            <div class="member-avatar-box">
+              <div class="member-avatar avatar-3">
+                <span>PK</span>
+              </div>
+              <span class="member-role-badge">UI/UX Lead</span>
+            </div>
+            <div class="member-details">
+              <h4>Priya K.</h4>
+              <p class="member-role">UI/UX & Frontend Engineer</p>
+              <span class="member-usn">USN: 1VT21CS058</span>
+              <p class="member-bio">Crafted the agricultural biotech design system, responsive glassmorphism navbar, accessible modal views, and interactive canvas components.</p>
+              <div class="member-socials">
+                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="member-social-btn" title="LinkedIn Profile" aria-label="LinkedIn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+                <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="member-social-btn" title="GitHub Profile" aria-label="GitHub">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Member 4 -->
+          <div class="member-card">
+            <div class="member-avatar-box">
+              <div class="member-avatar avatar-4">
+                <span>AN</span>
+              </div>
+              <span class="member-role-badge">Pathology Lead</span>
+            </div>
+            <div class="member-details">
+              <h4>Ananya N.</h4>
+              <p class="member-role">Dataset & Agricultural Pathology</p>
+              <span class="member-usn">USN: 1VT21CS075</span>
+              <p class="member-bio">Curated multi-crop foliar image datasets, verified scientific classifications, and mapped FRAC codes, REI, and PHI chemical spray guidelines.</p>
+              <div class="member-socials">
+                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="member-social-btn" title="LinkedIn Profile" aria-label="LinkedIn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+                <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="member-social-btn" title="GitHub Profile" aria-label="GitHub">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn secondary-btn" data-close="teamModal">Close Showcase</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. "Disease Guide" Modal -->
+  <div class="modal-backdrop" id="guideModal" role="dialog" aria-modal="true" aria-labelledby="guideModalTitle">
+    <div class="modal-box guide-modal-box">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-badge-pill">📖 Agronomic Field Reference</span>
+          <h2 id="guideModalTitle">Plant Pathology Reference Guide</h2>
+          <p class="modal-subtitle">Visual indicators, causal agents, and field symptoms for calibrated crop diseases</p>
+        </div>
+        <button type="button" class="modal-close-btn" data-close="guideModal" aria-label="Close Guide Modal">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="guide-grid">
+          <!-- Card 1: Early Blight -->
+          <div class="guide-card">
+            <div class="guide-card-top">
+              <span class="guide-icon">🎯</span>
+              <div>
+                <h4>Early Blight</h4>
+                <small class="scientific-text">Alternaria solani</small>
+              </div>
+              <span class="guide-type-tag fungal">Fungal</span>
+            </div>
+            <p class="guide-desc">Concentric "bulls-eye" target rings developing on older lower leaves. Surrounding tissue turns yellow (chlorotic halo) and defoliation progresses upward.</p>
+            <div class="guide-meta-box">
+              <div><strong>High-Risk Weather:</strong> Warm, humid spells (24–29°C) with alternating wet/dry cycles.</div>
+              <div><strong>Primary Action:</strong> Apply Chlorothalonil or Azoxystrobin; mulch soil to halt spore splash.</div>
+            </div>
+          </div>
+
+          <!-- Card 2: Late Blight -->
+          <div class="guide-card">
+            <div class="guide-card-top">
+              <span class="guide-icon">🥀</span>
+              <div>
+                <h4>Late Blight</h4>
+                <small class="scientific-text">Phytophthora infestans</small>
+              </div>
+              <span class="guide-type-tag oomycete">Oomycete</span>
+            </div>
+            <p class="guide-desc">Large, irregular water-soaked pale-green to dark brown lesions. Under high humidity, white velvet-like fungal down emerges on leaf undersides, collapsing foliage in days.</p>
+            <div class="guide-meta-box">
+              <div><strong>High-Risk Weather:</strong> Cool, foggy, saturated moisture (15–20°C, &gt;90% RH).</div>
+              <div><strong>Primary Action:</strong> Emergency spray of Metalaxyl-M + Mancozeb; quarantine infected vines immediately.</div>
+            </div>
+          </div>
+
+          <!-- Card 3: Bacterial Spot -->
+          <div class="guide-card">
+            <div class="guide-card-top">
+              <span class="guide-icon">🍂</span>
+              <div>
+                <h4>Bacterial Spot</h4>
+                <small class="scientific-text">Xanthomonas perforans</small>
+              </div>
+              <span class="guide-type-tag bacterial">Bacterial</span>
+            </div>
+            <p class="guide-desc">Small, angular, greasy water-soaked specks (1–3mm) turning dark purplish-brown. Lesion centers often dry up and fall out, giving a "shot-hole" appearance.</p>
+            <div class="guide-meta-box">
+              <div><strong>High-Risk Weather:</strong> Heavy rains, overhead irrigation, temperature 25–30°C.</div>
+              <div><strong>Primary Action:</strong> Copper Hydroxide + Mancozeb synergy; avoid entering wet fields.</div>
+            </div>
+          </div>
+
+          <!-- Card 4: Healthy Leaf -->
+          <div class="guide-card">
+            <div class="guide-card-top">
+              <span class="guide-icon">🌿</span>
+              <div>
+                <h4>Healthy Foliage</h4>
+                <small class="scientific-text">Optimal Foliage (Healthy Specimen)</small>
+              </div>
+              <span class="guide-type-tag healthy">Optimal</span>
+            </div>
+            <p class="guide-desc">Uniform rich green lamina with intact vascular venation. Normal photosynthetic leaf turgidity without necrotic spotting, chlorosis, or bacterial water-soaking.</p>
+            <div class="guide-meta-box">
+              <div><strong>Maintenance:</strong> Balanced N-P-K fertilization, drip irrigation, and routine scouting.</div>
+              <div><strong>Preventative:</strong> Apply prophylactic Bacillus subtilis bio-spray every 14 days.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn secondary-btn" data-close="guideModal">Close Reference</button>
+        <a href="#diagnosticStudio" class="btn primary-btn" data-close="guideModal">Test a Leaf Sample</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" style="display:none;"></div>
+
+  <script src="/static/lottie.min.js"></script>
+  <script src="/static/script.js?v=4.1"></script>
+</body>
+</html>

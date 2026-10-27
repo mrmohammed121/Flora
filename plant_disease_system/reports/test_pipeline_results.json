@@ -1,0 +1,178 @@
+[
+  {
+    "test_type": "standard_leaf",
+    "category": "Healthy Leaf (Apple)",
+    "actual_class": "Apple___healthy",
+    "predicted_class": "Apple___healthy",
+    "prediction_disease": "healthy",
+    "confidence_percent": 99.75,
+    "status": "confirmed",
+    "status_display": "Confirmed Diagnosis",
+    "quality_score": 1.0,
+    "chemicals_allowed": true,
+    "is_correct": true
+  },
+  {
+    "test_type": "standard_leaf",
+    "category": "Healthy Leaf (Potato)",
+    "actual_class": "Potato___healthy",
+    "predicted_class": "Potato___healthy",
+    "prediction_disease": "healthy",
+    "confidence_percent": 99.86,
+    "status": "confirmed",
+    "status_display": "Confirmed Diagnosis",
+    "quality_score": 1.0,
+    "chemicals_allowed": true,
+    "is_correct": true
+  },
+  {
+    "test_type": "standard_leaf",
+    "category": "Healthy Leaf (Tomato)",
+    "actual_class": "Tomato___healthy",
+    "predicted_class": "Tomato___healthy",
+    "prediction_disease": "healthy",
+    "confidence_percent": 93.28,
+    "status": "confirmed",
+    "status_display": "Confirmed Diagnosis",
+    "quality_score": 1.0,
+    "chemicals_allowed": true,
+    "is_correct": true
+  },
+  {
+    "test_type": "standard_leaf",
+    "category": "Early Disease (Tomato Early Blight)",
+    "actual_class": "Tomato___Early_blight",
+    "predicted_class": "Tomato___healthy",
+    "prediction_disease": "healthy",
+    "confidence_percent": 76.82,
+    "status": "likely",
+    "status_display": "Likely Diagnosis",
+    "quality_score": 1.0,
+    "chemicals_allowed": true,
+    "is_correct": false
+  },
+  {
+    "test_type": "standard_leaf",
+    "category": "Early Disease (Potato Early Blight)",
+    "actual_class": "Potato___Early_blight",
+    "predicted_class": "Potato___Early_blight",
+    "prediction_disease": "Early blight",
+    "confidence_percent": 99.92,
+    "status": "confirmed",
+    "status_display": "Confirmed Diagnosis",
+    "quality_score": 1.0,
+    "chemicals_allowed": true,
+    "is_correct": true
+  },
+  {
+    "test_type": "standard_leaf",
+    "category": "Early Disease (Apple Scab)",
+    "actual_class": "Apple___Apple_scab",
+    "predicted_class": "Apple___Apple_scab",
+    "prediction_disease": "Apple scab",
+    "confidence_percent": 92.33,
+    "status": "confirmed",
+    "status_display": "Confirmed Diagnosis",
+    "quality_score": 1.0,
+    "chemicals_allowed": true,
+    "is_correct": true
+  },
+  {
+    "test_type": "standard_leaf",
+    "category": "Late Disease (Tomato Late Blight)",
+    "actual_class": "Tomato___Late_blight",
+    "predicted_class": "Tomato___Late_blight",
+    "prediction_disease": "Late blight",
+    "confidence_percent": 29.14,
+    "status": "low_confidence",
+    "status_display": "Low-Confidence Assessment",
+    "quality_score": 1.0,
+    "chemicals_allowed": false,
+    "is_correct": true
+  },
+  {
+    "test_type": "standard_leaf",
+    "category": "Late Disease (Potato Late Blight)",
+    "actual_class": "Potato___Late_blight",
+    "predicted_class": "Potato___healthy",
+    "prediction_disease": "healthy",
+    "confidence_percent": 91.51,
+    "status": "confirmed",
+    "status_display": "Confirmed Diagnosis",
+    "quality_score": 1.0,
+    "chemicals_allowed": true,
+    "is_correct": false
+  },
+  {
+    "test_type": "standard_leaf",
+    "category": "Severe Rot (Apple Black Rot)",
+    "actual_class": "Apple___Black_rot",
+    "predicted_class": "Apple___Black_rot",
+    "prediction_disease": "Black rot",
+    "confidence_percent": 98.87,
+    "status": "confirmed",
+    "status_display": "Confirmed Diagnosis",
+    "quality_score": 1.0,
+    "chemicals_allowed": true,
+    "is_correct": true
+  },
+  {
+    "test_type": "standard_leaf",
+    "category": "Bacterial Spot (Tomato)",
+    "actual_class": "Tomato___Bacterial_spot",
+    "predicted_class": "Tomato___Bacterial_spot",
+    "prediction_disease": "Bacterial spot",
+    "confidence_percent": 97.85,
+    "status": "confirmed",
+    "status_display": "Confirmed Diagnosis",
+    "quality_score": 1.0,
+    "chemicals_allowed": true,
+    "is_correct": true
+  },
+  {
+    "test_type": "edge_case_blurry",
+    "description": "Severely blurred leaf image",
+    "status": "low_confidence",
+    "quality": {
+      "score": 0.6,
+      "status": "fair",
+      "laplacian_variance": 1.8,
+      "issues": [
+        "Image is significantly blurred or out of focus"
+      ]
+    },
+    "chemical_treatments_allowed": false
+  },
+  {
+    "test_type": "edge_case_dark",
+    "description": "Pitch black underexposed image",
+    "status": "insufficient_quality",
+    "quality": {
+      "score": 0.2,
+      "status": "poor",
+      "is_valid": false,
+      "laplacian_variance": 12.7,
+      "mean_brightness": 5.8,
+      "issues": [
+        "Image is significantly blurred or out of focus",
+        "Image is severely underexposed (too dark)"
+      ]
+    }
+  },
+  {
+    "test_type": "edge_case_document",
+    "description": "Non-botanical text invoice",
+    "status": "insufficient_quality",
+    "quality": {
+      "score": 0.2,
+      "status": "poor",
+      "is_valid": false,
+      "laplacian_variance": 1299.4,
+      "mean_brightness": 240.0,
+      "issues": [
+        "Image is severely overexposed with washed-out highlights",
+        "Image lacks organic pigment saturation (appears black-and-white or document screenshot)"
+      ]
+    }
+  }
+]

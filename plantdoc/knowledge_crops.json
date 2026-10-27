@@ -1,0 +1,189 @@
+[
+  {
+    "label": "Tomato___Bacterial_spot",
+    "crop": "Tomato",
+    "disease": "Bacterial spot",
+    "symptoms": "Small, dark brown to black circular lesions on leaves, often surrounded by yellow halos. Lesions may appear water-soaked initially and dry out with age. Fruit may develop small, raised, scab-like rough spots.",
+    "cause": "Bacterium Xanthomonas species (such as Xanthomonas perforans / euvesicatoria).",
+    "conditions": "Favored by warm, rainy, humid conditions and spreads rapidly via wind-driven rain and overhead sprinkler irrigation.",
+    "treatment": "Remove severely infected leaves. Avoid overhead irrigation and work in fields only when foliage is completely dry. Registered bactericides or copper sprays may be applied according to your local university or agricultural extension guidelines.",
+    "prevention": "Use certified disease-free seed, sanitize stakes and equipment, implement 2 to 3 year crop rotation with non-solanaceous crops, and choose tolerant tomato cultivars.",
+    "source_url": "TODO_VERIFY"
+  },
+  {
+    "label": "Tomato___Early_blight",
+    "crop": "Tomato",
+    "disease": "Early blight",
+    "symptoms": "Dark brown to black spots showing distinct concentric rings (target-board pattern) primarily on older, lower leaves. Surrounding leaf tissue yellows, dries up, and drops prematurely. Sunken dark cankers may form on stems.",
+    "cause": "Fungus Alternaria solani.",
+    "conditions": "Favored by warm, humid weather alternating with dry intervals, and often attacks stressed or senescing plants.",
+    "treatment": "Prune out diseased lower foliage to reduce spore splash. Apply organic or certified protectant fungicides as recommended by your local extension service.",
+    "prevention": "Rotate crops away from potatoes and tomatoes for 2-3 years, stake plants to promote air circulation, mulch soil to reduce rain splash, and destroy post-harvest crop debris.",
+    "source_url": "TODO_VERIFY"
+  },
+  {
+    "label": "Tomato___Late_blight",
+    "crop": "Tomato",
+    "disease": "Late blight",
+    "symptoms": "Large, irregular, water-soaked pale green to dark brown lesions that expand rapidly across leaves. Under humid conditions, a delicate white fuzzy spore growth appears on leaf undersides. Fruit develops greasy, firm, olive-brown blotches.",
+    "cause": "Oomycete pathogen Phytophthora infestans.",
+    "conditions": "Spreads rapidly during cool, cloudy, wet weather with continuous leaf wetness and high relative humidity.",
+    "treatment": "Immediately pull and destroy severely infected vines to protect neighboring plants. Do not compost infected debris. Apply protectant fungicides recommended by local extension specialists upon first warning.",
+    "prevention": "Plant resistant varieties, ensure wide row spacing for canopy ventilation, water exclusively at the root base in morning hours, and eliminate volunteer potato or tomato culls.",
+    "source_url": "TODO_VERIFY"
+  },
+  {
+    "label": "Tomato___Leaf_Mold",
+    "crop": "Tomato",
+    "disease": "Leaf Mold",
+    "symptoms": "Pale green or yellowish spots with diffuse margins on the upper leaf surface. The corresponding underside of the leaf develops a dense, velvety olive-green to brown fungal growth. Lower foliage is affected first.",
+    "cause": "Fungus Passalora fulva (formerly Cladosporium fulvum).",
+    "conditions": "Primarily affects greenhouse and high-tunnel tomatoes where relative humidity exceeds 85% with warm temperatures and stagnant airflow.",
+    "treatment": "Prune lower leaves to open the canopy. Increase ventilation and venting fans in protected structures. Apply labeled fungicides as advised by local extension officers.",
+    "prevention": "Maintain relative humidity below 85% through heating and ventilation, space plants generously, water the soil without wetting leaves, and grow resistant tomato hybrids.",
+    "source_url": "TODO_VERIFY"
+  },
+  {
+    "label": "Tomato___Septoria_leaf_spot",
+    "crop": "Tomato",
+    "disease": "Septoria leaf spot",
+    "symptoms": "Numerous small, circular spots (1-3 mm) with dark brown borders and ash-gray to tan centers. Tiny black specks (pycnidia) can be seen inside the gray centers with a hand lens. Leaves turn yellow, wither, and fall off.",
+    "cause": "Fungus Septoria lycopersici.",
+    "conditions": "Favored by extended wet periods, moderate temperatures, and rain splash from contaminated soil.",
+    "treatment": "Remove infected lower leaves. Avoid touching foliage when wet. Apply certified protective fungicides according to local agricultural recommendations.",
+    "prevention": "Apply clean mulch around plants to prevent splash from soil, rotate out of solanaceous crops for at least two years, control solanaceous weeds (e.g. nightshades), and plow under or bury residues after harvest.",
+    "source_url": "TODO_VERIFY"
+  },
+  {
+    "label": "Tomato___Spider_mites Two-spotted_spider_mite",
+    "crop": "Tomato",
+    "disease": "Two-spotted spider mite damage",
+    "symptoms": "Fine yellow, white, or bronze stippling (tiny flecks) across the upper leaf surface. With severe infestation, leaves turn brown, dry, and brittle. Fine webbing covers leaves, stems, and growing tips.",
+    "cause": "Arachnid pest Tetranychus urticae.",
+    "conditions": "Thrives in hot, dry, dusty weather and drought-stressed plants, reproducing very rapidly.",
+    "treatment": "Knock down small populations with strong water sprays on leaf undersides. Apply horticultural soaps, neem-based oils, or selective miticides approved by local extension services. Avoid broad-spectrum insecticides that kill natural predatory mites.",
+    "prevention": "Keep plants well-watered to prevent drought stress, maintain ground cover or mulch to reduce field dust, and introduce or conserve predatory mites.",
+    "source_url": "TODO_VERIFY"
+  },
+  {
+    "label": "Tomato___Target_Spot",
+    "crop": "Tomato",
+    "disease": "Target Spot",
+    "symptoms": "Pinpoint brown spots on leaves that expand into circular brown lesions with light brown centers and faint concentric rings. Lesions may coalesce, causing substantial blighting and leaf collapse. Fruit can develop circular sunken lesions.",
+    "cause": "Fungus Corynespora cassiicola.",
+    "conditions": "Favored by warm temperatures (20-30°C) accompanied by high humidity, prolonged dew, and dense plant canopies.",
+    "treatment": "Prune dead or heavily spotted foliage. Improve airflow by training and staking vines. Apply approved protective fungicides as guided by local agricultural extension officers.",
+    "prevention": "Rotate away from susceptible host crops (such as cucumbers and tomatoes), manage crop weeds, ensure proper plant spacing, and destroy crop residues immediately after the final picking.",
+    "source_url": "TODO_VERIFY"
+  },
+  {
+    "label": "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+    "crop": "Tomato",
+    "disease": "Tomato yellow leaf curl virus (TYLCV)",
+    "symptoms": "Severe upward cupping and curling of leaf margins, yellowing (chlorosis) between leaf veins, reduced leaf size, and severe plant stunting. Flowers often drop before fruit set, causing near-total yield loss if infected early.",
+    "cause": "Begomovirus (Tomato yellow leaf curl virus) vectored by sweetpotato whiteflies (Bemisia tabaci).",
+    "conditions": "Prevalent in warm tropical and subtropical climates where whitefly populations build up quickly.",
+    "treatment": "There is no cure for virus-infected plants; immediately pull out and bag infected plants to prevent vectors from spreading virus to healthy neighbors. Manage whitefly vectors using approved insecticidal soaps or systemic treatments as recommended by local extension.",
+    "prevention": "Plant TYLCV-resistant or tolerant cultivars, install 50-mesh insect-proof netting in seedling nurseries, use reflective silver mulches to repel whiteflies, and maintain a host-free fallow period between crops.",
+    "source_url": "TODO_VERIFY"
+  },
+  {
+    "label": "Tomato___Tomato_mosaic_virus",
+    "crop": "Tomato",
+    "disease": "Tomato mosaic virus (ToMV)",
+    "symptoms": "Mottled light and dark green patterns on leaves, leaf distortion, blistering, and fern-like or shoestring leaf reduction. Plants may become stunted and fruit can show uneven ripening or brown internal browning.",
+    "cause": "Tobamovirus (Tomato mosaic virus).",
+    "conditions": "Extremely stable virus that easily spreads mechanically via contaminated hands, tools, grafting shears, and worker clothing. It can also persist in crop debris and on seeds.",
+    "treatment": "No chemical treatment can eliminate plant viruses. Remove and incinerate or bury symptomatic plants immediately. Disinfect pruning tools in a 10% household bleach or skim milk solution.",
+    "prevention": "Use certified virus-free seed, plant resistant varieties, wash hands thoroughly with soap before handling plants (especially if tobacco is used), and sanitize greenhouse surfaces between growing cycles.",
+    "source_url": "TODO_VERIFY"
+  },
+  {
+    "label": "Tomato___healthy",
+    "crop": "Tomato",
+    "disease": "Healthy",
+    "symptoms": "Leaves are uniform green, firm, and vigorous with no spots, lesions, curling, webbing, or chlorosis.",
+    "cause": "None (Plant is healthy).",
+    "conditions": "Grown under adequate moisture, balanced nutrients, proper sunlight, and good aeration.",
+    "treatment": "No disease treatment required.",
+    "prevention": "Maintain balanced fertilization, water at the soil level early in the morning to keep foliage dry, space plants for ventilation, and monitor regularly for early symptoms of pests or leaf spots.",
+    "source_url": "TODO_VERIFY"
+  },
+  {
+    "label": "Potato___Early_blight",
+    "crop": "Potato",
+    "disease": "Early blight",
+    "symptoms": "Small brown to black spots showing target-like concentric rings on older foliage first. Leaf tissue surrounding spots turns chlorotic (yellow). Leaves wither and may hang dry on the stem. Tubers develop dark, dry, sunken surface lesions.",
+    "cause": "Fungus Alternaria solani (and Alternaria alternata).",
+    "conditions": "Favored by alternating wet and dry weather, heavy morning dew, and senescing or nitrogen-deficient crops.",
+    "treatment": "Maintain optimal plant nutrition and soil moisture. Apply registered protectant fungicides upon the first detection of symptoms in accordance with local university extension advice.",
+    "prevention": "Practice 3 to 4 year crop rotation away from solanaceous plants, use certified disease-free seed tubers, avoid excessive vine stress, and destroy vines thoroughly before harvest.",
+    "source_url": "TODO_VERIFY"
+  },
+  {
+    "label": "Potato___Late_blight",
+    "crop": "Potato",
+    "disease": "Late blight",
+    "symptoms": "Water-soaked, pale-to-dark green lesions that turn purplish-black and spread rapidly. A white powdery mildew-like sporulation appears on the margins of lesions on leaf undersides in wet weather. Tubers show shallow, copper-brown dry rot extending into flesh.",
+    "cause": "Oomycete pathogen Phytophthora infestans.",
+    "conditions": "Favored by cool, humid, overcast weather (15-20°C with leaf wetness exceeding 90% RH). Spreads destructively across entire fields within days.",
+    "treatment": "Destroy focal infection points immediately. Apply certified systemic or contact fungicides following local disease forecast warnings and extension guidelines.",
+    "prevention": "Plant certified disease-free seed tubers of resistant varieties, eliminate cull piles and volunteer potatoes, hill soil well around tubers to shield them from spores washed from leaves, and ensure rapid vine kill prior to digging.",
+    "source_url": "TODO_VERIFY"
+  },
+  {
+    "label": "Potato___healthy",
+    "crop": "Potato",
+    "disease": "Healthy",
+    "symptoms": "Foliage is uniformly green, upright, and vigorous with clean stems and no signs of lesions, wilting, or stunting.",
+    "cause": "None (Plant is healthy).",
+    "conditions": "Well-drained soil, adequate organic matter, regular irrigation, and balanced N-P-K nutrition.",
+    "treatment": "No corrective treatment needed.",
+    "prevention": "Maintain consistent hilling, rotate crops, monitor for Colorado potato beetles and aphids, and maintain proper soil moisture without waterlogging.",
+    "source_url": "TODO_VERIFY"
+  },
+  {
+    "label": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+    "crop": "Corn (maize)",
+    "disease": "Gray leaf spot",
+    "symptoms": "Narrow, rectangular tan-to-gray lesions running strictly parallel between leaf veins, giving a blocky appearance. Over time, lesions coalesce into large blighted areas, leading to premature leaf death.",
+    "cause": "Fungus Cercospora zeae-maydis.",
+    "conditions": "Favored by warm temperatures (25-30°C), prolonged cloudiness, and high humidity (>90% RH) or frequent dew, common in zero-till fields.",
+    "treatment": "Scout fields prior to tasseling. In susceptible hybrids with significant leaf area threatened, foliar fungicides may be applied based on economic thresholds and extension recommendations.",
+    "prevention": "Select resistant corn hybrids, rotate away from maize for 1 to 2 years, and manage crop residue to promote fungal decay.",
+    "source_url": "TODO_VERIFY"
+  },
+  {
+    "label": "Corn_(maize)___Common_rust_",
+    "crop": "Corn (maize)",
+    "disease": "Common rust",
+    "symptoms": "Small, powdery, cinnamon-brown pustules scattered over both upper and lower leaf surfaces. As the plant matures, pustules turn dark brownish-black. Heavy infection causes leaves to chlorose and die early.",
+    "cause": "Fungus Puccinia sorghi.",
+    "conditions": "Favored by cool to moderate temperatures (16-25°C) and high relative humidity (>95%) with frequent dew nights.",
+    "treatment": "Most field corn has good resistance and rarely requires spraying. In sweet corn or highly susceptible seed production fields, approved fungicides may be applied as guided by extension thresholds.",
+    "prevention": "Plant rust-resistant or tolerant corn hybrids, plant early to avoid high seasonal spore loads, and maintain balanced soil fertility.",
+    "source_url": "TODO_VERIFY"
+  },
+  {
+    "label": "Corn_(maize)___Northern_Leaf_Blight",
+    "crop": "Corn (maize)",
+    "disease": "Northern leaf blight",
+    "symptoms": "Long, elliptical, cigar-shaped grayish-green to tan lesions (2.5 to 15 cm long) on leaves. Lesions are not restricted by leaf veins. In moist conditions, dark olive-colored spores form on lesion surfaces.",
+    "cause": "Fungus Exserohilum turcicum (formerly Helminthosporium turcicum).",
+    "conditions": "Favored by moderate temperatures (18-27°C) and extended dew or leaf wetness periods (6-18 hours).",
+    "treatment": "Monitor lower leaves around tasseling. If lesions appear early on upper canopy leaves of susceptible varieties, apply labeled fungicides as recommended by local extension specialists.",
+    "prevention": "Plant resistant hybrids (with Ht genes), practice crop rotation away from corn, and till or bury infested residue where soil conservation rules allow.",
+    "source_url": "TODO_VERIFY"
+  },
+  {
+    "label": "Corn_(maize)___healthy",
+    "crop": "Corn (maize)",
+    "disease": "Healthy",
+    "symptoms": "Leaves are broad, vibrant green, and free from streaks, pustules, striping, or blighted lesions.",
+    "cause": "None (Plant is healthy).",
+    "conditions": "Well-fertilized soil, good drainage, full sunlight, and adequate moisture during pollination.",
+    "treatment": "No disease treatment required.",
+    "prevention": "Ensure balanced nitrogen application, scout for early fall armyworm or stem borer activity, and maintain proper plant population density.",
+    "source_url": "TODO_VERIFY"
+  }
+]

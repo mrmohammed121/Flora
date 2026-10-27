@@ -1,0 +1,16 @@
+{
+  "name": "FloraScan AI – AI Plant Disease Detection",
+  "short_name": "FloraScan AI",
+  "description": "AI-powered plant leaf disease detection and agronomic treatment platform.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#090d16",
+  "theme_color": "#10b981",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

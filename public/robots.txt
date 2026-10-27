@@ -1,0 +1,12 @@
+# FloraScan AI Robots.txt
+# Search Engine Crawling Policy
+User-agent: *
+Allow: /
+Allow: /diseases/
+Disallow: /predict
+Disallow: /api/
+Disallow: /health
+Disallow: /scratch/
+
+# Sitemap location
+Sitemap: https://florascan.ai/sitemap.xml

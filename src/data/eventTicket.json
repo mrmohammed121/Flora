@@ -1,0 +1,34 @@
+{
+  "cardType": "event_ticket",
+  "theme": {
+    "gradient": "pearlescent_holographic",
+    "primaryColor": "#10b981",
+    "blendMode": "color-burn"
+  },
+  "watermark": {
+    "symbols": ["♪♪♪♪♪", "♪♪♪♪", "♪♪♪♪♪"]
+  },
+  "header": {
+    "title": "TICKET",
+    "cutoutIcon": "✁",
+    "hasDottedLine": true
+  },
+  "body": {
+    "passType": "Day pass",
+    "date": "May 14th 2026",
+    "venue": {
+      "address": "Venue address,",
+      "state": "State",
+      "zip": "#####"
+    }
+  },
+  "footer": {
+    "seatLabel": "Seat",
+    "seatNumber": "E7",
+    "barcode": {
+      "code": "98421074523",
+      "format": "CODE128",
+      "alignment": "bottom-right"
+    }
+  }
+}

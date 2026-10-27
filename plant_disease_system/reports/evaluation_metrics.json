@@ -1,0 +1,116 @@
+{
+  "model_version": "FloraScan-MobileNetV3-v1.0",
+  "evaluation_date": "2026-10-18 15:40:27",
+  "test_samples": 102,
+  "overall_accuracy": 0.8922,
+  "macro_precision": 0.9056,
+  "macro_recall": 0.8922,
+  "macro_f1": 0.8918,
+  "weighted_f1": 0.8918,
+  "lowest_performing_class": "Citrus___healthy",
+  "lowest_f1_score": 0.7273,
+  "per_class": {
+    "Apple___Apple_scab": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "support": 6
+    },
+    "Apple___Black_rot": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "support": 6
+    },
+    "Apple___healthy": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "support": 6
+    },
+    "Background___unrecognized": {
+      "precision": 0.75,
+      "recall": 1.0,
+      "f1_score": 0.8571,
+      "support": 6
+    },
+    "Citrus___Citrus_greening": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "support": 6
+    },
+    "Citrus___healthy": {
+      "precision": 0.8,
+      "recall": 0.6667,
+      "f1_score": 0.7273,
+      "support": 6
+    },
+    "Pepper___Bacterial_spot": {
+      "precision": 1.0,
+      "recall": 0.8333,
+      "f1_score": 0.9091,
+      "support": 6
+    },
+    "Pepper___healthy": {
+      "precision": 0.8571,
+      "recall": 1.0,
+      "f1_score": 0.9231,
+      "support": 6
+    },
+    "Potato___Early_blight": {
+      "precision": 1.0,
+      "recall": 0.8333,
+      "f1_score": 0.9091,
+      "support": 6
+    },
+    "Potato___Late_blight": {
+      "precision": 0.7143,
+      "recall": 0.8333,
+      "f1_score": 0.7692,
+      "support": 6
+    },
+    "Potato___healthy": {
+      "precision": 0.8571,
+      "recall": 1.0,
+      "f1_score": 0.9231,
+      "support": 6
+    },
+    "Rose___Black_spot": {
+      "precision": 1.0,
+      "recall": 0.8333,
+      "f1_score": 0.9091,
+      "support": 6
+    },
+    "Rose___healthy": {
+      "precision": 0.8333,
+      "recall": 0.8333,
+      "f1_score": 0.8333,
+      "support": 6
+    },
+    "Tomato___Bacterial_spot": {
+      "precision": 1.0,
+      "recall": 0.8333,
+      "f1_score": 0.9091,
+      "support": 6
+    },
+    "Tomato___Early_blight": {
+      "precision": 0.8333,
+      "recall": 0.8333,
+      "f1_score": 0.8333,
+      "support": 6
+    },
+    "Tomato___Late_blight": {
+      "precision": 1.0,
+      "recall": 0.6667,
+      "f1_score": 0.8,
+      "support": 6
+    },
+    "Tomato___healthy": {
+      "precision": 0.75,
+      "recall": 1.0,
+      "f1_score": 0.8571,
+      "support": 6
+    }
+  }
+}

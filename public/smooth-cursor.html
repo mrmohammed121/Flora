@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smooth Cursor Animation</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      cursor: none; /* Hides default system cursor */
+    }
+
+    body {
+      min-height: 100vh;
+      background-color: #0f172a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: sans-serif;
+      color: #f8fafc;
+      overflow: hidden;
+    }
+
+    /* Small dot that snaps directly to mouse coordinates */
+    .cursor-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #38bdf8;
+      border-radius: 50%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none; /* Prevents cursor from blocking clicks */
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.2s ease;
+    }
+
+    /* Outer trailing ring with smooth easing */
+    .cursor-outline {
+      width: 40px;
+      height: 40px;
+      border: 2px solid rgba(56, 189, 248, 0.6);
+      border-radius: 50%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: width 0.2s ease, height 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    /* Hover scale effect when pointing at links/buttons */
+    .cursor-outline.hovered {
+      width: 65px;
+      height: 65px;
+      background-color: rgba(56, 189, 248, 0.15);
+      border-color: #38bdf8;
+    }
+
+    /* Demo interactive element */
+    .interactive-btn {
+      padding: 14px 28px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #0f172a;
+      background-color: #38bdf8;
+      border: none;
+      border-radius: 8px;
+      cursor: none;
+      transition: transform 0.2s ease;
+    }
+
+    .interactive-btn:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Custom Cursor</h1>
+  <p style="margin: 16px 0 24px; color: #94a3b8;">Move your mouse around and hover over the button.</p>
+  <button class="interactive-btn">Hover Over Me</button>
+
+  <!-- Cursor DOM elements -->
+  <div class="cursor-dot"></div>
+  <div class="cursor-outline"></div>
+
+  <script>
+    const dot = document.querySelector('.cursor-dot');
+    const outline = document.querySelector('.cursor-outline');
+    const interactiveElements = document.querySelectorAll('button, a, input, [data-hover]');
+
+    // Track real mouse position
+    let mouseX = 0;
+    let mouseY = 0;
+
+    // Track lagging outline position
+    let outlineX = 0;
+    let outlineY = 0;
+
+    // Update real mouse coordinates
+    window.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+
+      // Small dot snaps instantly
+      dot.style.left = `${mouseX}px`;
+      dot.style.top = `${mouseY}px`;
+    });
+
+    // Smooth animation loop using linear interpolation (LERP)
+    function animate() {
+      // 0.15 creates a smooth elastic trailing delay
+      const speed = 0.15;
+
+      outlineX += (mouseX - outlineX) * speed;
+      outlineY += (mouseY - outlineY) * speed;
+
+      outline.style.left = `${outlineX}px`;
+      outline.style.top = `${outlineY}px`;
+
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    // Scale outline when hovering over interactive elements
+    interactiveElements.forEach((el) => {
+      el.addEventListener('mouseenter', () => outline.classList.add('hovered'));
+      el.addEventListener('mouseleave', () => outline.classList.remove('hovered'));
+    });
+  </script>
+</body>
+</html>

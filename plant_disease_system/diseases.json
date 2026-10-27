@@ -1,0 +1,872 @@
+{
+  "Rose___Black_spot": {
+    "disease": "Black Spot",
+    "crop": "Rose",
+    "host_species": "Rose",
+    "botanical_name": "Rosa spp.",
+    "plant_family": "Rosaceae",
+    "category": "ORNAMENTAL",
+    "scientific_name": "Diplocarpon rosae (Marssonina rosae)",
+    "status": "Infected",
+    "severity": "High",
+    "morphological_indicators": {
+      "margin_type": "feathery_fringed",
+      "concentric_rings": false,
+      "description": "Circular to irregular dark purple-brown to black spots with distinct feathery, fibrillose, fringed spreading margins. No concentric bullseye rings."
+    },
+    "symptoms": [
+      "Circular dark brown to pitch-black spots (2–12 mm) with characteristic feathery, fringed, fibrillose margins",
+      "Yellow chlorotic halos develop around spots, coalescing into full leaflet chlorosis",
+      "Premature defoliation starting from the lower canes and progressing upward, leaving bare thorny canes",
+      "Raised reddish-purple blister-like cankers on immature green canes"
+    ],
+    "causes": "Ascomycete fungus Diplocarpon rosae. Ascospores and conidia germinate only when foliage remains wet for at least 6–7 hours at 18–24°C.",
+    "cultural_management": [
+      "Water exclusively at the base with drip or soaker irrigation; never wet rose foliage in late afternoon or evening",
+      "Prune shrub interior canes into an open vase shape to promote rapid wind drying across the canopy",
+      "Rake, bag, and incinerate all fallen leaves and diseased canes immediately; do not compost infected rose debris",
+      "Sanitize pruning shears with 70% isopropyl alcohol between individual rose bushes"
+    ],
+    "organic_remedies": [
+      "Apply potassium bicarbonate (3 g/L) + horticultural oil (5 ml/L) as a curative foliar wash every 7 days",
+      "Foliar spray with biological antagonist Bacillus amyloliquefaciens or Bacillus subtilis",
+      "Sulfur dusting or micronized wettable sulfur spray (avoid applying when temperatures exceed 29°C/85°F to prevent phytotoxicity)"
+    ],
+    "chemical_remedies": [
+      {
+        "name": "Tebuconazole (e.g., Bayer Advanced Disease Control / Folicur)",
+        "frac_group": "FRAC 3 (DMI / Triazole)",
+        "dosage_knapsack": "1.0 – 1.5 ml per 1 L water",
+        "dosage_broadcast": "N/A (Ornamental Garden Shrub)",
+        "phi": "None (Non-edible ornamental species)",
+        "rei": "12 hours (until spray has completely dried)",
+        "role": "Locally systemic triazole; halts fungal sterol biosynthesis within expanding black spot hyphae."
+      },
+      {
+        "name": "Trifloxystrobin + Tebuconazole (e.g., Compass Trio / Nativo)",
+        "frac_group": "FRAC 11 + FRAC 3",
+        "dosage_knapsack": "0.8 – 1.0 g per 1 L water",
+        "dosage_broadcast": "N/A (Ornamental Shrub)",
+        "phi": "None (Non-edible ornamental)",
+        "rei": "12 hours",
+        "role": "Translaminar strobilurin barrier combined with systemic curative action."
+      }
+    ],
+    "ornamental_care": {
+      "has_phi": false,
+      "petal_safety": "CRITICAL: Do NOT spray directly onto open rose petals or colored buds. Chemical contact causes immediate petal scorch, bleaching, and unmarketable blooms.",
+      "winter_sanitation": "Overwintering ascocarps survive in fallen leaf litter. Complete winter ground clean-up is mandatory before spring bud break.",
+      "root_drench": "Systemic triazoles can be applied as a seasonal root zone drench for non-spray protection in residential gardens."
+    },
+    "tank_mix": "Tank mix Tebuconazole with a non-ionic spreader/sticker to adhere to glossy rose waxy cuticles. Jar test before spraying.",
+    "source": "American Rose Society & Royal Horticultural Society (RHS) Plant Pathology Advisory."
+  },
+  "Rose___healthy": {
+    "disease": "Healthy Rose",
+    "crop": "Rose",
+    "host_species": "Rose",
+    "botanical_name": "Rosa spp.",
+    "plant_family": "Rosaceae",
+    "category": "ORNAMENTAL",
+    "scientific_name": "Rosa hybrida / Rosa spp.",
+    "status": "Healthy",
+    "severity": "None",
+    "morphological_indicators": {
+      "margin_type": "uniform",
+      "concentric_rings": false,
+      "description": "Uniform vibrant green compound leaflets with serrated margins, firm turgor, and zero necrotic lesions."
+    },
+    "symptoms": [
+      "Lustrous, deep green pinnately compound leaflets with sharp serrations",
+      "Firm turgor with intact glossy waxy cuticle",
+      "Vigorous apical shoot growth with healthy red-tinted juvenile leaves and flower buds",
+      "Complete absence of necrotic spots, powdery mildew, or rust pustules"
+    ],
+    "causes": "Optimal nutrition, adequate soil drainage (pH 6.0–6.8), good sunlight exposure (minimum 6 hours daily), and clean canopy ventilation.",
+    "cultural_management": [
+      "Maintain 5–7 cm wood chip or pine needle mulch keeping mulch 10 cm away from main root crown",
+      "Fertilize with balanced rose food (e.g. 10-15-10 or organic bone meal + fish hydrolysate) during active flowering",
+      "Deadhead spent blooms above the nearest 5-leaflet leaf to channel plant energy into new flowering canes",
+      "Ensure minimum 60–90 cm spacing between bushes for continuous air movement"
+    ],
+    "organic_remedies": [
+      "Preventive monthly spray of seaweed kelp extract and silica to toughen leaf cuticles against fungal spores",
+      "Maintain beneficial predatory mites and ladybugs in garden canopy"
+    ],
+    "chemical_remedies": [],
+    "ornamental_care": {
+      "has_phi": false,
+      "petal_safety": "Maintain regular watering without foliar wetting.",
+      "winter_sanitation": "Apply dormant lime-sulfur or copper spray during winter dormancy after pruning."
+    },
+    "tank_mix": "No chemical intervention needed. Maintain routine horticultural care.",
+    "source": "Royal Horticultural Society & UC Master Gardener Rose Guidelines."
+  },
+  "Tomato___Early_blight": {
+    "disease": "Early Blight",
+    "crop": "Tomato",
+    "host_species": "Tomato",
+    "botanical_name": "Solanum lycopersicum",
+    "plant_family": "Solanaceae",
+    "category": "FOOD_CROP",
+    "scientific_name": "Alternaria solani",
+    "status": "Infected",
+    "severity": "Moderate",
+    "morphological_indicators": {
+      "margin_type": "concentric_rings",
+      "concentric_rings": true,
+      "description": "Characteristic brown to dark brown circular lesions with prominent alternating concentric rings resembling a target board or bullseye."
+    },
+    "symptoms": [
+      "Dark brown circular lesions with distinct alternating concentric rings ('bullseye' target pattern)",
+      "Lesions initiate on older, lower foliage and progress acropetally up the vine",
+      "Prominent chlorotic yellow halos surround expanding necrotic lesions",
+      "Severe foliar blighting causes defoliation and exposes developing tomatoes to sunscald"
+    ],
+    "causes": "Airborne fungal conidia of Alternaria solani. Favored by warm temperatures (24–29°C) and alternating wet/dry cycles with morning dew.",
+    "cultural_management": [
+      "Prune the lower 30–45 cm of vine foliage to eliminate soil splash contact",
+      "Mulch soil bed with straw or UV-reflective plastic mulch to block soilborne spore splash",
+      "Stake and trellis vines vertically to optimize canopy drying time",
+      "Rotate fields away from solanaceous crops (tomato, potato, pepper, eggplant) for at least 3 years"
+    ],
+    "organic_remedies": [
+      "Spray bio-fungicide Bacillus subtilis or Trichoderma harzianum every 7–10 days",
+      "Apply cold-pressed neem oil (5 ml/L water) emulsified with mild potassium soap"
+    ],
+    "chemical_remedies": [
+      {
+        "name": "Chlorothalonil (e.g., Bravo Weather Stik 720 SC)",
+        "frac_group": "FRAC M05 (Multi-site Contact)",
+        "dosage_knapsack": "2.0 – 2.5 ml per 1 L water",
+        "dosage_broadcast": "1.8 – 2.2 L/ha (0.75 – 0.9 L/acre)",
+        "phi": "0 days (Can harvest immediately up to day of application)",
+        "rei": "12 hours",
+        "role": "Forms protective contact barrier on foliage; inhibits multiple fungal respiratory enzymes."
+      },
+      {
+        "name": "Difenoconazole (e.g., Score 250 EC)",
+        "frac_group": "FRAC 3 (DMI / Triazole)",
+        "dosage_knapsack": "0.5 ml per 1 L water",
+        "dosage_broadcast": "250 – 300 ml/ha (100 – 120 ml/acre)",
+        "phi": "7 days (Strict pre-harvest interval before picking tomatoes)",
+        "rei": "12 hours",
+        "role": "Curative systemic triazole; halts fungal ergosterol synthesis inside active leaf lesions."
+      }
+    ],
+    "food_crop_safety": {
+      "has_phi": true,
+      "phi_notice": "Observe strict 7-day Pre-Harvest Interval (PHI) for Difenoconazole before picking tomatoes.",
+      "rei": "12 to 24 hours re-entry interval.",
+      "mrl_compliance": "Do not exceed 4 triazole applications per harvest season."
+    },
+    "tank_mix": "Difenoconazole (0.5 ml/L) + Mancozeb (2.0 g/L) combines systemic curative power with contact protectant.",
+    "source": "Cornell University Vegetable Pathology & UC Davis IPM Tomato Pest Guidelines."
+  },
+  "Tomato___Late_blight": {
+    "disease": "Late Blight",
+    "crop": "Tomato",
+    "host_species": "Tomato",
+    "botanical_name": "Solanum lycopersicum",
+    "plant_family": "Solanaceae",
+    "category": "FOOD_CROP",
+    "scientific_name": "Phytophthora infestans",
+    "status": "Infected",
+    "severity": "Critical",
+    "morphological_indicators": {
+      "margin_type": "water_soaked_diffuse",
+      "concentric_rings": false,
+      "description": "Large, irregular water-soaked pale green to dark brown lesions that expand rapidly. Delicate white cottony sporulation visible on the leaf underside in humid conditions."
+    },
+    "symptoms": [
+      "Large, irregular water-soaked pale-green to dark brown lesions on foliage that enlarge with extreme rapidity",
+      "Under high humidity (>90%), white downy fungal-like mycelium forms on the abaxial (underside) of the leaf",
+      "Stem cankers turn black and brittle, causing entire canopy branches to collapse",
+      "Fruit develops large, firm, greasy brown lesions with bumpy texture"
+    ],
+    "causes": "Oomycete water mold Phytophthora infestans. Requires cool (15–20°C), persistent moisture and high humidity (>90%).",
+    "cultural_management": [
+      "Scout fields daily during cool, foggy, or rainy spells; destroy infected plants immediately",
+      "Avoid sprinkler irrigation; maintain wide plant spacing for fast canopy drying",
+      "Eradicate volunteer tomato and potato plants and solanaceous weeds (nightshade)"
+    ],
+    "organic_remedies": [
+      "Fixed copper fungicides (Copper Hydroxide or Copper Octanoate) applied preventively before rain events",
+      "Foliar sprays of biological antagonist Bacillus subtilis QST 713"
+    ],
+    "chemical_remedies": [
+      {
+        "name": "Metalaxyl-M + Mancozeb (e.g., Ridomil Gold MZ 68 WG)",
+        "frac_group": "FRAC 4 + M03",
+        "dosage_knapsack": "2.5 g per 1 L water",
+        "dosage_broadcast": "2.0 – 2.5 kg/ha",
+        "phi": "7 days",
+        "rei": "24 hours",
+        "role": "Systemic phenylamide arrests oomycete ribosomal RNA synthesis combined with multi-site contact."
+      },
+      {
+        "name": "Cymoxanil + Mancozeb (e.g., Curzate M 68 WG)",
+        "frac_group": "FRAC 27 + M03",
+        "dosage_knapsack": "2.0 – 2.5 g per 1 L water",
+        "dosage_broadcast": "1.5 – 2.0 kg/ha",
+        "phi": "3 days",
+        "rei": "12 hours",
+        "role": "Rapid translaminar kickback action; controls incubating mycelium up to 48 hours post-infection."
+      }
+    ],
+    "food_crop_safety": {
+      "has_phi": true,
+      "phi_notice": "7 days for Metalaxyl-M; 3 days for Cymoxanil before fruit picking.",
+      "rei": "24 hours.",
+      "mrl_compliance": "Maximum 3 applications of phenylamide class per season."
+    },
+    "tank_mix": "Tank mix Ridomil Gold MZ with Cymoxanil for emergency curative arrest during active sporulation.",
+    "source": "Penn State Extension & University of Florida Plant Pathology."
+  },
+  "Tomato___Bacterial_spot": {
+    "disease": "Bacterial Spot",
+    "crop": "Tomato",
+    "host_species": "Tomato",
+    "botanical_name": "Solanum lycopersicum",
+    "plant_family": "Solanaceae",
+    "category": "FOOD_CROP",
+    "scientific_name": "Xanthomonas perforans / Xanthomonas vesicatoria",
+    "status": "Infected",
+    "severity": "Moderate to High",
+    "morphological_indicators": {
+      "margin_type": "angular_vein_restricted",
+      "concentric_rings": false,
+      "description": "Small (1–3 mm), dark, greasy, water-soaked angular spots bounded by leaf veinlets, often with yellow chlorotic halos and shot-hole centers."
+    },
+    "symptoms": [
+      "Small, angular, greasy, water-soaked lesions (1–3 mm) restricted by small leaf veins",
+      "Lesions turn dark brown to black with yellow halos; centers may tear out giving a shot-hole appearance",
+      "Blister-like scab lesions on green fruit with raised dark borders",
+      "Severe foliar spotting leads to blighted leaves and substantial blossom drop"
+    ],
+    "causes": "Bacterial pathogen Xanthomonas spp. Spread by driving rain, overhead sprinklers, and mechanical equipment in wet fields.",
+    "cultural_management": [
+      "Switch completely from overhead sprinklers to drip irrigation",
+      "Do not enter fields or cultivate crops when leaves are wet with dew",
+      "Use certified disease-free hot-water-treated seed (50°C for 25 min)",
+      "Rotate with non-host crops (corn, beans, brassicas) for minimum 2 years"
+    ],
+    "organic_remedies": [
+      "Fixed copper bactericides (Copper Hydroxide) applied on a preventive 7-day schedule",
+      "Biological control with Bacillus subtilis or bacteriophage products"
+    ],
+    "chemical_remedies": [
+      {
+        "name": "Copper Hydroxide + Mancozeb Synergy",
+        "frac_group": "FRAC M01 + M03",
+        "dosage_knapsack": "2.0 g Copper + 2.0 g Mancozeb per 1 L water",
+        "dosage_broadcast": "1.5 – 2.0 kg/ha",
+        "phi": "1 day",
+        "rei": "24 hours",
+        "role": "Mancozeb chemically solubilizes cupric ions to overcome copper-tolerant bacterial strains."
+      }
+    ],
+    "food_crop_safety": {
+      "has_phi": true,
+      "phi_notice": "1 day PHI for copper-mancozeb tank mix.",
+      "rei": "24 hours."
+    },
+    "tank_mix": "Copper Hydroxide + Mancozeb tank mix is mandatory for copper-tolerant bacterial populations.",
+    "source": "UC IPM & Cornell Cooperative Extension."
+  },
+  "Tomato___healthy": {
+    "disease": "Healthy Tomato",
+    "crop": "Tomato",
+    "host_species": "Tomato",
+    "botanical_name": "Solanum lycopersicum",
+    "plant_family": "Solanaceae",
+    "category": "FOOD_CROP",
+    "scientific_name": "Solanum lycopersicum",
+    "status": "Healthy",
+    "severity": "None",
+    "morphological_indicators": {
+      "margin_type": "uniform",
+      "concentric_rings": false,
+      "description": "Healthy lobed compound leaves with prominent glandular trichomes (hairs) and deep green chlorophyll."
+    },
+    "symptoms": [
+      "Deep green, pinnately compound lobed foliage with healthy turgor",
+      "Active apical meristem development with bright green new leaf clusters",
+      "Healthy glandular leaf hairs (trichomes) emitting characteristic tomato aroma",
+      "Zero spots, lesions, chlorosis, or wilting observed"
+    ],
+    "causes": "Optimal soil moisture, balanced nitrogen-phosphorus-potassium feeding, and favorable microclimate.",
+    "cultural_management": [
+      "Maintain consistent soil moisture through drip lines to prevent blossom end rot",
+      "Side-dress with calcium nitrate and balanced fertilizer at first fruit set",
+      "Prune non-productive suckers (side shoots) to improve sunlight interception"
+    ],
+    "organic_remedies": ["Apply organic fish hydrolysate or kelp foliar feed every 14 days."],
+    "chemical_remedies": [],
+    "food_crop_safety": {
+      "has_phi": false,
+      "phi_notice": "No pesticide withdrawal needed. Produce is fresh and healthy."
+    },
+    "tank_mix": "No treatments required.",
+    "source": "FloraScan Agritech Extension."
+  },
+  "Potato___Early_blight": {
+    "disease": "Early Blight",
+    "crop": "Potato",
+    "host_species": "Potato",
+    "botanical_name": "Solanum tuberosum",
+    "plant_family": "Solanaceae",
+    "category": "FOOD_CROP",
+    "scientific_name": "Alternaria solani",
+    "status": "Infected",
+    "severity": "Moderate",
+    "morphological_indicators": {
+      "margin_type": "concentric_rings",
+      "concentric_rings": true,
+      "description": "Dark brown circular to oval spots with distinct concentric rings on lower potato canopy."
+    },
+    "symptoms": [
+      "Dark brown to black lesions showing clear concentric rings ('target pattern') on leaflets",
+      "Older canopy leaves exhibit premature senescence and drop",
+      "Brown corky, dry rot lesions under potato tuber skins"
+    ],
+    "causes": "Alternaria solani conidia overwintering in crop residues and volunteer tubers.",
+    "cultural_management": [
+      "Maintain uniform soil moisture; avoid drought stress during tuber bulking",
+      "Rotate with non-solanaceous crops (cereals, legumes) for 3 years",
+      "Kill vines 2 weeks prior to harvest to allow tuber skins to set and harden"
+    ],
+    "organic_remedies": ["Preventive copper sprays or Bacillus subtilis every 7–10 days."],
+    "chemical_remedies": [
+      {
+        "name": "Mancozeb 75 WG",
+        "frac_group": "FRAC M03",
+        "dosage_knapsack": "2.5 g per 1 L water",
+        "dosage_broadcast": "1.5 – 2.0 kg/ha",
+        "phi": "3 days (Potato tuber harvest interval)",
+        "rei": "24 hours",
+        "role": "Multi-site protective barrier preventing spore germination on potato foliage."
+      }
+    ],
+    "food_crop_safety": {
+      "has_phi": true,
+      "phi_notice": "3 days PHI before tuber harvest.",
+      "rei": "24 hours."
+    },
+    "tank_mix": "Mancozeb + Azoxystrobin alternation.",
+    "source": "International Potato Center (CIP) & University of Idaho Extension."
+  },
+  "Potato___Late_blight": {
+    "disease": "Late Blight",
+    "crop": "Potato",
+    "host_species": "Potato",
+    "botanical_name": "Solanum tuberosum",
+    "plant_family": "Solanaceae",
+    "category": "FOOD_CROP",
+    "scientific_name": "Phytophthora infestans",
+    "status": "Infected",
+    "severity": "Critical",
+    "morphological_indicators": {
+      "margin_type": "water_soaked_diffuse",
+      "concentric_rings": false,
+      "description": "Large irregular water-soaked foliar lesions with white spore mold underneath in wet weather."
+    },
+    "symptoms": [
+      "Water-soaked dark lesions spreading rapidly across potato foliage",
+      "White fungal-like sporulation on the underside of affected leaves in morning humidity",
+      "Foul rot smell in field as entire foliage collapses",
+      "Tubers develop brown-purple granular dry rot that spreads into storage decay"
+    ],
+    "causes": "Phytophthora infestans oomycete favored by wet, cool conditions (12–18°C).",
+    "cultural_management": [
+      "Plant only certified disease-free seed tubers",
+      "Hill soil generously around potato rows to create a soil barrier preventing spores from washing down to tubers",
+      "Desiccate/burn potato vines completely 14 days before harvest"
+    ],
+    "organic_remedies": ["Preventive copper fungicides applied prior to rain spells."],
+    "chemical_remedies": [
+      {
+        "name": "Mandipropamid + Difenoconazole (e.g., Revus Top)",
+        "frac_group": "FRAC 40 + FRAC 3",
+        "dosage_knapsack": "0.6 ml per 1 L water",
+        "dosage_broadcast": "400 – 500 ml/ha",
+        "phi": "14 days",
+        "rei": "12 hours",
+        "role": "Locks onto leaf wax and moves translaminarly to stop cell wall synthesis in oomycetes."
+      }
+    ],
+    "food_crop_safety": {
+      "has_phi": true,
+      "phi_notice": "14 days PHI before digging potatoes.",
+      "rei": "12 hours."
+    },
+    "tank_mix": "Rotate Mandipropamid with Fluazinam.",
+    "source": "Cornell Vegetable Pathology & AHDB Potatoes UK."
+  },
+  "Potato___healthy": {
+    "disease": "Healthy Potato",
+    "crop": "Potato",
+    "host_species": "Potato",
+    "botanical_name": "Solanum tuberosum",
+    "plant_family": "Solanaceae",
+    "category": "FOOD_CROP",
+    "scientific_name": "Solanum tuberosum",
+    "status": "Healthy",
+    "severity": "None",
+    "morphological_indicators": {
+      "margin_type": "uniform",
+      "concentric_rings": false,
+      "description": "Vibrant emerald green foliage with smooth broad leaflets and zero necrotic lesions."
+    },
+    "symptoms": ["Vigorous green leaf canopy, healthy stem turgor, no foliar spotting or yellowing."],
+    "causes": "Healthy seed tubers, adequate potassium and phosphate fertilization, optimal soil hilling.",
+    "cultural_management": ["Keep soil hilled around roots, maintain uniform irrigation."],
+    "organic_remedies": ["Apply balanced organic seaweed or compost tea."],
+    "chemical_remedies": [],
+    "food_crop_safety": { "has_phi": false, "phi_notice": "No pesticide withdrawal needed." },
+    "tank_mix": "None needed.",
+    "source": "FloraScan Agritech Extension."
+  },
+  "Apple___Apple_scab": {
+    "disease": "Apple Scab",
+    "crop": "Apple",
+    "host_species": "Apple",
+    "botanical_name": "Malus domestica",
+    "plant_family": "Rosaceae",
+    "category": "PERENNIAL_ORCHARD",
+    "scientific_name": "Venturia inaequalis",
+    "status": "Infected",
+    "severity": "Moderate to High",
+    "morphological_indicators": {
+      "margin_type": "feathery_velvety",
+      "concentric_rings": false,
+      "description": "Olive-green to velvety brown-black spots with feathery, indistinct margins on apple leaves and corky scabs on fruit."
+    },
+    "symptoms": [
+      "Olive-green to velvety dark brown lesions on the upper leaf surface with feathery margins",
+      "Leaves become distorted, puckered, and drop prematurely in mid-summer",
+      "Developing apple fruits exhibit corky, brown, cracked scab lesions"
+    ],
+    "causes": "Venturia inaequalis ascomycete. Ascospores discharge from overwintered leaves during spring rains.",
+    "cultural_management": [
+      "Shred or rake fallen leaves in autumn or apply 5% urea spray to accelerate leaf decomposition",
+      "Prune tree canopy during winter dormancy to promote rapid air drying",
+      "Select scab-resistant cultivars (e.g. Liberty, Enterprise, Honeycrisp)"
+    ],
+    "organic_remedies": ["Liquid lime-sulfur or micronized wettable sulfur applied during spring green tip."],
+    "chemical_remedies": [
+      {
+        "name": "Kresoxim-methyl / Trifloxystrobin (e.g., Flint / Sovran)",
+        "frac_group": "FRAC 11",
+        "dosage_knapsack": "0.3 – 0.4 g per 1 L water",
+        "dosage_broadcast": "150 – 200 g/ha",
+        "phi": "14 days",
+        "rei": "12 hours",
+        "role": "Mitochondrial QoI inhibitor; provides mesostemic leaf surface protection."
+      }
+    ],
+    "orchard_care": {
+      "has_phi": true,
+      "phi_notice": "14 days PHI before apple harvest.",
+      "orchard_canopy": "Calibrate spray rig according to Tree Row Volume (TRV). Apply high-pressure nozzles into upper tree canopy.",
+      "pruning_hygiene": "Disinfect pruning saws between tree rows."
+    },
+    "tank_mix": "Tank mix Flint with Captan for multi-site resistance management.",
+    "source": "Cornell University Tree Fruit Pathology & Washington State University Extension."
+  },
+  "Apple___Black_rot": {
+    "disease": "Black Rot (Frogeye Leaf Spot)",
+    "crop": "Apple",
+    "host_species": "Apple",
+    "botanical_name": "Malus domestica",
+    "plant_family": "Rosaceae",
+    "category": "PERENNIAL_ORCHARD",
+    "scientific_name": "Botryosphaeria obtusa",
+    "status": "Infected",
+    "severity": "Moderate",
+    "morphological_indicators": {
+      "margin_type": "frogeye_circular",
+      "concentric_rings": true,
+      "description": "Circular lesions with a tan/brown center and dark reddish-purple margin resembling a 'frog eye'."
+    },
+    "symptoms": [
+      "Frogeye leaf spots: circular lesions with light tan centers and distinct purple-brown outer margins",
+      "Cankers on branches and trunks causing bark peeling and limb dieback",
+      "Black, mummified rotting fruits hanging shriveled on branches"
+    ],
+    "causes": "Botryosphaeria obtusa fungus surviving in dead wood, fire blight cankers, and mummified fruit.",
+    "cultural_management": [
+      "Prune out dead wood, cankered limbs, and fire blight strikes at least 15 cm below infected tissue",
+      "Remove and burn all mummified apple fruit from trees and ground during dormant pruning",
+      "Seal pruning wounds with wound dressing or copper paste"
+    ],
+    "organic_remedies": ["Copper sprays applied at delayed dormant timing."],
+    "chemical_remedies": [
+      {
+        "name": "Thiophanate-methyl (e.g., Topsin-M 70 WP)",
+        "frac_group": "FRAC 1",
+        "dosage_knapsack": "1.0 g per 1 L water",
+        "dosage_broadcast": "1.0 – 1.2 kg/ha",
+        "phi": "1 day",
+        "rei": "24 hours",
+        "role": "Broad-spectrum systemic benzimidazole controlling Botryosphaeria cankers."
+      }
+    ],
+    "orchard_care": {
+      "has_phi": true,
+      "phi_notice": "1 day PHI.",
+      "orchard_canopy": "Ensure thorough coverage of both fruit clusters and perennial wood.",
+      "pruning_hygiene": "Never leave pruned wood piles adjacent to orchard rows."
+    },
+    "tank_mix": "Thiophanate-methyl + Captan 80 WDG.",
+    "source": "University of Massachusetts Fruit Advisory."
+  },
+  "Apple___healthy": {
+    "disease": "Healthy Apple",
+    "crop": "Apple",
+    "host_species": "Apple",
+    "botanical_name": "Malus domestica",
+    "plant_family": "Rosaceae",
+    "category": "PERENNIAL_ORCHARD",
+    "scientific_name": "Malus domestica",
+    "status": "Healthy",
+    "severity": "None",
+    "morphological_indicators": {
+      "margin_type": "uniform",
+      "concentric_rings": false,
+      "description": "Vibrant green leaves with fine serrations, smooth upper surface, and no necrotic spots."
+    },
+    "symptoms": ["Lustrous dark green leaves, vigorous shoot expansion, healthy fruitlet development."],
+    "causes": "Balanced orchard fertilization, dormant winter pruning, active honeybee pollination.",
+    "cultural_management": ["Maintain tree training, prune water sprouts, thin fruit to 1 per cluster."],
+    "organic_remedies": ["Dormant horticultural oil spray in late winter."],
+    "chemical_remedies": [],
+    "orchard_care": { "has_phi": false, "phi_notice": "No pesticide withdrawal needed." },
+    "tank_mix": "None needed.",
+    "source": "FloraScan Agritech Extension."
+  },
+  "Citrus___Citrus_greening": {
+    "disease": "Citrus Greening (Huanglongbing / HLB)",
+    "crop": "Citrus",
+    "host_species": "Citrus",
+    "botanical_name": "Citrus sinensis / Citrus spp.",
+    "plant_family": "Rutaceae",
+    "category": "PERENNIAL_ORCHARD",
+    "scientific_name": "Candidatus Liberibacter asiaticus",
+    "status": "Infected",
+    "severity": "Critical (Quarantine Disease)",
+    "morphological_indicators": {
+      "margin_type": "asymmetric_blotch",
+      "concentric_rings": false,
+      "description": "Asymmetrical blotchy mottle chlorosis across the leaf blade where yellowing crosses main leaf veins irregularly."
+    },
+    "symptoms": [
+      "Asymmetric blotchy mottle chlorosis on leaves that crosses leaf veins without matching on opposite sides",
+      "Thickened, corky, yellow veins with small upright leaves resembling zinc deficiency",
+      "Lopsided, bitter, misshapen fruit that remains green at the blossom end ('greenings')",
+      "Severe dieback of canopy branches, premature fruit drop, and tree decline"
+    ],
+    "causes": "Fastidious phloem-limited bacterium transmitted by the Asian Citrus Psyllid (Diaphorina citri) and infected budwood.",
+    "cultural_management": [
+      "QUARANTINE NOTIFICATION: Report suspected cases to local agricultural authorities",
+      "Remove and destroy symptomatic trees immediately to eliminate bacterial reservoirs",
+      "Plant only certified disease-free citrus nursery stock raised under insect-proof screenhouses",
+      "Control Asian Citrus Psyllid populations aggressively"
+    ],
+    "organic_remedies": [
+      "Spray horticultural mineral oil (1–2%) to deter psyllid oviposition on new flush",
+      "Release biological control parasitoid wasps (Tamarixia radiata)"
+    ],
+    "chemical_remedies": [
+      {
+        "name": "Oxytetracycline Trunk Injection (e.g., ReMedium TI)",
+        "frac_group": "FRAC 41 (Bactericide)",
+        "dosage_knapsack": "Per tree trunk injection dosage as per label",
+        "dosage_broadcast": "N/A (Direct Trunk Injection)",
+        "phi": "Observe state quarantine label restrictions",
+        "rei": "Not applicable for direct sealed trunk injection",
+        "role": "Direct systemic vascular antibacterial suppression of Candidatus Liberibacter in phloem tissue."
+      },
+      {
+        "name": "Imidacloprid (Psyllid Vector Control)",
+        "frac_group": "IRAC 4A (Neonicotinoid)",
+        "dosage_knapsack": "Soil drench or foliar spray as per product label",
+        "dosage_broadcast": "0.5 – 0.75 L/ha",
+        "phi": "15 days",
+        "rei": "12 hours",
+        "role": "Systemic insecticide to eliminate the Asian citrus psyllid vector."
+      }
+    ],
+    "orchard_care": {
+      "has_phi": true,
+      "phi_notice": "Follow quarantine guidelines; trunk injections require strict adherence to harvest intervals.",
+      "orchard_canopy": "Calibrate sprayers targeting young tender leaf flush where psyllids feed.",
+      "pruning_hygiene": "Disinfect tree pruners with 20% household bleach between trees."
+    },
+    "tank_mix": "Foliar nutritional sprays (Zinc, Manganese, Iron) combined with psyllid insecticide.",
+    "source": "University of Florida IFAS Citrus Research & USDA APHIS Plant Protection."
+  },
+  "Citrus___healthy": {
+    "disease": "Healthy Citrus",
+    "crop": "Citrus",
+    "host_species": "Citrus",
+    "botanical_name": "Citrus sinensis / Citrus spp.",
+    "plant_family": "Rutaceae",
+    "category": "PERENNIAL_ORCHARD",
+    "scientific_name": "Citrus sinensis",
+    "status": "Healthy",
+    "severity": "None",
+    "morphological_indicators": {
+      "margin_type": "uniform",
+      "concentric_rings": false,
+      "description": "Thick, leathery, glossy dark-green leaves with winged petioles and zero blotchy mottling."
+    },
+    "symptoms": ["Dark green glossy leathery foliage, winged petioles, uniform leaf color without chlorotic mottle."],
+    "causes": "Optimal citrus micronutrient fertilization, drip irrigation, absence of psyllid vectors.",
+    "cultural_management": ["Apply balanced citrus fertilizer with zinc and iron, maintain weed-free tree basins."],
+    "organic_remedies": ["Preventive neem or horticultural oil spray on emerging flush."],
+    "chemical_remedies": [],
+    "orchard_care": { "has_phi": false, "phi_notice": "No pesticide withdrawal needed." },
+    "tank_mix": "None needed.",
+    "source": "FloraScan Agritech Extension."
+  },
+  "Pepper___Bacterial_spot": {
+    "disease": "Bacterial Spot",
+    "crop": "Pepper",
+    "host_species": "Pepper",
+    "botanical_name": "Capsicum annuum",
+    "plant_family": "Solanaceae",
+    "category": "FOOD_CROP",
+    "scientific_name": "Xanthomonas campestris pv. vesicatoria",
+    "status": "Infected",
+    "severity": "Moderate to High",
+    "morphological_indicators": {
+      "margin_type": "angular_vein_restricted",
+      "concentric_rings": false,
+      "description": "Small, water-soaked, angular spots restricted by veinlets on pepper leaves and blistered fruit warts."
+    },
+    "symptoms": [
+      "Small (2–5 mm) circular to angular water-soaked lesions on pepper leaves",
+      "Lesions turn brown with pale centers and dark margins, causing widespread leaf yellowing and defoliation",
+      "Sunken, rough, raised scab-like spots on green pepper fruit",
+      "Premature leaf drop exposing pepper fruit to sunscald"
+    ],
+    "causes": "Bacterium Xanthomonas campestris pv. vesicatoria favored by warm (24–30°C) rainy weather.",
+    "cultural_management": [
+      "Use certified disease-free treated seed and resistant pepper varieties",
+      "Do not handle plants or cultivate pepper rows while foliage is wet",
+      "Eliminate overhead sprinkler irrigation in favor of drip lines"
+    ],
+    "organic_remedies": ["Copper Hydroxide bactericide + Bacillus subtilis sprays."],
+    "chemical_remedies": [
+      {
+        "name": "Copper Hydroxide + Mancozeb (e.g., Kocide 3000 + Dithane)",
+        "frac_group": "FRAC M01 + M03",
+        "dosage_knapsack": "2.0 g Copper + 2.0 g Mancozeb per 1 L water",
+        "dosage_broadcast": "1.5 – 2.0 kg/ha",
+        "phi": "1 day",
+        "rei": "24 hours",
+        "role": "Synergistic bactericidal tank mix against copper-tolerant Xanthomonas."
+      }
+    ],
+    "food_crop_safety": {
+      "has_phi": true,
+      "phi_notice": "1 day PHI before pepper harvest.",
+      "rei": "24 hours."
+    },
+    "tank_mix": "Copper Hydroxide with Mancozeb.",
+    "source": "University of Florida IFAS & Purdue University Extension."
+  },
+  "Pepper___healthy": {
+    "disease": "Healthy Pepper",
+    "crop": "Pepper",
+    "host_species": "Pepper",
+    "botanical_name": "Capsicum annuum",
+    "plant_family": "Solanaceae",
+    "category": "FOOD_CROP",
+    "scientific_name": "Capsicum annuum",
+    "status": "Healthy",
+    "severity": "None",
+    "morphological_indicators": {
+      "margin_type": "uniform",
+      "concentric_rings": false,
+      "description": "Smooth, glossy, rich green lanceolate leaves with zero spots or deformities."
+    },
+    "symptoms": ["Lustrous green lanceolate leaves, vigorous stem growth, healthy white blossoms and set fruit."],
+    "causes": "Proper drainage, warm soil, balanced N-P-K nutrition.",
+    "cultural_management": ["Mulch soil, maintain steady soil moisture to prevent blossom end rot."],
+    "organic_remedies": ["Foliar calcium and compost tea."],
+    "chemical_remedies": [],
+    "food_crop_safety": { "has_phi": false, "phi_notice": "No pesticide withdrawal needed." },
+    "tank_mix": "None needed.",
+    "source": "FloraScan Agritech Extension."
+  },
+  "Cucumber___Powdery_mildew": {
+    "disease": "Powdery Mildew",
+    "crop": "Cucumber",
+    "host_species": "Cucumber",
+    "botanical_name": "Cucumis sativus",
+    "plant_family": "Cucurbitaceae",
+    "category": "FOOD_CROP",
+    "scientific_name": "Podosphaera xanthii (syn. Sphaerotheca fuliginea)",
+    "status": "Infected",
+    "severity": "High",
+    "morphological_indicators": {
+      "margin_type": "diffuse_powdery",
+      "concentric_rings": false,
+      "description": "Talcum powder-like white superficial fungal patches spreading across upper and lower cucumber leaf surfaces, petioles, and stems."
+    },
+    "symptoms": [
+      "White, talcum powder-like superficial fungal mycelium patches on adaxial and abaxial cucumber leaf surfaces",
+      "Infected leaves gradually turn chlorotic, senesce, curl upward, become brittle, and drop prematurely",
+      "Premature canopy defoliation exposes immature cucumber fruits to severe sunscald and reduces yield"
+    ],
+    "causes": "Ascomycete obligate biotrophic fungus Podosphaera xanthii. Flourishes in dry atmospheric conditions with dense canopies and high relative humidity (50–90%) at 20–27°C.",
+    "cultural_management": [
+      "Avoid overhead sprinkler irrigation; switch entirely to drip lines to reduce canopy humidity",
+      "Improve air circulation through vine trellising and lateral pruning to lower localized microclimate humidity",
+      "Remove and destroy severely blighted, heavily infected lower senescent leaves immediately"
+    ],
+    "organic_remedies": [
+      "Potassium Bicarbonate (3–5 g/L) + organic horticultural oil as a contact curative spray",
+      "Neem seed oil (0.5%) or sulfur-based organic protectants applied preventatively",
+      "Biofungicide sprays with Bacillus amyloliquefaciens or Bacillus subtilis"
+    ],
+    "chemical_remedies": [
+      {
+        "name": "Myclobutanil (Rally 40WSP) or Triflumizole (Procure)",
+        "frac_group": "FRAC 3 (DMI Triazole)",
+        "dosage_knapsack": "1.0 – 1.5 g per 1 L water",
+        "dosage_broadcast": "120 – 180 g/ha in 400 L water",
+        "phi": "0–1 Day before harvest",
+        "rei": "12 Hours",
+        "role": "Locally systemic curative ergosterol biosynthesis inhibitor."
+      },
+      {
+        "name": "Azoxystrobin (Quadris) or Pyraclostrobin (Cabrio)",
+        "frac_group": "FRAC 11 (QoI Strobilurin)",
+        "dosage_knapsack": "1.0 ml per 1 L water",
+        "dosage_broadcast": "400 – 600 ml/ha",
+        "phi": "1 Day before harvest",
+        "rei": "4 Hours",
+        "role": "Translaminar respiration inhibitor preventing spore germination and mycelial spread."
+      }
+    ],
+    "food_crop_safety": {
+      "has_phi": true,
+      "phi_notice": "Strict 0 to 1-day Pre-Harvest Interval (PHI) on fresh market edible cucumbers. Verify local label guidelines before harvest.",
+      "rei_hours": 12
+    },
+    "tank_mix": "1.2 ml/L Myclobutanil or 1.0 ml/L Azoxystrobin with approved non-ionic agricultural surfactant.",
+    "source": "FloraScan Cucurbit Pathology Extension"
+  },
+  "Cucumber___Downy_mildew": {
+    "disease": "Downy Mildew",
+    "crop": "Cucumber",
+    "host_species": "Cucumber",
+    "botanical_name": "Cucumis sativus",
+    "plant_family": "Cucurbitaceae",
+    "category": "FOOD_CROP",
+    "scientific_name": "Pseudoperonospora cubensis",
+    "status": "Infected",
+    "severity": "Critical",
+    "morphological_indicators": {
+      "margin_type": "angular_vein_limited",
+      "concentric_rings": false,
+      "description": "Distinct sharp, angular chlorotic yellow patches strictly delineated by leaf veins on the upper surface, with purplish-gray downy sporulation underneath."
+    },
+    "symptoms": [
+      "Sharp, angular chlorotic bright yellow lesions strictly delineated by major and minor leaf veins on upper leaf surface",
+      "Purplish-gray to blackish-brown downy fungal/oomycete sporulation visible on the underside during humid mornings",
+      "Lesions rapidly turn brown and necrotic, causing entire cucumber leaves to scorch, curl, and die ('wildfire' symptom)"
+    ],
+    "causes": "Oomycete water mold Pseudoperonospora cubensis. Requires free moisture on foliage (dew, rain, overhead irrigation) and cool to warm temperatures (15–22°C) for sporangial germination.",
+    "cultural_management": [
+      "Switch exclusively to drip irrigation; eliminate all morning or late-afternoon overhead watering",
+      "Space cucumber rows widely and trellis vines to accelerate leaf drying and maximize airflow",
+      "Plant certified resistant cucumber cultivars (e.g., slicing or pickling hybrids with dm-1 resistance)"
+    ],
+    "organic_remedies": [
+      "Copper Octanoate (Copper soap) or Copper Hydroxide applied as a preventative protective shield",
+      "Bacillus subtilis foliar sprays to suppress early sporangial attachment"
+    ],
+    "chemical_remedies": [
+      {
+        "name": "Cyazofamid (Ranman 400SC)",
+        "frac_group": "FRAC 21 (QiI Inhibitor)",
+        "dosage_knapsack": "0.4 – 0.6 ml per 1 L water",
+        "dosage_broadcast": "150 – 200 ml/ha",
+        "phi": "0 Days before harvest",
+        "rei": "12 Hours",
+        "role": "High-efficacy oomycete-targeted translaminar protectant."
+      },
+      {
+        "name": "Mandipropamid (Revus) or Fluopicolide (Presidio)",
+        "frac_group": "FRAC 40 / FRAC 43",
+        "dosage_knapsack": "0.6 – 0.8 ml per 1 L water",
+        "dosage_broadcast": "250 – 350 ml/ha",
+        "phi": "0–2 Days before harvest",
+        "rei": "12 Hours",
+        "role": "Inhibits phospholipid biosynthesis and cell division in oomycete zoospores."
+      }
+    ],
+    "food_crop_safety": {
+      "has_phi": true,
+      "phi_notice": "Strict 0 to 2-day Pre-Harvest Interval (PHI) on edible cucurbits. Do NOT apply without adhering to harvest interval.",
+      "rei_hours": 12
+    },
+    "tank_mix": "0.5 ml/L Cyazofamid or 0.7 ml/L Mandipropamid in water with certified spreader-sticker.",
+    "source": "FloraScan Cucurbit Pathology Extension"
+  },
+  "Cucumber___healthy": {
+    "disease": "Healthy Cucumber",
+    "crop": "Cucumber",
+    "host_species": "Cucumber",
+    "botanical_name": "Cucumis sativus",
+    "plant_family": "Cucurbitaceae",
+    "category": "FOOD_CROP",
+    "scientific_name": "Cucumis sativus",
+    "status": "Healthy",
+    "severity": "None",
+    "morphological_indicators": {
+      "margin_type": "lobed_serrated",
+      "concentric_rings": false,
+      "description": "Vibrant, uniformly green palmately-lobed leaves with crisp edges, clear venation, and absence of chlorosis or fungal mycelium."
+    },
+    "symptoms": ["Uniform green leaf lamina, active tendril formation, healthy yellow flowers and crisp fruit set."],
+    "causes": "Balanced nutrition, drip irrigation, optimal airflow, and proper trellising.",
+    "cultural_management": ["Continue preventative scouting, maintain balanced N-P-K fertigation, monitor canopy humidity."],
+    "organic_remedies": ["Preventative neem oil or biological sprays if humidity spikes."],
+    "chemical_remedies": [],
+    "food_crop_safety": { "has_phi": false, "phi_notice": "Crop is healthy. No chemical intervention required." },
+    "tank_mix": "None needed.",
+    "source": "FloraScan Agritech Extension."
+  },
+  "Background___unrecognized": {
+    "disease": "Unrecognized / Non-Agricultural",
+    "crop": "Unknown",
+    "host_species": "Background",
+    "botanical_name": "Non-crop background specimen",
+    "plant_family": "Non-Agricultural",
+    "category": "NON_AGRICULTURAL",
+    "scientific_name": "N/A",
+    "status": "Unrecognized",
+    "severity": "None",
+    "morphological_indicators": {
+      "margin_type": "unknown",
+      "concentric_rings": false,
+      "description": "Object does not match recognized agricultural foliar specimen features."
+    },
+    "symptoms": ["Specimen exhibits non-crop background patterns, weed foliage, artificial textures, or non-botanical objects."],
+    "causes": "Out-of-Distribution specimen, camera obstruction, weed foliage, or non-plant material.",
+    "cultural_management": [
+      "Position the camera directly facing an agricultural crop leaf",
+      "Select the specific crop type (Tomato, Potato, Rose, Apple, Citrus, Pepper) using the crop selector",
+      "Ensure the leaf occupies at least 70% of the image frame under natural daylight"
+    ],
+    "organic_remedies": [],
+    "chemical_remedies": [],
+    "tank_mix": "No chemical application permitted on unrecognized species.",
+    "source": "FloraScan AI Out-of-Distribution Safety Protocol."
+  }
+}
