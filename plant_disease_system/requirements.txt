@@ -5,3 +5,6 @@ flask-cors
 opencv-python-headless
 numpy
 pillow
+python-dotenv
+requests
+

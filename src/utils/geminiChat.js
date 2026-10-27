@@ -1,7 +1,5 @@
-import { GoogleGenAI } from "@google/genai";
-
-const GEMINI_API_KEY =
-  (typeof import.meta !== "undefined" && import.meta.env?.VITE_GEMINI_API_KEY) || "";
+// src/utils/geminiChat.js
+// Client interface calling secure server-side Gemini routes on the Flask backend
 
 const DEFAULT_SYSTEM_INSTRUCTION = `You are Krishi Sakha (ಕೃಷಿ ಸಖ), a dedicated, highly knowledgeable Indian Agronomist and Crop Care Companion for the FloraScan AI platform.
 
@@ -462,49 +460,32 @@ If the user asks questions referring to "this leaf", "my scan", "current diagnos
     parts: currentParts
   });
 
-  // Candidate models with primary gemini-3.8-flash for multimodal vision diagnostics
-  const candidateModels = ["gemini-3.8-flash", "gemini-1.5-flash", "gemini-2.0-flash"];
-  let lastError = null;
-
-  for (const model of candidateModels) {
-    for (let attempt = 1; attempt <= 2; attempt++) {
-      try {
-        const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
-
-        // Configuration with search grounding when tree / regional farming inquiry detected
-        const config = {
-          systemInstruction,
-          ...(isTreeOrCropInquiry ? { tools: [{ googleSearch: {} }] } : {})
-        };
-
-        let response;
-        try {
-          response = await ai.models.generateContent({
-            model,
-            contents: formattedContents,
-            config
-          });
-        } catch (groundingErr) {
-          // Fallback without tools if googleSearch causes format error on that model
-          response = await ai.models.generateContent({
-            model,
-            contents: formattedContents,
-            config: { systemInstruction }
-          });
+  // Call secure backend /api/chat route (Gemini key stored safely on Flask server)
+  try {
+    const res = await fetch("http://127.0.0.1:5000/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: userMessage,
+        history,
+        options: {
+          diagnosisData,
+          imageBase64,
+          imageMimeType,
+          language
         }
-
-        if (response && response.text) {
-          return response.text;
-        }
-      } catch (err) {
-        lastError = err;
-        console.warn(`Copilot query attempt ${attempt} on ${model} failed:`, err.message || err);
-        await new Promise((r) => setTimeout(r, 800));
+      })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.reply) {
+        return data.reply;
       }
     }
+  } catch (backendErr) {
+    console.warn("Backend /api/chat unreachable, falling back to local knowledge base:", backendErr);
   }
 
-  console.warn("Gemini copilot network/quota fallback triggered. Searching knowledge base for:", userMessage);
 
   // Fallback to local agronomist knowledge base
   const queryLower = userMessage.toLowerCase();
@@ -588,68 +569,31 @@ export async function verifyDiagnosisWithGemini({
     // ignore storage exceptions
   }
 
-  const prompt = `You are a Senior Botanical Pathologist verifying a preliminary computer vision plant disease scan.
-The local computer vision model flagged this image as:
-- Plant Species: ${currentCrop}
-- Detected Disease: ${currentDisease}
-- Model Confidence: ${currentConfidence}%
-
-Inspect the leaf in this photo carefully:
-1. Is this actually a ${currentCrop} leaf, or is it a different plant species (e.g., Rose, Ornamental, Citrus, Apple, Mango, Weed, or other)?
-2. Is the diagnosis (${currentDisease}) accurate, or is it a different disease (e.g., Rose Black Spot, Citrus HLB, Powdery Mildew, Nutrient Deficiency, or Healthy)?
-3. If the model misidentified the plant or disease, provide the true botanical species and correct diagnosis.
-
-Respond in strict JSON format with this exact structure:
-{
-  "agrees": true,
-  "verified_species": "Exact Plant Name",
-  "verified_disease": "Exact Disease or Healthy status",
-  "is_different_plant": false,
-  "confidence": 95,
-  "explanation": "Clear agronomist explanation of leaf morphology and visible lesions",
-  "recommended_action": "Immediate recommended treatment or cultural correction"
-}`;
-
-  const candidateModels = ["gemini-2.5-flash", "gemini-1.5-flash"];
-  for (const model of candidateModels) {
-    try {
-      const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
-      const response = await ai.models.generateContent({
-        model,
-        contents: [
-          {
-            role: "user",
-            parts: [
-              {
-                inlineData: {
-                  mimeType: imageMimeType,
-                  data: cleanBase64
-                }
-              },
-              { text: prompt }
-            ]
-          }
-        ],
-        config: {
-          responseMimeType: "application/json"
-        }
-      });
-
-      if (response && response.text) {
-        const cleaned = response.text.trim().replace(/^```json/i, "").replace(/```$/i, "").trim();
-        const parsed = JSON.parse(cleaned);
-        const result = {
-          success: true,
-          ...parsed
-        };
-        visionResponseCache.set(cacheKey, result);
-        try { sessionStorage.setItem(cacheKey, JSON.stringify(result)); } catch (e) {}
-        return result;
+  // Query secure backend verification endpoint (Gemini API key managed on Flask server)
+  try {
+    const res = await fetch("http://127.0.0.1:5000/api/verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        imageBase64: cleanBase64,
+        imageMimeType,
+        diagnosisData,
+        selectedCrop,
+        language
+      })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.success) {
+        visionResponseCache.set(cacheKey, data);
+        try { sessionStorage.setItem(cacheKey, JSON.stringify(data)); } catch (e) {}
+        return data;
       }
-    } catch (err) {
-      console.warn(`Gemini verification attempt on ${model} failed:`, err.message || err);
     }
+  } catch (backendErr) {
+    console.warn("Backend /api/verify unreachable, using calibrated fallback:", backendErr);
   }
+
 
   // Robust calibrated fallback if offline or quota limit reached
   const isRose = (selectedCrop === "Rose" || (diagnosisData.crop && diagnosisData.crop.toLowerCase().includes("rose")));
@@ -758,46 +702,35 @@ Follow these strict diagnostic rules:
     // ignore storage exceptions
   }
 
-  const candidateModels = ["gemini-2.5-flash", "gemini-1.5-flash"];
-  for (const model of candidateModels) {
-    try {
-      const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
-      const response = await ai.models.generateContent({
-        model,
-        contents: [
-          {
-            role: "user",
-            parts: [
-              {
-                inlineData: {
-                  mimeType: imageMimeType,
-                  data: cleanBase64
-                }
-              },
-              { text: prompt }
-            ]
-          }
-        ],
-        config: {
-          responseMimeType: "application/json"
-        }
-      });
-
-      if (response && response.text) {
-        const cleaned = response.text.trim().replace(/^```json/i, "").replace(/```$/i, "").trim();
-        const parsed = JSON.parse(cleaned);
+  // Call secure backend /api/vision route (Gemini key stored safely on Flask server)
+  try {
+    const res = await fetch("http://127.0.0.1:5000/api/vision", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        imageBase64: cleanBase64,
+        imageMimeType,
+        selectedCrop,
+        language
+      })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.success && data.result) {
+        const parsed = data.result;
         parsed.verified_by_gemini = true;
-        parsed.engine_mode = "Gemini 2.5 Flash Vision Multimodal";
+        parsed.engine_mode = "Gemini Vision Multimodal";
         parsed.status_display = "Gemini Vision Multimodal Diagnosis";
         visionResponseCache.set(cacheKey, parsed);
         try { sessionStorage.setItem(cacheKey, JSON.stringify(parsed)); } catch (e) {}
         return parsed;
       }
-    } catch (err) {
-      console.warn(`Gemini Vision direct diagnosis error on ${model}:`, err.message || err);
     }
+  } catch (backendErr) {
+    console.warn("Backend /api/vision unreachable:", backendErr);
   }
 
   return null;
+
 }
 

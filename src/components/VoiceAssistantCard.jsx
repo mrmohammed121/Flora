@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { VoiceBeam } from "voice-glow";
-import { GoogleGenAI } from "@google/genai";
 import {
   Mic,
   MicOff,
@@ -15,13 +14,13 @@ import {
 } from "lucide-react";
 import "../styles/voice-assistant.css";
 import { useLanguage } from "../context/LanguageContext";
+import { sendCopilotMessage } from "../utils/geminiChat";
 
-const GEMINI_API_KEY =
-  import.meta.env.VITE_GEMINI_API_KEY || "";
 const ELEVENLABS_VOICE_ID =
   import.meta.env.VITE_ELEVENLABS_VOICE_ID || "HBZPYXXu7MHBOUlDZtD6";
 const ELEVENLABS_API_KEY = import.meta.env.VITE_ELEVENLABS_API_KEY || "";
 const ELEVENLABS_TTS_ENDPOINT = `https://api.elevenlabs.io/v1/text-to-speech/${ELEVENLABS_VOICE_ID}`;
+
 
 // Preset Agronomic Prompt Chips
 const QUICK_CHIPS = [
@@ -239,49 +238,18 @@ export default function VoiceAssistantCard({ currentLanguage = null, diagnosisDa
     }
   };
 
-  // 2. Gemini Query Processing
+  // 2. Gemini Query Processing via Backend
   const handleGeminiQuery = async (queryText) => {
     setPhase("thinking");
     stopAllAudio();
 
     try {
-      const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
-      let aiReplyText = "";
-
       const effectivePrompt = diagnosisData?.disease
         ? `[Current specimen scan: ${diagnosisData.disease} (${diagnosisData.status}, Severity: ${diagnosisData.severity}, Affected Leaf Area: ${diagnosisData.affected_area_pct}%)] User question: ${queryText}`
         : queryText;
 
-      try {
-        // Try gemini-3.8-flash for rapid, crisp agricultural responses
-        const response = await ai.models.generateContent({
-          model: "gemini-3.8-flash",
-          contents: effectivePrompt,
-          config: {
-            systemInstruction:
-              "You are Flora, an expert agronomist and plant pathologist voice assistant for FloraScan AI. Answer user questions about plant diseases, remedies, and dosages concisely. Constraint: Keep responses strictly between 1 to 3 spoken sentences so voice audio remains brief, crisp, and suitable for the card UI.",
-            tools: [{ googleSearch: {} }]
-          }
-        });
-        aiReplyText = response.text;
-      } catch (primaryErr) {
-        console.warn("Attempting secondary model fallback:", primaryErr);
-        // Fallback to gemini-2.5-flash
-        const response = await ai.models.generateContent({
-          model: "gemini-2.5-flash",
-          contents: effectivePrompt,
-          config: {
-            systemInstruction:
-              "You are Flora, an expert agricultural voice assistant. Provide direct, helpful advice in 1 to 3 spoken sentences."
-          }
-        });
-        aiReplyText = response.text;
-      }
-
-      if (!aiReplyText || !aiReplyText.trim()) {
-        aiReplyText =
-          "I was unable to assess that symptom. Please inspect the leaf directly or test with the camera studio.";
-      }
+      const reply = await sendCopilotMessage(effectivePrompt, [], { diagnosisData, language });
+      let aiReplyText = reply || "I was unable to assess that symptom. Please inspect the leaf directly or test with the camera studio.";
 
       // Clean up markdown markers for crisp speech
       const spokenClean = aiReplyText.replace(/[*_#`]/g, "").trim();
@@ -290,14 +258,14 @@ export default function VoiceAssistantCard({ currentLanguage = null, diagnosisDa
       // Transition to Audio & TTS playback
       await playVoiceResponse(spokenClean);
     } catch (err) {
-      console.error("Gemini Assistant processing error:", err);
-      // Helpful fallback in case of connection limits
+      console.error("Voice Assistant processing error:", err);
       const fallbackReply =
-        "For foliar spotting or blights, ensure proper plant spacing, eliminate solanaceous weeds, and apply protective copper or bio-fungicides.";
+        "For foliar spotting or blights, ensure proper plant spacing, eliminate weeds, and apply protective copper or bio-fungicides.";
       setAiResponseText(fallbackReply);
       await playVoiceResponse(fallbackReply);
     }
   };
+
 
   // 3 & 4. ElevenLabs TTS with SpeechSynthesis Fallback & Waveform Reactivity
   const playVoiceResponse = async (textToSpeak) => {
