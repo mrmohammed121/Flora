@@ -15,6 +15,7 @@ export const translations = {
     heroBadge: "AI-Powered Pathology",
     heroTitle: "Precision Plant Leaf Disease Diagnostics",
     heroSubtitle: "Know the Disease. Save the plant.",
+    scanNowBtn: "Scan Now",
     heroCtaScan: "Launch Scanner",
     heroCtaGuide: "Explore Pathologies",
 
@@ -142,6 +143,7 @@ export const translations = {
     heroBadge: "AI-ಚಾಲಿತ ರೋಗಶಾಸ್ತ್ರ",
     heroTitle: "ನಿಖರವಾದ ಸಸ್ಯದ ಎಲೆ ರೋಗಗಳ ಪತ್ತೆ",
     heroSubtitle: "ರೋಗವನ್ನು ತಿಳಿಯಿರಿ. ಗಿಡವನ್ನು ಉಳಿಸಿ.",
+    scanNowBtn: "ಈಗ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ",
     heroCtaScan: "ಸ್ಕ್ಯಾನರ್ ಪ್ರಾರಂಭಿಸಿ",
     heroCtaGuide: "ರೋಗಗಳನ್ನು ತಿಳಿಯಿರಿ",
 
@@ -269,6 +271,7 @@ export const translations = {
     heroBadge: "AI-संचालित निदान",
     heroTitle: "सटीक पौध पत्ती रोग पहचान प्रणाली",
     heroSubtitle: "रोग को पहचानें। पौधे को बचाएं।",
+    scanNowBtn: "अभी स्कैन करें",
     heroCtaScan: "स्कैनर शुरू करें",
     heroCtaGuide: "रोगों की जानकारी",
 

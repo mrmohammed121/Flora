@@ -10,6 +10,9 @@ import HeroAnimation, { HeroParticles } from './components/HeroAnimation';
 import WeatherAlert from './components/WeatherAlert';
 import SprayCalculator from './components/SprayCalculator';
 import ScanHistoryModal from './components/ScanHistoryModal';
+import AuthModal from './components/AuthModal';
+import { useAuth } from './context/AuthContext';
+import { saveUserScan } from './utils/neonScanApi';
 import NearbyShopsCard from './components/NearbyShopsCard';
 import SeoContentSection from './components/SeoContentSection';
 import DiseaseDetailModal from './components/DiseaseDetailModal';
@@ -294,6 +297,8 @@ export default function App() {
   const [isGuideOpen, setIsGuideOpen] = useState(false);
   const [isSprayCalcOpen, setIsSprayCalcOpen] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const { user, isAuthenticated } = useAuth();
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [selectedDiseaseGuide, setSelectedDiseaseGuide] = useState(null);
 
@@ -321,6 +326,7 @@ export default function App() {
   const appT = {
     brandBadge: t('heroBadge'),
     brandDesc: t('heroSubtitle'),
+    scanNowBtn: t('scanNowBtn', 'Scan Now'),
     inputTitle: t('inputTitle'),
     inputSubtitle: t('inputSubtitle'),
     tabUpload: t('tabUpload'),
@@ -506,122 +512,41 @@ export default function App() {
     setDiagnosisData(null);
   };
 
-  // Generate Sample Preset
-  const handlePresetSelect = (presetKey) => {
-    const canvas = document.createElement('canvas');
-    canvas.width = 400;
-    canvas.height = 400;
-    const ctx = canvas.getContext('2d');
+  // Load Authentic Photographic Sample Preset
+  const handlePresetSelect = async (presetKey) => {
+    const presetMap = {
+      Early_Blight: '/images/diseases/early-blight.jpg',
+      Late_Blight: '/images/diseases/late-blight.jpg',
+      Bacterial_Spot: '/images/diseases/bacterial-spot.jpg',
+      Rose_Black_Spot: '/images/diseases/rose-black-spot.jpg',
+      Healthy: '/images/diseases/healthy.jpg'
+    };
 
-    // Background
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, 400, 400);
-
-    // Leaf lamina shape
-    ctx.save();
-    ctx.translate(200, 200);
-    ctx.beginPath();
-    ctx.moveTo(0, -160);
-    ctx.bezierCurveTo(120, -100, 140, 100, 0, 170);
-    ctx.bezierCurveTo(-140, 100, -120, -100, 0, -160);
-    ctx.closePath();
-
-    if (presetKey === 'Healthy') {
-      const grad = ctx.createLinearGradient(0, -150, 0, 150);
-      grad.addColorStop(0, '#22c55e');
-      grad.addColorStop(0.5, '#16a34a');
-      grad.addColorStop(1, '#15803d');
-      ctx.fillStyle = grad;
-    } else if (presetKey === 'Bacterial_Spot') {
-      ctx.fillStyle = '#4ade80';
-    } else if (presetKey === 'Early_Blight') {
-      ctx.fillStyle = '#86efac';
-    } else {
-      ctx.fillStyle = '#65a30d';
-    }
-    ctx.fill();
-
-    // Central vein
-    ctx.strokeStyle = '#166534';
-    ctx.lineWidth = 4;
-    ctx.beginPath();
-    ctx.moveTo(0, -150);
-    ctx.lineTo(0, 160);
-    ctx.stroke();
-
-    // Lesions
-    if (presetKey === 'Early_Blight') {
-      const spots = [[-30, -40, 26], [35, 30, 28], [-15, 60, 20]];
-      spots.forEach(([x, y, r]) => {
-        ctx.fillStyle = '#d97706';
-        ctx.beginPath();
-        ctx.arc(x, y, r, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.strokeStyle = '#78350f';
-        ctx.lineWidth = 2.5;
-        ctx.beginPath();
-        ctx.arc(x, y, r * 0.65, 0, Math.PI * 2);
-        ctx.stroke();
-      });
-    } else if (presetKey === 'Late_Blight') {
-      ctx.fillStyle = '#451a03';
-      ctx.beginPath();
-      ctx.ellipse(30, -20, 55, 35, Math.PI / 4, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = '#713f12';
-      ctx.beginPath();
-      ctx.ellipse(-30, 45, 45, 30, -Math.PI / 6, 0, Math.PI * 2);
-      ctx.fill();
-    } else if (presetKey === 'Bacterial_Spot') {
-      ctx.fillStyle = '#78350f';
-      for (let i = 0; i < 25; i++) {
-        const rx = (Math.random() - 0.5) * 140;
-        const ry = (Math.random() - 0.5) * 200;
-        ctx.beginPath();
-        ctx.arc(rx, ry, 4 + Math.random() * 5, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    } else if (presetKey === 'Rose_Black_Spot') {
-      const spots = [[-25, -35, 28], [30, 25, 24], [-20, 65, 18]];
-      spots.forEach(([x, y, r]) => {
-        ctx.fillStyle = '#fef08a';
-        ctx.beginPath();
-        ctx.arc(x, y, r + 6, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.fillStyle = '#171717';
-        ctx.beginPath();
-        ctx.arc(x, y, r, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.strokeStyle = '#262626';
-        ctx.lineWidth = 1.5;
-        for (let a = 0; a < Math.PI * 2; a += Math.PI / 8) {
-          ctx.beginPath();
-          ctx.moveTo(x + Math.cos(a) * r, y + Math.sin(a) * r);
-          ctx.lineTo(x + Math.cos(a) * (r + 4), y + Math.sin(a) * (r + 4));
-          ctx.stroke();
-        }
-      });
-    }
-    ctx.restore();
-
-    canvas.toBlob((blob) => {
-      setSelectedFile(blob);
-      const url = URL.createObjectURL(blob);
-      setPreviewUrl(url);
-      const presetData = SAMPLE_DATABASE[presetKey];
+    const imagePath = presetMap[presetKey] || '/images/diseases/early-blight.jpg';
+    try {
+      const response = await fetch(imagePath);
+      const blob = await response.blob();
+      const file = new File([blob], `${presetKey.toLowerCase()}.jpg`, { type: 'image/jpeg' });
+      setSelectedFile(file);
+      setPreviewUrl(imagePath);
+      const presetData = SAMPLE_DATABASE[presetKey] || SAMPLE_DATABASE.Early_Blight;
       setDiagnosisData(presetData);
-      persistScan(presetData, url);
-      showToast(`Loaded ${presetKey.replace('_', ' ')} specimen sample!`);
-    }, 'image/jpeg', 0.95);
+      persistScan(presetData, imagePath);
+      showToast(`Loaded authentic ${presetKey.replace('_', ' ')} specimen photo!`);
+    } catch (err) {
+      console.warn('Failed to load preset photo directly, using URL:', err);
+      setPreviewUrl(imagePath);
+      const presetData = SAMPLE_DATABASE[presetKey] || SAMPLE_DATABASE.Early_Blight;
+      setDiagnosisData(presetData);
+      persistScan(presetData, imagePath);
+    }
   };
 
-  // Persist scan record to local scan history storage
+
+  // Persist scan record to local scan history storage and Neon PostgreSQL cloud database
   const persistScan = (resultData, thumb = previewUrl) => {
     if (!resultData || !resultData.disease) return;
-    addScanToHistory({
+    const scanRecord = {
       id: `scan_${Date.now()}`,
       timestamp: new Date().toISOString(),
       crop: resultData.crop || 'Foliar Specimen',
@@ -633,8 +558,22 @@ export default function App() {
       status: resultData.status,
       thumbnail: thumb,
       chemicalOverview: resultData.chemical_overview,
-      tankMix: resultData.tank_mix
-    });
+      tankMix: resultData.tank_mix,
+      diagnosis: resultData
+    };
+    // Keep local storage for offline / guest experience
+    addScanToHistory(scanRecord);
+
+    // When authenticated, securely sync to Neon PostgreSQL backend
+    if (isAuthenticated) {
+      saveUserScan(scanRecord).then((res) => {
+        if (res && res.success) {
+          console.log('[Neon] Scan persisted to Neon PostgreSQL cloud database:', res.scan?.id);
+        }
+      }).catch((err) => {
+        console.warn('[Neon] Failed to persist scan to Neon backend:', err);
+      });
+    }
   };
 
   // Client-Side Fast Canvas Image Compressor (Prevents 4K camera upload stalls)
@@ -1026,6 +965,7 @@ export default function App() {
         onOpenTeam={() => setIsTeamOpen(true)}
         onOpenGuide={() => setIsGuideOpen(true)}
         onOpenHistory={() => setIsHistoryOpen(true)}
+        onOpenAuth={() => setIsAuthOpen(true)}
       />
 
       {/* Main Content Area */}
@@ -1048,7 +988,31 @@ export default function App() {
           <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
             {appT.brandDesc}
           </p>
+
+          {/* "Scan Now" Button taking user directly to Input Leaf Specimen */}
+          <div className="mt-5 flex items-center justify-center">
+            <button
+              type="button"
+              id="heroScanNowBtn"
+              onClick={() => {
+                const el = document.getElementById('inputSpecimenSection') || document.getElementById('diagnosticStudio');
+                if (el) {
+                  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  el.classList.add('ring-4', 'ring-emerald-500', 'ring-offset-2', 'dark:ring-offset-slate-900', 'shadow-2xl');
+                  setTimeout(() => {
+                    el.classList.remove('ring-4', 'ring-emerald-500', 'ring-offset-2', 'dark:ring-offset-slate-900', 'shadow-2xl');
+                  }, 2000);
+                }
+              }}
+              className="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-emerald-600/30 hover:shadow-emerald-500/40 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 transition-all cursor-pointer group"
+            >
+              <Camera className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+              <span>{appT.scanNowBtn || 'Scan Now'}</span>
+              <span className="text-emerald-200 group-hover:translate-x-1.5 transition-transform font-bold text-lg leading-none">→</span>
+            </button>
+          </div>
         </header>
+
 
         {/* Tractor Field Animation */}
         <TractorAnimation />
@@ -1060,7 +1024,7 @@ export default function App() {
         <main id="diagnosticStudio" className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* Left Column: Specimen Input Card */}
-          <section className="lg:col-span-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm dark:shadow-xl space-y-6 transition-colors duration-300">
+          <section id="inputSpecimenSection" className="scroll-mt-6 lg:col-span-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm dark:shadow-xl space-y-6 transition-colors duration-300">
             <div className="border-b border-slate-200 dark:border-slate-800 pb-3">
               <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <span>🍃</span> {appT.inputTitle}
@@ -1918,6 +1882,10 @@ export default function App() {
         onClose={() => setIsHistoryOpen(false)}
         onSelectScan={handleSelectPastScan}
         currentScan={diagnosisData}
+      />
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
       />
 
       {/* Toast Notification */}

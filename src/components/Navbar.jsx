@@ -1,16 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Camera, BookOpen, Info, Users, Menu, X, Columns, Clock } from 'lucide-react';
+import { Camera, BookOpen, Info, Users, Menu, X, Columns, Clock, User, Database } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import { useLanguage } from '../context/LanguageContext';
+import { useAuth } from '../context/AuthContext';
 
 export default function Navbar({
   activeTab = 'studio',
   onOpenAbout,
   onOpenTeam,
   onOpenGuide,
-  onOpenHistory
+  onOpenHistory,
+  onOpenAuth = () => {}
 }) {
   const { language, setLanguage, t } = useLanguage();
+  const { user, isAuthenticated } = useAuth();
 
   // Navigation display mode: 'button' (One Button) or 'row' (Full Bar)
   const [navMode, setNavMode] = useState(() => {
@@ -131,6 +134,13 @@ export default function Navbar({
       icon: Users,
       onClick: () => handleNavClick('team', onOpenTeam),
       isAnchor: false
+    },
+    {
+      key: 'auth',
+      label: isAuthenticated ? (user?.name || user?.email || 'Cloud Account') : 'Sign In / Account',
+      icon: User,
+      onClick: () => handleNavClick('auth', onOpenAuth),
+      isAnchor: false
     }
   ];
 
@@ -218,6 +228,26 @@ export default function Navbar({
                 <option value="hi">हिंदी (Hindi)</option>
               </select>
             </div>
+
+            {/* User Account / Cloud Sync Button */}
+            <button
+              type="button"
+              onClick={onOpenAuth}
+              className={`min-h-[44px] px-3 py-1.5 rounded-2xl border transition-all duration-200 flex items-center gap-2 text-xs font-bold shadow-xs cursor-pointer active:scale-95 ${
+                isAuthenticated
+                  ? 'bg-emerald-50 dark:bg-emerald-950/60 border-emerald-300 dark:border-emerald-600/40 text-emerald-700 dark:text-emerald-400'
+                  : 'bg-[#f0f4f8] dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-emerald-400 hover:text-emerald-600'
+              }`}
+              title={isAuthenticated ? `Signed in as ${user?.email}` : 'Sign In to sync with Neon PostgreSQL'}
+            >
+              <User className="w-4 h-4 flex-shrink-0" />
+              <span className="hidden sm:inline max-w-[120px] truncate">
+                {isAuthenticated ? (user?.name || user?.email?.split('@')[0]) : 'Sign In'}
+              </span>
+              {isAuthenticated && (
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              )}
+            </button>
 
             <button
               id="hamburgerBtn"

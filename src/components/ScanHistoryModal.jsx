@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { X, Clock, Trash2, ArrowUpRight, ArrowDownRight, Minus, ExternalLink, Calendar, CheckCircle2, AlertTriangle, Layers, FileDown } from 'lucide-react';
 import { getScanHistory, deleteScanFromHistory, clearAllScanHistory, compareScans } from '../utils/scanStorage';
+import { fetchUserScans, deleteUserScan } from '../utils/neonScanApi';
+import { useAuth } from '../context/AuthContext';
 import { generatePdfReport } from '../utils/generatePdfReport';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -11,10 +13,31 @@ export default function ScanHistoryModal({
   currentScan = null
 }) {
   const { t } = useLanguage();
+  const { isAuthenticated, user } = useAuth();
   const [history, setHistory] = useState([]);
   const [selectedScanForComparison, setSelectedScanForComparison] = useState(null);
+  const [cloudLoading, setCloudLoading] = useState(false);
 
-  const refreshHistory = () => {
+  const refreshHistory = async () => {
+    if (isAuthenticated) {
+      setCloudLoading(true);
+      try {
+        const res = await fetchUserScans(1, 50);
+        const cloudRecords = res.scans || [];
+        setHistory(cloudRecords);
+        if (cloudRecords.length > 0 && !selectedScanForComparison) {
+          setSelectedScanForComparison(cloudRecords[0]);
+        }
+        setCloudLoading(false);
+        return;
+      } catch (err) {
+        console.warn('Could not fetch from Neon cloud, falling back to local:', err);
+      } finally {
+        setCloudLoading(false);
+      }
+    }
+
+    // Local storage fallback for guest mode
     const records = getScanHistory();
     setHistory(records);
     if (records.length > 0 && !selectedScanForComparison) {
@@ -26,14 +49,21 @@ export default function ScanHistoryModal({
     if (isOpen) {
       refreshHistory();
     }
-  }, [isOpen]);
+  }, [isOpen, isAuthenticated]);
 
-  const handleDelete = (id, e) => {
+  const handleDelete = async (id, e) => {
     e.stopPropagation();
+    if (isAuthenticated) {
+      try {
+        await deleteUserScan(id);
+      } catch (err) {
+        console.warn('Failed to delete on Neon cloud:', err);
+      }
+    }
     const updated = deleteScanFromHistory(id);
-    setHistory(updated);
+    setHistory(prev => prev.filter(item => item.id !== id));
     if (selectedScanForComparison?.id === id) {
-      setSelectedScanForComparison(updated[0] || null);
+      setSelectedScanForComparison(history.find(item => item.id !== id) || null);
     }
   };
 
@@ -97,9 +127,21 @@ export default function ScanHistoryModal({
               <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-tight">
                 {t('historyTitle') || 'Foliar Scan History & Recovery Tracker'}
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                {t('historySubtitle') || 'Chronological recovery tracking across 7–14 day treatment windows'}
-              </p>
+              <div className="flex flex-wrap items-center gap-2 mt-0.5">
+                <span className="text-xs text-slate-500 dark:text-slate-400">
+                  {t('historySubtitle') || 'Chronological recovery tracking across 7–14 day treatment windows'}
+                </span>
+                {isAuthenticated ? (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-600/30">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    Neon Cloud Synced ({user?.email || 'User'})
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+                    Guest Mode (Local Only)
+                  </span>
+                )}
+              </div>
             </div>
           </div>
 

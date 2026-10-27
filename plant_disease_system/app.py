@@ -18,6 +18,15 @@ import requests
 
 from predictor import get_predictor, BOTANICAL_HOSTS
 from recommendations import load_disease_database
+from db import (
+    check_db_connection,
+    init_db,
+    create_scan,
+    get_user_scans,
+    get_user_scan_by_id,
+    delete_user_scan
+)
+from auth import require_auth, optional_auth
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = os.path.dirname(BASE_DIR)
@@ -47,11 +56,108 @@ def home():
         "endpoints": {
             "predict": "POST /predict",
             "health": "GET /health",
+            "db_health": "GET /api/db/health",
             "model_info": "GET /api/model-info",
             "crops": "GET /api/crops",
             "diseases": "GET /api/diseases"
         }
     })
+
+@app.route("/api/db/health", methods=["GET"])
+def db_health():
+    """Verify Neon PostgreSQL connectivity, latency, and status."""
+    res = check_db_connection()
+    status_code = 200 if res.get("connected") else (503 if res.get("status") == "error" else 200)
+    return jsonify(res), status_code
+
+@app.route("/api/db/init", methods=["POST"])
+def db_init():
+    """Idempotently initialize Neon PostgreSQL table schema (plant_scans)."""
+    res = init_db()
+    status_code = 200 if res.get("status") == "success" else 500
+    return jsonify(res), status_code
+
+@app.route("/api/auth/me", methods=["GET", "POST"])
+@require_auth
+def auth_me():
+    """Returns validated user profile derived strictly from cryptographic JWT."""
+    from flask import g
+    return jsonify({
+        "success": True,
+        "user": {
+            "id": g.user["id"],
+            "email": g.user.get("email"),
+            "name": g.user.get("name")
+        }
+    })
+
+@app.route("/api/scans", methods=["GET"])
+@require_auth
+def list_scans():
+    """Retrieve paginated scan records strictly owned by the authenticated user."""
+    from flask import g
+    try:
+        page = int(request.args.get("page", 1))
+        page_size = int(request.args.get("page_size", 25))
+    except (ValueError, TypeError):
+        page = 1
+        page_size = 25
+
+    user_id = g.user["id"]
+    try:
+        result = get_user_scans(user_id, page=page, page_size=page_size)
+        return jsonify({
+            "success": True,
+            "scans": result["items"],
+            "total": result["total"],
+            "page": result["page"],
+            "page_size": result["page_size"],
+            "total_pages": result["total_pages"]
+        })
+    except Exception as e:
+        return jsonify({"success": False, "error": f"Failed to retrieve scans: {str(e)}"}), 500
+
+@app.route("/api/scans", methods=["POST"])
+@require_auth
+def save_scan_record():
+    """Save or update a scan record strictly associated with the authenticated user."""
+    from flask import g
+    data = request.get_json(silent=True) or {}
+    user_id = g.user["id"]
+    try:
+        saved = create_scan(user_id, data)
+        return jsonify({"success": True, "scan": saved}), 201
+    except Exception as e:
+        return jsonify({"success": False, "error": f"Failed to save scan record: {str(e)}"}), 500
+
+@app.route("/api/scans/<scan_id>", methods=["GET"])
+@require_auth
+def get_scan_record(scan_id):
+    """Retrieve a single scan record, enforcing strict user ownership."""
+    from flask import g
+    user_id = g.user["id"]
+    try:
+        record = get_user_scan_by_id(user_id, scan_id)
+        if not record:
+            return jsonify({"success": False, "error": "Scan record not found or access denied."}), 404
+        return jsonify({"success": True, "scan": record})
+    except Exception as e:
+        return jsonify({"success": False, "error": f"Failed to fetch scan record: {str(e)}"}), 500
+
+@app.route("/api/scans/<scan_id>", methods=["DELETE"])
+@require_auth
+def remove_scan_record(scan_id):
+    """Delete a scan record, enforcing strict user ownership."""
+    from flask import g
+    user_id = g.user["id"]
+    try:
+        deleted = delete_user_scan(user_id, scan_id)
+        if not deleted:
+            return jsonify({"success": False, "error": "Scan record not found or access denied."}), 404
+        return jsonify({"success": True, "message": "Scan deleted successfully."})
+    except Exception as e:
+        return jsonify({"success": False, "error": f"Failed to delete scan record: {str(e)}"}), 500
+
 
 @app.route("/health", methods=["GET"])
 def health():
