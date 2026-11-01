@@ -325,16 +325,27 @@ def predict():
 def call_gemini_api(contents, system_instruction=None, response_mime_type=None, candidate_models=None):
     """
     Executes a Google Gemini REST API request using the server-side GEMINI_API_KEY.
-    Never exposes API credentials to client browsers.
+    Never exposes API credentials to client browsers or logs.
+    Uses secure x-goog-api-key header authentication.
     """
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
         return None, "GEMINI_API_KEY is not configured on the server."
 
     if candidate_models is None:
-        candidate_models = ["gemini-2.5-flash", "gemini-flash-latest", "gemini-flash-lite-latest", "gemini-2.5-pro"]
+        candidate_models = [
+            "gemini-2.5-flash",
+            "gemini-2.0-flash",
+            "gemini-1.5-flash",
+            "gemini-flash-latest",
+            "gemini-flash-lite-latest",
+            "gemini-2.5-pro"
+        ]
 
-    headers = {"Content-Type": "application/json"}
+    headers = {
+        "Content-Type": "application/json",
+        "x-goog-api-key": api_key
+    }
     payload = {"contents": contents}
     if system_instruction:
         payload["systemInstruction"] = {"parts": [{"text": system_instruction}]}
@@ -343,7 +354,7 @@ def call_gemini_api(contents, system_instruction=None, response_mime_type=None, 
 
     last_err = "No response from Gemini models."
     for model in candidate_models:
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
         try:
             res = requests.post(url, headers=headers, json=payload, timeout=25)
             if res.ok:
@@ -354,9 +365,16 @@ def call_gemini_api(contents, system_instruction=None, response_mime_type=None, 
                     if parts and "text" in parts[0]:
                         return parts[0]["text"], None
             else:
-                last_err = f"{model} status {res.status_code}: {res.text[:120]}"
+                raw_text = res.text[:120] if res.text else ""
+                # Strictly sanitize to ensure api_key never leaks into error responses
+                if api_key and api_key in raw_text:
+                    raw_text = raw_text.replace(api_key, "[REDACTED]")
+                last_err = f"{model} status {res.status_code}: {raw_text}"
         except Exception as e:
-            last_err = f"{model} error: {str(e)}"
+            err_msg = str(e)
+            if api_key and api_key in err_msg:
+                err_msg = err_msg.replace(api_key, "[REDACTED]")
+            last_err = f"{model} error: {err_msg}"
 
     return None, last_err
 

@@ -1,6 +1,10 @@
 // src/utils/geminiChat.js
 // Client interface calling secure server-side Gemini routes on the Flask backend
 
+const API_BASE =
+  (typeof import.meta !== "undefined" && import.meta.env?.VITE_API_BASE_URL) ||
+  "http://127.0.0.1:5000";
+
 const DEFAULT_SYSTEM_INSTRUCTION = `You are Krishi Sakha (ಕೃಷಿ ಸಖ), a dedicated, highly knowledgeable Indian Agronomist and Crop Care Companion for the FloraScan AI platform.
 
 Your mission:
@@ -462,7 +466,7 @@ If the user asks questions referring to "this leaf", "my scan", "current diagnos
 
   // Call secure backend /api/chat route (Gemini key stored safely on Flask server)
   try {
-    const res = await fetch("http://127.0.0.1:5000/api/chat", {
+    const res = await fetch(`${API_BASE}/api/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -571,7 +575,7 @@ export async function verifyDiagnosisWithGemini({
 
   // Query secure backend verification endpoint (Gemini API key managed on Flask server)
   try {
-    const res = await fetch("http://127.0.0.1:5000/api/verify", {
+    const res = await fetch(`${API_BASE}/api/verify`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -704,7 +708,7 @@ Follow these strict diagnostic rules:
 
   // Call secure backend /api/vision route (Gemini key stored safely on Flask server)
   try {
-    const res = await fetch("http://127.0.0.1:5000/api/vision", {
+    const res = await fetch(`${API_BASE}/api/vision`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
