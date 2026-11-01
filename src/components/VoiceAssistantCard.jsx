@@ -173,9 +173,9 @@ export default function VoiceAssistantCard({ currentLanguage = null, diagnosisDa
       recognition.interimResults = true;
 
       // Adapt recognition language to application language
-      if (currentLanguage === "kn") {
+      if (language === "kn") {
         recognition.lang = "kn-IN";
-      } else if (currentLanguage === "hi") {
+      } else if (language === "hi") {
         recognition.lang = "hi-IN";
       } else {
         recognition.lang = "en-US";
@@ -372,17 +372,25 @@ export default function VoiceAssistantCard({ currentLanguage = null, diagnosisDa
     utterance.rate = 1.0;
     utterance.pitch = 1.05;
 
-    // Select natural female/assistant voice if available
+    const targetLangCode = language === "kn" ? "kn-IN" : language === "hi" ? "hi-IN" : "en-US";
+    utterance.lang = targetLangCode;
+
+    // Select natural female/assistant voice if available, prioritizing active language
     const voices = window.speechSynthesis.getVoices();
-    const naturalVoice = voices.find(
-      (v) =>
-        (v.name.includes("Natural") ||
-          v.name.includes("Google") ||
-          v.name.includes("Samantha") ||
-          v.name.includes("Zira")) &&
-        v.lang.startsWith("en")
-    );
-    if (naturalVoice) utterance.voice = naturalVoice;
+    const matchedVoice = voices.find((v) => v.lang === targetLangCode || v.lang.startsWith(language));
+    if (matchedVoice) {
+      utterance.voice = matchedVoice;
+    } else {
+      const naturalVoice = voices.find(
+        (v) =>
+          (v.name.includes("Natural") ||
+            v.name.includes("Google") ||
+            v.name.includes("Samantha") ||
+            v.name.includes("Zira")) &&
+          v.lang.startsWith("en")
+      );
+      if (naturalVoice) utterance.voice = naturalVoice;
+    }
 
     // Simulate animated speech level pulses for VoiceBeam
     let step = 0;

@@ -1,7 +1,10 @@
 import React, { useEffect } from 'react';
-import { X, Award, ExternalLink } from 'lucide-react';
+import { X, Award } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function TeamModal({ isOpen, onClose }) {
+  const { t } = useLanguage();
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' || e.key === 'Esc') {
@@ -26,7 +29,7 @@ export default function TeamModal({ isOpen, onClose }) {
       usn: '1IC24CS028',
       role: 'FULL STACK DEVELOPER',
       sub: 'PyTorch & OpenCV HSV Segmentation',
-      bio: 'Implemented MobileNetV2 transfer learning, model quantization, and OpenCV HSV lesion thresholding pipelines.',
+      bio: t('teamMohammedBio', 'Implemented MobileNetV2 transfer learning, model quantization, and OpenCV HSV lesion thresholding pipelines.'),
       avatarInitials: 'MD',
       gradient: 'from-emerald-500 to-teal-700',
       badgeColor: 'text-emerald-400 bg-emerald-950/80 border-emerald-500/30',
@@ -38,7 +41,7 @@ export default function TeamModal({ isOpen, onClose }) {
       usn: '1IC24CS001',
       role: 'GRAPHIC Designer',
       sub: 'UI/UX & Visual Asset Design',
-      bio: 'Designed visual branding, intuitive interface layout aesthetics, bespoke icons, and digital presentation graphics.',
+      bio: t('teamAbhishekBio', 'Designed visual branding, intuitive interface layout aesthetics, bespoke icons, and digital presentation graphics.'),
       avatarInitials: 'AB',
       gradient: 'from-blue-500 to-indigo-700',
       badgeColor: 'text-blue-400 bg-blue-950/80 border-blue-500/30',
@@ -50,7 +53,7 @@ export default function TeamModal({ isOpen, onClose }) {
       usn: '1IC24CS024',
       role: 'Structure Designer',
       sub: 'Responsive Design & Canvas Studio',
-      bio: 'Architected responsive grid structures, interactive canvas studio layouts, and cross-platform component styling.',
+      bio: t('teamLingarajaBio', 'Architected responsive grid structures, interactive canvas studio layouts, and cross-platform component styling.'),
       avatarInitials: 'LB',
       gradient: 'from-purple-500 to-pink-700',
       badgeColor: 'text-purple-400 bg-purple-950/80 border-purple-500/30',
@@ -87,10 +90,10 @@ export default function TeamModal({ isOpen, onClose }) {
         <div className="flex items-start justify-between p-6 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/90">
           <div>
             <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-400 border border-amber-300 dark:border-amber-500/30 mb-1.5">
-              ⭐ Academic Mini-Project Showcase
+              ⭐ {t('teamSubtitle', 'Undergraduate Engineering Showcase — Department of Computer Science & Engineering')}
             </span>
             <h2 id="team-modal-title" className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-              Our Team & Mentorship
+              {t('teamTitle', 'Project Development Team')}
             </h2>
             <p className="text-sm text-slate-500 dark:text-slate-400">
               Department of Computer Science & Engineering • Academic Year 2025–2026
@@ -100,7 +103,7 @@ export default function TeamModal({ isOpen, onClose }) {
             type="button"
             onClick={onClose}
             className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-            aria-label="Close Team Modal"
+            aria-label={t('teamCloseBtn', 'Close Team Modal')}
           >
             <X className="w-5 h-5" />
           </button>
@@ -112,20 +115,24 @@ export default function TeamModal({ isOpen, onClose }) {
           {/* Team Name Banner */}
           <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex items-center justify-between flex-wrap gap-2">
             <div>
-              <span className="text-xs font-bold uppercase text-emerald-600 dark:text-emerald-400 tracking-wider">Project Team</span>
+              <span className="text-xs font-bold uppercase text-emerald-600 dark:text-emerald-400 tracking-wider">
+                {t('teamTitle', 'Project Team')}
+              </span>
               <h3 className="text-lg font-extrabold text-slate-900 dark:text-white">AgriVision Innovators</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Pioneering accessible deep learning for resilient agricultural pathology.</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Pioneering accessible deep learning for resilient agricultural pathology.
+              </p>
             </div>
             <span className="px-3 py-1 rounded-lg text-xs font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
               Mini-Project Batch 2026
             </span>
           </div>
 
-          {/* Project Mentor Card (Prominently Highlighted) */}
+          {/* Project Mentor Card */}
           <div className="relative p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-amber-50 via-slate-50 to-emerald-50/40 dark:from-amber-950/30 dark:via-slate-850 dark:to-emerald-950/30 border-2 border-amber-500/70 shadow-lg shadow-amber-500/10">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 font-extrabold text-xs uppercase tracking-wider mb-4 shadow-sm">
               <Award className="w-4 h-4" />
-              <span>Project Mentor & Subject Matter Expert</span>
+              <span>{t('teamFacultyMentor', 'Project Mentor & Subject Matter Expert')}</span>
             </div>
 
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left">
@@ -136,7 +143,7 @@ export default function TeamModal({ isOpen, onClose }) {
                   </div>
                 </div>
                 <span className="mt-2 text-[10px] font-bold text-amber-800 dark:text-amber-300 bg-amber-100 dark:bg-amber-950/80 border border-amber-300 dark:border-amber-500/40 px-2 py-0.5 rounded-full">
-                  Faculty Guide
+                  {t('teamFacultyMentor', 'Faculty Guide')}
                 </span>
               </div>
 
@@ -164,7 +171,7 @@ export default function TeamModal({ isOpen, onClose }) {
           {/* Team Members Grid (4 cards) */}
           <div>
             <h4 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">
-              Team Members
+              {t('teamTitle', 'Team Members')}
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {teamMembers.map((member, idx) => (
@@ -230,7 +237,7 @@ export default function TeamModal({ isOpen, onClose }) {
             onClick={onClose}
             className="px-4 py-2 rounded-lg text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
           >
-            Close Showcase
+            {t('menuClose', 'Close')}
           </button>
         </div>
       </div>

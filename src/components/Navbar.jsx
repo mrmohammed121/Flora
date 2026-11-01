@@ -6,14 +6,24 @@ import { useAuth } from '../context/AuthContext';
 
 export default function Navbar({
   activeTab = 'studio',
+  language: propLanguage,
+  onLanguageChange,
   onOpenAbout,
   onOpenTeam,
   onOpenGuide,
   onOpenHistory,
   onOpenAuth = () => {}
 }) {
-  const { language, setLanguage, t } = useLanguage();
+  const { language: contextLanguage, setLanguage, t } = useLanguage();
+  const language = propLanguage || contextLanguage;
   const { user, isAuthenticated } = useAuth();
+
+  const handleLanguageSwitch = (newLang) => {
+    setLanguage(newLang);
+    if (typeof onLanguageChange === 'function') {
+      onLanguageChange(newLang);
+    }
+  };
 
   // Navigation display mode: 'button' (One Button) or 'row' (Full Bar)
   const [navMode, setNavMode] = useState(() => {
@@ -29,9 +39,7 @@ export default function Navbar({
     setActivePill(key);
     setIsMenuOpen(false);
     if (key === 'home') {
-      const el = document.getElementById('home');
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-      else window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (key === 'about') {
       if (onOpenAbout) onOpenAbout();
     } else if (key === 'contact') {
@@ -137,7 +145,7 @@ export default function Navbar({
     },
     {
       key: 'auth',
-      label: isAuthenticated ? (user?.name || user?.email || 'Cloud Account') : 'Sign In / Account',
+      label: isAuthenticated ? (user?.name || user?.email || t('cloudAccount')) : t('signInOrAccount'),
       icon: User,
       onClick: () => handleNavClick('auth', onOpenAuth),
       isAnchor: false
@@ -154,7 +162,14 @@ export default function Navbar({
           
           {/* Left Section: Brand Logo */}
           <div className="flex items-center space-x-3">
-            <a href="#home" className="flex items-center space-x-2 font-extrabold text-xl tracking-tight group">
+            <a 
+              href="#home" 
+              onClick={(e) => {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="flex items-center space-x-2 font-extrabold text-xl tracking-tight group"
+            >
               <span className="text-2xl drop-shadow-[0_2px_10px_rgba(16,185,129,0.5)] transform group-hover:scale-105 transition-transform">
                 🌿
               </span>
@@ -178,7 +193,7 @@ export default function Navbar({
                   : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              Home
+              {t('navHome')}
             </button>
 
             <button
@@ -190,7 +205,7 @@ export default function Navbar({
                   : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              About
+              {t('navAbout')}
             </button>
 
             <button
@@ -202,7 +217,7 @@ export default function Navbar({
                   : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              Contact Us
+              {t('navContact')}
             </button>
           </nav>
 
@@ -213,15 +228,15 @@ export default function Navbar({
 
             {/* Multi-Language Dropdown Switcher */}
             <div className="language-picker-container">
-              <label htmlFor="languageSelect" className="sr-only">Select Language</label>
+              <label htmlFor="languageSelect" className="sr-only">{t('selectLanguage')}</label>
               <span className="lang-icon">🌐</span>
               <select
                 id="languageSelect"
                 name="language"
                 className="lang-dropdown"
                 value={language}
-                onChange={(e) => setLanguage(e.target.value)}
-                aria-label="Select Language"
+                onChange={(e) => handleLanguageSwitch(e.target.value)}
+                aria-label={t('selectLanguage')}
               >
                 <option value="en">English</option>
                 <option value="kn">ಕನ್ನಡ (Kannada)</option>
@@ -238,11 +253,11 @@ export default function Navbar({
                   ? 'bg-emerald-50 dark:bg-emerald-950/60 border-emerald-300 dark:border-emerald-600/40 text-emerald-700 dark:text-emerald-400'
                   : 'bg-[#f0f4f8] dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-emerald-400 hover:text-emerald-600'
               }`}
-              title={isAuthenticated ? `Signed in as ${user?.email}` : 'Sign In to sync with Neon PostgreSQL'}
+              title={isAuthenticated ? t('titleSignedInAs', { email: user?.email }) : t('titleSignInToSync')}
             >
               <User className="w-4 h-4 flex-shrink-0" />
               <span className="hidden sm:inline max-w-[120px] truncate">
-                {isAuthenticated ? (user?.name || user?.email?.split('@')[0]) : 'Sign In'}
+                {isAuthenticated ? (user?.name || user?.email?.split('@')[0]) : t('signIn')}
               </span>
               {isAuthenticated && (
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -261,9 +276,9 @@ export default function Navbar({
                   ? 'border-[#50de68] dark:border-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400'
                   : 'bg-[#f0f4f8] dark:bg-slate-800 border-[#50de68] dark:border-emerald-400 text-[#334155] dark:text-slate-200 hover:border-emerald-400 hover:bg-[#e4ebf2] dark:hover:bg-slate-700'
               }`}
-              aria-label="Toggle Navigation Menu"
+              aria-label={t('toggleNavMenu')}
               aria-expanded={isMenuOpen}
-              title="Navigation Menu"
+              title={t('navMenuTitle')}
             >
               {isMenuOpen ? (
                 <X className="w-6 h-6 text-emerald-600 dark:text-emerald-400 transition-transform duration-200" strokeWidth={2.5} />
@@ -325,8 +340,37 @@ export default function Navbar({
       {/* Mobile Slide-Down Drawer */}
       {isMenuOpen && (
         <div className="md:hidden bg-white/98 dark:bg-slate-900/98 border-b border-slate-200 dark:border-emerald-500/20 px-4 pt-3 pb-5 space-y-3 animate-fade-in shadow-xl dark:shadow-2xl backdrop-blur-md">
+          {/* Mobile Language Switcher Row */}
+          <div className="flex items-center justify-between px-3 py-2 bg-slate-100 dark:bg-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-700/70">
+            <span className="text-xs font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
+              <span>🌐</span>
+              <span>Language / ಭಾಷೆ / भाषा</span>
+            </span>
+            <div className="flex items-center gap-1">
+              {[
+                { code: 'en', label: 'EN' },
+                { code: 'kn', label: 'ಕನ್ನಡ' },
+                { code: 'hi', label: 'हिंदी' }
+              ].map((lang) => (
+                <button
+                  key={lang.code}
+                  type="button"
+                  onClick={() => handleLanguageSwitch(lang.code)}
+                  className={`px-2.5 py-1 text-xs rounded-lg font-bold transition-all cursor-pointer ${
+                    language === lang.code
+                      ? 'bg-emerald-600 text-white shadow-xs'
+                      : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-emerald-50'
+                  }`}
+                >
+                  {lang.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Quick Pill Bar for Mobile */}
           <div className="flex items-center justify-center p-1 bg-[#f4f4f5] dark:bg-slate-800 rounded-full border border-slate-200 dark:border-slate-700 w-fit mx-auto mb-2">
+
             <button
               type="button"
               onClick={() => handlePillClick('home')}
@@ -336,7 +380,7 @@ export default function Navbar({
                   : 'text-slate-600 dark:text-slate-300'
               }`}
             >
-              Home
+              {t('navHome')}
             </button>
             <button
               type="button"
@@ -347,7 +391,7 @@ export default function Navbar({
                   : 'text-slate-600 dark:text-slate-300'
               }`}
             >
-              About
+              {t('navAbout')}
             </button>
             <button
               type="button"
@@ -358,7 +402,7 @@ export default function Navbar({
                   : 'text-slate-600 dark:text-slate-300'
               }`}
             >
-              Contact Us
+              {t('navContact')}
             </button>
           </div>
           {navItems.map((item) => {

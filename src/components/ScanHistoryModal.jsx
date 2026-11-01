@@ -5,6 +5,7 @@ import { fetchUserScans, deleteUserScan } from '../utils/neonScanApi';
 import { useAuth } from '../context/AuthContext';
 import { generatePdfReport } from '../utils/generatePdfReport';
 import { useLanguage } from '../context/LanguageContext';
+import { getLocalizedDiseaseName, getLocalizedStatus } from '../locales/sampleDatabase';
 
 export default function ScanHistoryModal({
   isOpen = false,
@@ -12,7 +13,7 @@ export default function ScanHistoryModal({
   onSelectScan = () => {},
   currentScan = null
 }) {
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
   const { isAuthenticated, user } = useAuth();
   const [history, setHistory] = useState([]);
   const [selectedScanForComparison, setSelectedScanForComparison] = useState(null);
@@ -263,7 +264,7 @@ export default function ScanHistoryModal({
                             ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-500/30'
                             : 'bg-rose-100 dark:bg-rose-950 text-rose-600 dark:text-rose-400 border border-rose-300 dark:border-rose-500/30'
                         }`}>
-                          {scan.status || 'Infected'}
+                          {getLocalizedStatus(scan.status || 'Infected', language)}
                         </span>
                         <span className="text-[11px] text-slate-400 flex items-center gap-1">
                           <Calendar className="w-3 h-3" />
@@ -272,7 +273,7 @@ export default function ScanHistoryModal({
                       </div>
 
                       <h4 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white truncate group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-                        {scan.diseaseName || scan.disease}
+                        {getLocalizedDiseaseName(scan.diseaseName || scan.disease, language)}
                       </h4>
                       {scan.scientificName && (
                         <p className="text-xs italic text-slate-400 truncate">

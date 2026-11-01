@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { MapPin, ShoppingBag, ChevronRight, X } from "lucide-react";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function NearbyShopsCard({ diagnosisData }) {
+  const { t } = useLanguage();
   const [step, setStep] = useState("gate");
 
   function openRadarMap() {
@@ -32,20 +34,20 @@ export default function NearbyShopsCard({ diagnosisData }) {
       <div className="flex items-start gap-2">
         <MapPin className="w-5 h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
         <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">
-          Would you like me to find nearby agrochemical supply shops on Google Maps to help you source these treatments?
+          {t('nearbyShopsPrompt')}
         </p>
       </div>
       <p className="text-xs text-slate-500 dark:text-slate-400 pl-7">
-        Your location is used only to open Google Maps — nothing is stored or transmitted.
+        {t('nearbyShopsPrivacy')}
       </p>
       <div className="flex items-center gap-2 pl-7 flex-wrap">
         <button type="button" onClick={() => setStep("shops")}
           className="min-h-[40px] px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold inline-flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer">
-          <MapPin className="w-3.5 h-3.5" /> Yes, find nearby shops
+          <MapPin className="w-3.5 h-3.5" /> {t('nearbyShopsYes')}
         </button>
         <button type="button" onClick={() => setStep("declined")}
           className="min-h-[40px] px-4 py-2 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold border border-slate-200 dark:border-slate-700 inline-flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer">
-          <X className="w-3.5 h-3.5" /> No thanks
+          <X className="w-3.5 h-3.5" /> {t('nearbyShopsNo')}
         </button>
       </div>
     </div>
@@ -53,8 +55,8 @@ export default function NearbyShopsCard({ diagnosisData }) {
 
   if (step === "declined") return (
     <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 space-y-1">
-      <p className="font-semibold text-slate-700 dark:text-slate-300">Understood. Consult your local agricultural extension officer or cooperative for sourcing.</p>
-      <p>Always purchase from authorised, licensed agrochemical dealers and verify product labels before application.</p>
+      <p className="font-semibold text-slate-700 dark:text-slate-300">{t('nearbyShopsDeclined')}</p>
+      <p>{t('nearbyShopsLicenseWarning')}</p>
     </div>
   );
 
@@ -63,9 +65,11 @@ export default function NearbyShopsCard({ diagnosisData }) {
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div className="flex items-center gap-2">
           <ShoppingBag className="w-5 h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
-          <h4 className="text-sm font-bold text-slate-900 dark:text-white">Nearby Agrochemical Suppliers</h4>
+          <h4 className="text-sm font-bold text-slate-900 dark:text-white">{t('nearbyShopsTitle')}</h4>
         </div>
-        <button type="button" onClick={() => setStep("gate")} className="text-[10px] text-slate-500 dark:text-slate-400 hover:underline cursor-pointer">Close</button>
+        <button type="button" onClick={() => setStep("gate")} className="text-[10px] text-slate-500 dark:text-slate-400 hover:underline cursor-pointer">
+          {t('nearbyShopsClose')}
+        </button>
       </div>
 
       <ul className="space-y-2">
@@ -89,11 +93,11 @@ export default function NearbyShopsCard({ diagnosisData }) {
       <button type="button" onClick={openRadarMap}
         className="w-full min-h-[44px] py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold inline-flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all cursor-pointer">
         <MapPin className="w-4 h-4" />
-        ?? View all agrochemical shops on radar map (Google Maps)
+        {t('nearbyShopsRadar')}
       </button>
 
       <p className="text-[10px] text-slate-400 dark:text-slate-500 text-center">
-        Uses device location for the most accurate nearby results.
+        {t('nearbyShopsLocationNote')}
       </p>
     </div>
   );

@@ -24,7 +24,7 @@ export default function AuthModal({ isOpen = false, onClose = () => {} }) {
     try {
       await signInWithGoogle();
     } catch (err) {
-      setError(err?.message || 'Failed to initialize Google Sign In');
+      setError(err?.message || t('authErrGoogleInit'));
       setGoogleLoading(false);
     }
   };
@@ -38,28 +38,28 @@ export default function AuthModal({ isOpen = false, onClose = () => {} }) {
     try {
       if (mode === 'signup') {
         if (!email.trim() || !password) {
-          throw new Error('Please enter both email and password.');
+          throw new Error(t('authErrEmailPassReq'));
         }
         if (password.length < 8) {
-          throw new Error('Password must be at least 8 characters long.');
+          throw new Error(t('authErrPassLength'));
         }
         await register(email, password, name);
-        setSuccessMsg('Account created successfully! Your cloud scan sync is now active.');
+        setSuccessMsg(t('authSuccessAccountCreated'));
         setTimeout(() => {
           onClose();
         }, 1200);
       } else {
         if (!email.trim() || !password) {
-          throw new Error('Please enter your email and password.');
+          throw new Error(t('authErrEmailPassReq'));
         }
         await login(email, password);
-        setSuccessMsg('Signed in successfully! Synced with your Neon PostgreSQL cloud storage.');
+        setSuccessMsg(t('authSuccessSignedIn'));
         setTimeout(() => {
           onClose();
         }, 1000);
       }
     } catch (err) {
-      setError(err?.message || 'Authentication failed. Please verify your credentials.');
+      setError(err?.message || t('authErrAuthFailed'));
     } finally {
       setLoading(false);
     }
@@ -71,7 +71,7 @@ export default function AuthModal({ isOpen = false, onClose = () => {} }) {
       await logout();
       onClose();
     } catch (err) {
-      setError(err?.message || 'Sign out failed');
+      setError(err?.message || t('authErrSignOutFailed'));
     } finally {
       setLoading(false);
     }
@@ -101,10 +101,10 @@ export default function AuthModal({ isOpen = false, onClose = () => {} }) {
             </div>
             <div>
               <h3 className="text-lg font-bold text-slate-900 dark:text-white leading-tight">
-                {isAuthenticated ? 'Cloud Account' : mode === 'signin' ? 'Sign In to FloraScan' : 'Create Account'}
+                {isAuthenticated ? t('cloudAccount') : mode === 'signin' ? t('authSignInToFloraScan') : t('authCreateAccount')}
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                {isAuthenticated ? 'Syncing with Neon PostgreSQL' : 'Save & access your plant scans anywhere'}
+                {isAuthenticated ? t('authSyncingWithNeon') : t('authSaveAccessScans')}
               </p>
             </div>
           </div>
@@ -126,19 +126,19 @@ export default function AuthModal({ isOpen = false, onClose = () => {} }) {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-bold text-slate-900 dark:text-white truncate">
-                  {user?.name || 'Verified Agronomist'}
+                  {user?.name || t('authVerifiedAgronomist')}
                 </p>
                 <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{user?.email}</p>
                 <div className="flex items-center gap-1 mt-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">
                   <CheckCircle2 className="w-3.5 h-3.5" />
-                  <span>Neon Cloud Synced</span>
+                  <span>{t('authNeonCloudSynced')}</span>
                 </div>
               </div>
             </div>
 
             <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 space-y-1">
-              <p className="font-semibold text-slate-700 dark:text-slate-300">🔒 Data Privacy Guarantee:</p>
-              <p>Your foliar pathology scans and diagnosis reports are encrypted and strictly bound to your user ID.</p>
+              <p className="font-semibold text-slate-700 dark:text-slate-300">{t('authDataPrivacyTitle')}</p>
+              <p>{t('authDataPrivacyDesc')}</p>
             </div>
 
             <button
@@ -148,7 +148,7 @@ export default function AuthModal({ isOpen = false, onClose = () => {} }) {
               className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-bold text-sm bg-rose-50 dark:bg-rose-950/30 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-900/50 hover:bg-rose-100 dark:hover:bg-rose-900/40 active:scale-98 transition-all cursor-pointer"
             >
               <LogOut className="w-4 h-4" />
-              <span>{loading ? 'Signing out...' : 'Sign Out'}</span>
+              <span>{loading ? t('authSigningOut') : t('authSignOut')}</span>
             </button>
           </div>
         ) : (
@@ -168,7 +168,7 @@ export default function AuthModal({ isOpen = false, onClose = () => {} }) {
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
-                Sign In
+                {t('signIn')}
               </button>
               <button
                 type="button"
@@ -182,7 +182,7 @@ export default function AuthModal({ isOpen = false, onClose = () => {} }) {
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
-                Create Account
+                {t('authCreateAccount')}
               </button>
             </div>
 
@@ -197,7 +197,7 @@ export default function AuthModal({ isOpen = false, onClose = () => {} }) {
                 {googleLoading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin text-emerald-500" />
-                    <span>Connecting to Google...</span>
+                    <span>{t('authConnectingGoogle')}</span>
                   </>
                 ) : (
                   <>
@@ -219,7 +219,7 @@ export default function AuthModal({ isOpen = false, onClose = () => {} }) {
                         d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
                       />
                     </svg>
-                    <span>Continue with Google</span>
+                    <span>{t('authContinueWithGoogle')}</span>
                   </>
                 )}
               </button>
@@ -228,7 +228,7 @@ export default function AuthModal({ isOpen = false, onClose = () => {} }) {
               <div className="relative flex items-center justify-center my-1.5">
                 <div className="border-t border-slate-200 dark:border-slate-800 w-full"></div>
                 <span className="bg-white dark:bg-slate-900 px-3 text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-                  or continue with email
+                  {t('authOrWithEmail')}
                 </span>
                 <div className="border-t border-slate-200 dark:border-slate-800 w-full"></div>
               </div>
@@ -252,7 +252,7 @@ export default function AuthModal({ isOpen = false, onClose = () => {} }) {
               {mode === 'signup' && (
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    Full Name
+                    {t('authFullName')}
                   </label>
                   <div className="relative">
                     <User className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -269,7 +269,7 @@ export default function AuthModal({ isOpen = false, onClose = () => {} }) {
 
               <div>
                 <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                  Email Address
+                  {t('authEmailAddress')}
                 </label>
                 <div className="relative">
                   <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -286,7 +286,7 @@ export default function AuthModal({ isOpen = false, onClose = () => {} }) {
 
               <div>
                 <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                  Password
+                  {t('authPassword')}
                 </label>
                 <div className="relative">
                   <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -301,7 +301,7 @@ export default function AuthModal({ isOpen = false, onClose = () => {} }) {
                 </div>
                 {mode === 'signup' && (
                   <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-                    At least 8 characters. Managed by Neon Auth.
+                    {t('authPasswordNotice')}
                   </p>
                 )}
               </div>
@@ -314,17 +314,17 @@ export default function AuthModal({ isOpen = false, onClose = () => {} }) {
                 {loading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Please wait...</span>
+                    <span>{t('authPleaseWait')}</span>
                   </>
                 ) : mode === 'signin' ? (
                   <>
                     <LogIn className="w-4 h-4" />
-                    <span>Sign In</span>
+                    <span>{t('signIn')}</span>
                   </>
                 ) : (
                   <>
                     <UserPlus className="w-4 h-4" />
-                    <span>Create Account</span>
+                    <span>{t('authCreateAccount')}</span>
                   </>
                 )}
               </button>

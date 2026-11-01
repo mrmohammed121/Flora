@@ -9,7 +9,7 @@ export default function SprayCalculator({
   activeIngredients = null,
   isInline = false
 }) {
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
 
   // Extract chemicals list
   const chemicals = useMemo(() => {
@@ -137,7 +137,7 @@ export default function SprayCalculator({
       {/* Chemical Selector */}
       <div className="space-y-2">
         <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
-          1. Select Prescribed Chemical / Formulation:
+          {language === 'kn' ? '1. ನಿಗದಿತ ರಾಸಾಯನಿಕ / ಕೀಟನಾಶಕವನ್ನು ಆಯ್ಕೆಮಾಡಿ:' : language === 'hi' ? '1. निर्धारित रासायनिक दवा चुनें:' : '1. Select Prescribed Chemical / Formulation:'}
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {chemicals.map((chem, idx) => (
@@ -148,7 +148,7 @@ export default function SprayCalculator({
               className={`p-3 rounded-xl border text-left transition-all active:scale-95 cursor-pointer flex flex-col justify-between ${
                 selectedChemicalIdx === idx
                   ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-500 ring-2 ring-emerald-500/20 text-slate-900 dark:text-white'
-                  : 'bg-white dark:bg-slate-850 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-700'
+                  : 'bg-white dark:bg-slate-855 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-700'
               }`}
             >
               <div className="flex items-start justify-between gap-2">
@@ -170,10 +170,10 @@ export default function SprayCalculator({
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
-            2. Choose Agricultural Spray Tank Capacity:
+            {language === 'kn' ? '2. ಸಿಂಪಡಣೆ ಟ್ಯಾಂಕ್ ಸಾಮರ್ಥ್ಯವನ್ನು ಆರಿಸಿ:' : language === 'hi' ? '2. स्प्रे टैंक क्षमता चुनें:' : '2. Choose Agricultural Spray Tank Capacity:'}
           </label>
           <span className="text-xs font-bold font-mono text-emerald-600 dark:text-emerald-400">
-            {activeVolume} L Volume
+            {activeVolume} L {language === 'kn' ? 'ಗಾತ್ರ' : language === 'hi' ? 'मात्रा' : 'Volume'}
           </span>
         </div>
 
@@ -189,7 +189,9 @@ export default function SprayCalculator({
             }`}
           >
             <span className="text-sm font-black font-mono">16 L</span>
-            <span className="text-[10px] opacity-90 truncate max-w-full">Knapsack Sprayer</span>
+            <span className="text-[10px] opacity-90 truncate max-w-full">
+              {language === 'kn' ? 'ನ್ಯಾಪ್‌ಸ್ಯಾಕ್ ಸ್ಪ್ರೇಯರ್' : language === 'hi' ? 'नैपसैक स्प्रेयर' : 'Knapsack Sprayer'}
+            </span>
           </button>
 
           {/* Preset 2: 20 L Motorized */}
@@ -203,7 +205,9 @@ export default function SprayCalculator({
             }`}
           >
             <span className="text-sm font-black font-mono">20 L</span>
-            <span className="text-[10px] opacity-90 truncate max-w-full">Motorized / Battery</span>
+            <span className="text-[10px] opacity-90 truncate max-w-full">
+              {language === 'kn' ? 'ಮೋಟಾರೈಸ್ಡ್ / ಬ್ಯಾಟರಿ' : language === 'hi' ? 'मोटराइज्ड / बैटरी' : 'Motorized / Battery'}
+            </span>
           </button>
 
           {/* Preset 3: 200 L Tractor Barrel */}
@@ -217,7 +221,9 @@ export default function SprayCalculator({
             }`}
           >
             <span className="text-sm font-black font-mono">200 L</span>
-            <span className="text-[10px] opacity-90 truncate max-w-full">Tractor Drum / Barrel</span>
+            <span className="text-[10px] opacity-90 truncate max-w-full">
+              {language === 'kn' ? 'ಟ್ರಾಕ್ಟರ್ ಬ್ಯಾರೆಲ್' : language === 'hi' ? 'ट्रैक्टर ड्रम / बैरल' : 'Tractor Drum / Barrel'}
+            </span>
           </button>
 
           {/* Preset 4: Custom */}
@@ -230,15 +236,21 @@ export default function SprayCalculator({
                 : 'bg-white dark:bg-slate-850 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-300'
             }`}
           >
-            <span className="text-sm font-black font-mono">Custom</span>
-            <span className="text-[10px] opacity-90 truncate max-w-full">Field Volume</span>
+            <span className="text-sm font-black font-mono">
+              {language === 'kn' ? 'ಕಸ್ಟಮ್' : language === 'hi' ? 'कस्टम' : 'Custom'}
+            </span>
+            <span className="text-[10px] opacity-90 truncate max-w-full">
+              {language === 'kn' ? 'ಇಷ್ಟದ ಗಾತ್ರ' : language === 'hi' ? 'कस्टम क्षमता' : 'Field Volume'}
+            </span>
           </button>
         </div>
 
         {/* Custom Input Field */}
         {tankPreset === 'custom' && (
           <div className="pt-2 flex items-center gap-3 animate-fade-in">
-            <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Custom Tank Volume:</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+              {language === 'kn' ? 'ಕಸ್ಟಮ್ ಟ್ಯಾಂಕ್ ಸಾಮರ್ಥ್ಯ:' : language === 'hi' ? 'कस्टम टैंक क्षमता:' : 'Custom Tank Volume:'}
+            </span>
             <div className="relative flex-1 max-w-[180px]">
               <input
                 type="number"
@@ -249,7 +261,9 @@ export default function SprayCalculator({
                 className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-sm font-bold font-mono text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 placeholder="Volume in Liters"
               />
-              <span className="absolute right-3 top-2.5 text-xs text-slate-400 font-bold">Liters</span>
+              <span className="absolute right-3 top-2.5 text-xs text-slate-400 font-bold">
+                {language === 'kn' ? 'ಲೀಟರ್' : language === 'hi' ? 'लीटर' : 'Liters'}
+              </span>
             </div>
           </div>
         )}
@@ -261,11 +275,11 @@ export default function SprayCalculator({
           <div className="flex items-center gap-2">
             <Droplets className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
             <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">
-              Tank-Mix Batch Prescription
+              {language === 'kn' ? 'ಟ್ಯಾಂಕ್-ಮಿಕ್ಸ್ ಪ್ರಮಾಣದ ವಿವರ' : language === 'hi' ? 'टैंक-मिक्स दवा अनुपात' : 'Tank-Mix Batch Prescription'}
             </span>
           </div>
           <span className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400">
-            Rate: {calcResults.rawRate}
+            {language === 'kn' ? 'ದರ:' : language === 'hi' ? 'अनुपात:' : 'Rate:'} {calcResults.rawRate}
           </span>
         </div>
 
@@ -273,26 +287,26 @@ export default function SprayCalculator({
           {/* Chemical Quantity Card */}
           <div className="bg-white/90 dark:bg-slate-900/90 p-4 rounded-xl border border-emerald-200 dark:border-emerald-500/20 shadow-xs">
             <span className="text-xs font-bold text-slate-500 dark:text-slate-400 block mb-1">
-              🧪 Total Chemical Required:
+              {language === 'kn' ? '🧪 ಅಗತ್ಯವಿರುವ ಒಟ್ಟು ಔಷಧಿ:' : language === 'hi' ? '🧪 कुल आवश्यक रासायनिक दवा:' : '🧪 Total Chemical Required:'}
             </span>
             <div className="text-2xl sm:text-3xl font-black font-mono text-emerald-600 dark:text-emerald-400 tracking-tight">
               {calcResults.chemicalDisplay}
             </div>
             <span className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 block">
-              Pour active formulation into clean bucket first to pre-mix slurry
+              {language === 'kn' ? 'ಮೊದಲು ಪ್ರತ್ಯೇಕ ಬಕೆಟ್‌ನಲ್ಲಿ ಸ್ವಲ್ಪ ನೀರಿನೊಂದಿಗೆ ಮಿಶ್ರಣ ಮಾಡಿ ನಂತರ ಟ್ಯಾಂಕ್‌ಗೆ ಸುರಿಯಿರಿ' : language === 'hi' ? 'घोल बनाने के लिए पहले दवा को एक अलग बाल्टी में थोड़े पानी के साथ मिलाएं' : 'Pour active formulation into clean bucket first to pre-mix slurry'}
             </span>
           </div>
 
           {/* Water Quantity Card */}
           <div className="bg-white/90 dark:bg-slate-900/90 p-4 rounded-xl border border-emerald-200 dark:border-emerald-500/20 shadow-xs">
             <span className="text-xs font-bold text-slate-500 dark:text-slate-400 block mb-1">
-              💧 Clean Water Required:
+              {language === 'kn' ? '💧 ಅಗತ್ಯವಿರುವ ಶುದ್ಧ ನೀರು:' : language === 'hi' ? '💧 आवश्यक शुद्ध पानी:' : '💧 Clean Water Required:'}
             </span>
             <div className="text-2xl sm:text-3xl font-black font-mono text-slate-900 dark:text-white tracking-tight">
               {calcResults.waterVolume}
             </div>
             <span className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 block">
-              Use clean neutral water (pH 6.5–7.0) to prevent chemical degradation
+              {language === 'kn' ? 'ಔಷಧದ ಪರಿಣಾಮ ಕ್ಷೀಣಿಸುವುದನ್ನು ತಡೆಯಲು ಶುದ್ಧ ನೀರನ್ನು (pH 6.5–7.0) ಬಳಸಿ' : language === 'hi' ? 'दवा की क्षमता बनाए रखने के लिए साफ व शुद्ध पानी (pH 6.5–7.0) का प्रयोग करें' : 'Use clean neutral water (pH 6.5–7.0) to prevent chemical degradation'}
             </span>
           </div>
         </div>
@@ -301,7 +315,7 @@ export default function SprayCalculator({
         <div className="text-xs text-slate-600 dark:text-slate-300 flex items-center gap-2 pt-1 font-mono">
           <Info className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
           <span>
-            Formula: {dosageRate.min === dosageRate.max ? dosageRate.min : `${dosageRate.min}–${dosageRate.max}`} {dosageRate.unit}/L × {activeVolume} L = {calcResults.chemicalDisplay}
+            {language === 'kn' ? 'ಸೂತ್ರ' : language === 'hi' ? 'सूत्र' : 'Formula'}: {dosageRate.min === dosageRate.max ? dosageRate.min : `${dosageRate.min}–${dosageRate.max}`} {dosageRate.unit}/L × {activeVolume} L = {calcResults.chemicalDisplay}
           </span>
         </div>
       </div>
@@ -311,14 +325,14 @@ export default function SprayCalculator({
         <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
         <div className="space-y-0.5">
           <strong className="font-bold block text-amber-800 dark:text-amber-300">
-            ⚠️ Safety & Regulatory Advisory:
+            {language === 'kn' ? '⚠️ ಸುರಕ್ಷತಾ ಮತ್ತು ನಿಯಂತ್ರಣ ಸಲಹೆ:' : language === 'hi' ? '⚠️ सुरक्षा और नियामक सलाह:' : '⚠️ Safety & Regulatory Advisory:'}
           </strong>
           <p className="leading-relaxed">
             {t('spraySafetyWarning') || 'Always wear protective gloves/mask and verify Pre-Harvest Interval (PHI) before spraying.'}
           </p>
           <div className="pt-1 flex flex-wrap gap-4 text-[11px] font-semibold text-amber-700 dark:text-amber-400">
-            {selectedChemical.phi && <span>• Pre-Harvest Interval (PHI): {selectedChemical.phi}</span>}
-            {selectedChemical.rei && <span>• Restricted-Entry Interval (REI): {selectedChemical.rei}</span>}
+            {selectedChemical.phi && <span>• {language === 'kn' ? 'ಕೊಯ್ಲು ಪೂರ್ವ ಕಾಯುವಿಕೆ ಅವಧಿ (PHI)' : language === 'hi' ? 'कटाई पूर्व प्रतीक्षा अवधि (PHI)' : 'Pre-Harvest Interval (PHI)'}: {selectedChemical.phi}</span>}
+            {selectedChemical.rei && <span>• {language === 'kn' ? 'ಮರುಪ್ರವೇಶ ನಿಷೇಧ ಅವಧಿ (REI)' : language === 'hi' ? 'पुनः प्रवेश अंतराल (REI)' : 'Restricted-Entry Interval (REI)'}: {selectedChemical.rei}</span>}
           </div>
         </div>
       </div>

@@ -23,6 +23,14 @@ import { addScanToHistory } from './utils/scanStorage';
 import { Camera, Upload, Layers, Play, CheckCircle2, AlertTriangle, ShieldCheck, Printer, Copy, RotateCcw, Sparkles, FileDown, Calculator, Clock, ThumbsUp, ThumbsDown, Eye, RefreshCw } from 'lucide-react';
 import { useLanguage } from './context/LanguageContext';
 import { verifyDiagnosisWithGemini, diagnoseWithGeminiVision } from './utils/geminiChat';
+import { 
+  getLocalizedSample, 
+  getLocalizedDiseaseName, 
+  getLocalizedCropName, 
+  getLocalizedSeverity, 
+  getLocalizedStatus, 
+  LOCALIZED_PRESETS 
+} from './locales/sampleDatabase';
 
 const SAMPLE_DATABASE = {
   Early_Blight: {
@@ -284,6 +292,7 @@ export default function App() {
   const [cameraError, setCameraError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [diagnosisData, setDiagnosisData] = useState(null);
+  const [activePresetKey, setActivePresetKey] = useState(null);
   const [toastMessage, setToastMessage] = useState('');
   const [selectedCrop, setSelectedCrop] = useState('All'); // 'All' | 'Tomato' | 'Potato' | 'Apple' | 'Rose' | 'Fruit Tree'
   const [activeImageMode, setActiveImageMode] = useState('original'); // 'original' | 'overlay'
@@ -326,21 +335,30 @@ export default function App() {
   const appT = {
     brandBadge: t('heroBadge'),
     brandDesc: t('heroSubtitle'),
+    heroTitle: t('heroTitle'),
+    heroTagline: t('heroTagline'),
     scanNowBtn: t('scanNowBtn', 'Scan Now'),
     inputTitle: t('inputTitle'),
     inputSubtitle: t('inputSubtitle'),
     tabUpload: t('tabUpload'),
     tabCamera: t('tabCamera'),
     tabPresets: t('tabPresets'),
-    dropTitle: t('dropzoneText'),
+    dropTitle: t('dropTitle', 'Drag & drop leaf photo here'),
     dropSubtitle: t('dropSubtitle'),
     browseBtn: t('browseBtn'),
     snapBtn: t('takeSnapshot'),
     presetsTitle: t('presetsTitle'),
     presetEarlyBlight: t('presetEarlyBlight'),
+    presetEarlyBlightSub: t('presetEarlyBlightSub'),
+    presetRoseBlackSpot: t('presetRoseBlackSpot'),
+    presetRoseBlackSpotSub: t('presetRoseBlackSpotSub'),
     presetLateBlight: t('presetLateBlight'),
+    presetLateBlightSub: t('presetLateBlightSub'),
     presetBacterialSpot: t('presetBacterialSpot'),
+    presetBacterialSpotSub: t('presetBacterialSpotSub'),
     presetHealthy: t('presetHealthy'),
+    presetHealthySub: t('presetHealthySub'),
+    cameraReticle: t('cameraReticle'),
     analyzeBtn: t('analyzeBtn'),
     analyzing: t('analyzing'),
     growerTips: t('growerTips'),
@@ -355,7 +373,8 @@ export default function App() {
     emptyDesc: t('resultsPlaceholder'),
     statLesion: t('metricSurfaceArea'),
     statSeverity: t('metricSeverity'),
-    statConfidence: t('metricConfidence')
+    statConfidence: t('metricConfidence'),
+    clearBtn: t('clearBtn', 'Clear')
   };
 
   const showToast = (msg) => {
@@ -372,6 +391,30 @@ export default function App() {
     };
     showToast(msgs[newLang] || 'Language updated');
   };
+
+  // Re-localize active diagnosis data whenever language is changed
+  useEffect(() => {
+    if (activePresetKey) {
+      const localized = getLocalizedSample(activePresetKey, language);
+      if (localized) {
+        setDiagnosisData(prev => ({
+          ...prev,
+          ...localized
+        }));
+      }
+    } else if (diagnosisData) {
+      setDiagnosisData(prev => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          disease: getLocalizedDiseaseName(prev.raw_disease_key || prev.disease, language),
+          crop: getLocalizedCropName(prev.raw_crop_key || prev.crop, language),
+          severity: getLocalizedSeverity(prev.raw_severity_key || prev.severity, language),
+          status: getLocalizedStatus(prev.raw_status_key || prev.status, language)
+        };
+      });
+    }
+  }, [language, activePresetKey]);
 
   // Client-side image compression for rapid transmission over rural 3G/4G networks
   const compressImage = (file, maxWidth = 1024, maxHeight = 1024, quality = 0.82) => {
@@ -448,7 +491,7 @@ export default function App() {
       setIsCameraActive(true);
     } catch (err) {
       console.error("Camera access failed", err);
-      setCameraError('Unable to access device camera. Please check camera permissions.');
+      setCameraError(t('cameraPermError'));
       setActiveTab('upload');
     }
   };
@@ -483,6 +526,7 @@ export default function App() {
 
   // Capture Snapshot from Camera
   const captureSnapshot = () => {
+    setActivePresetKey(null);
     if (!videoRef.current) return;
     const video = videoRef.current;
     const canvas = canvasRef.current || document.createElement('canvas');
@@ -496,14 +540,15 @@ export default function App() {
       setPreviewUrl(URL.createObjectURL(blob));
       stopCamera();
       setActiveTab('upload');
-      showToast('Specimen snapshot captured successfully!');
+      showToast(t('snapshotSuccess'));
     }, 'image/jpeg', 0.88);
   };
 
   // Handle Drag & Drop / Upload File with network-optimized compression
   const handleFile = async (file) => {
+    setActivePresetKey(null);
     if (!file.type.startsWith('image/')) {
-      alert('Please upload a valid image file (PNG, JPG, WEBP).');
+      alert(t('invalidImageAlert'));
       return;
     }
     const optimized = await compressImage(file);
@@ -514,6 +559,7 @@ export default function App() {
 
   // Load Authentic Photographic Sample Preset
   const handlePresetSelect = async (presetKey) => {
+    setActivePresetKey(presetKey);
     const presetMap = {
       Early_Blight: '/images/diseases/early-blight.jpg',
       Late_Blight: '/images/diseases/late-blight.jpg',
@@ -529,18 +575,20 @@ export default function App() {
       const file = new File([blob], `${presetKey.toLowerCase()}.jpg`, { type: 'image/jpeg' });
       setSelectedFile(file);
       setPreviewUrl(imagePath);
-      const presetData = SAMPLE_DATABASE[presetKey] || SAMPLE_DATABASE.Early_Blight;
+      const presetData = getLocalizedSample(presetKey, language) || SAMPLE_DATABASE[presetKey] || SAMPLE_DATABASE.Early_Blight;
       setDiagnosisData(presetData);
       persistScan(presetData, imagePath);
-      showToast(`Loaded authentic ${presetKey.replace('_', ' ')} specimen photo!`);
+      showToast(t('toastLoadedPreset', { preset: getLocalizedDiseaseName(presetKey, language) }));
     } catch (err) {
       console.warn('Failed to load preset photo directly, using URL:', err);
       setPreviewUrl(imagePath);
-      const presetData = SAMPLE_DATABASE[presetKey] || SAMPLE_DATABASE.Early_Blight;
+      const presetData = getLocalizedSample(presetKey, language) || SAMPLE_DATABASE[presetKey] || SAMPLE_DATABASE.Early_Blight;
       setDiagnosisData(presetData);
       persistScan(presetData, imagePath);
     }
   };
+
+  const handleSelectPreset = handlePresetSelect;
 
 
   // Persist scan record to local scan history storage and Neon PostgreSQL cloud database
@@ -704,11 +752,11 @@ export default function App() {
         });
 
         if (data.status === 'insufficient_quality') {
-          showToast('⚠️ Image quality is insufficient for reliable diagnosis. Please upload a clearer photo.');
+          showToast(t('toastQualityInsufficient'));
         } else if (data.status === 'uncertain') {
-          showToast('⚠️ Low model confidence (<50%). Chemical sprays withheld for safety.');
+          showToast(t('toastLowConfidence'));
         } else {
-          showToast(`✓ AI Diagnosis completed in ${tTotal}ms & logged to history!`);
+          showToast(t('toastDiagnosisComplete', { ms: tTotal }));
         }
         setDiagnosisData(data);
         if (data.status !== 'insufficient_quality') {
@@ -745,7 +793,7 @@ export default function App() {
           setDiagnosisData(geminiResult);
           persistScan(geminiResult);
           setIsLoading(false);
-          showToast(`✓ Diagnosed via Gemini Vision (${geminiResult.crop} — ${geminiResult.disease}) in ${tTotal}ms`);
+          showToast(t('toastGeminiDiagnosed', { crop: geminiResult.crop, disease: geminiResult.disease, ms: tTotal }));
           if (window.innerWidth < 1024) {
             const el = document.getElementById('diagnosticResultsSection');
             if (el) el.scrollIntoView({ behavior: 'smooth' });
@@ -764,7 +812,7 @@ export default function App() {
     setDiagnosisData(fallbackResult);
     persistScan(fallbackResult);
     setIsLoading(false);
-    showToast(`✓ Pathology profile & chemical prescription loaded (${tTotal}ms)`);
+    showToast(t('toastProfileLoaded', { ms: tTotal }));
     if (window.innerWidth < 1024) {
       const el = document.getElementById('diagnosticResultsSection');
       if (el) el.scrollIntoView({ behavior: 'smooth' });
@@ -787,13 +835,13 @@ export default function App() {
       });
       setGeminiVerification(result);
       if (result.agrees) {
-        showToast('✓ Gemini Vision confirmed CNN diagnosis!');
+        showToast(t('toastGeminiConfirmed'));
       } else {
-        showToast('⚠️ Gemini Vision detected a species/disease mismatch. Review correction.');
+        showToast(t('toastGeminiMismatch'));
       }
     } catch (err) {
       console.error('Gemini verification failed:', err);
-      showToast('Gemini verification unavailable. Please check your connection.');
+      showToast(t('toastGeminiUnavailable'));
     } finally {
       setIsVerifyingWithGemini(false);
     }
@@ -815,13 +863,13 @@ export default function App() {
     };
     setDiagnosisData(corrected);
     persistScan(corrected);
-    showToast(`✓ Applied verified diagnosis: ${corrected.crop} — ${corrected.disease}`);
+    showToast(t('toastAppliedCorrection', { crop: corrected.crop, disease: corrected.disease }));
   };
 
   // User Field Feedback: Report Incorrect / Different Plant
   const handleReportDifferentPlant = () => {
     setFieldFeedback('reported');
-    showToast('Launching Krishi Sakha with your leaf photo for multimodal visual inspection...');
+    showToast(t('toastLaunchingKrishiSakha'));
     window.dispatchEvent(new CustomEvent('open-krishi-sakha', {
       detail: {
         image: previewUrl,
@@ -859,7 +907,7 @@ export default function App() {
           setDiagnosisData(data);
           persistScan(data);
           setIsLoading(false);
-          showToast(`✓ Biological gating enforced: Host resolved to ${answerValue}!`);
+          showToast(t('toastBiologicalGating', { host: answerValue }));
           return;
         }
       } catch (err) {
@@ -874,7 +922,7 @@ export default function App() {
       persistScan(roseData);
     }
     setIsLoading(false);
-    showToast(`✓ Biological gating updated: Host species set to ${answerValue}`);
+    showToast(t('toastBiologicalGating', { host: answerValue }));
   };
 
   // Generate & Download PDF Prescription Report
@@ -886,7 +934,7 @@ export default function App() {
         scanId: diagnosisData.id || `FS-${Date.now().toString().slice(-6)}`,
         timestamp: new Date().toLocaleString()
       });
-      showToast(`✓ Prescription PDF exported: ${filename}`);
+      showToast(t('toastPdfExported', { filename }));
     } catch (err) {
       console.error('PDF export failed:', err);
       showToast(t('pdfError') || 'Failed to generate PDF prescription.');
@@ -915,7 +963,7 @@ export default function App() {
     if (scan.thumbnail) {
       setPreviewUrl(scan.thumbnail);
     }
-    showToast(`Loaded ${scan.diseaseName || scan.disease} from scan history`);
+    showToast(t('toastLoadedHistory', { disease: scan.diseaseName || scan.disease }));
     setTimeout(() => {
       document.getElementById('diagnosticResultsSection')?.scrollIntoView({ behavior: 'smooth' });
     }, 100);
@@ -935,7 +983,7 @@ export default function App() {
     }
     text += `\nTank Mix: ${d.tank_mix}\n`;
     navigator.clipboard.writeText(text);
-    showToast('✓ Prescriptions copied to clipboard!');
+    showToast(t('toastCopiedToClipboard'));
   };
 
   return (
@@ -969,24 +1017,20 @@ export default function App() {
       />
 
       {/* Main Content Area */}
-      <div className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <div className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-14 pb-8 sm:pb-12">
         
         {/* Header Section with Floating Botanical Particles */}
-        <header id="home" className="relative text-center mb-6">
+        <header id="home" className="relative text-center mb-6 pt-4 sm:pt-8 scroll-mt-28">
           <HeroParticles />
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-500/30 mb-3 shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse"></span>
-            {appT.brandBadge}
-          </div>
 
           <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-2">
             🌿 FloraScan <span className="bg-gradient-to-r from-emerald-600 to-teal-500 dark:from-emerald-400 dark:to-teal-300 bg-clip-text text-transparent">AI</span>
             <span className="block text-base sm:text-xl font-bold text-slate-700 dark:text-emerald-400/90 mt-1.5 font-sans tracking-normal">
-              AI Plant Disease Detection from Images
+              {appT.heroTitle || appT.heroTagline}
             </span>
           </h1>
           <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-            {appT.brandDesc}
+            {appT.heroTitle && appT.heroTagline ? appT.heroTagline : appT.brandDesc}
           </p>
 
           {/* "Scan Now" Button taking user directly to Input Leaf Specimen */}
@@ -1119,7 +1163,7 @@ export default function App() {
                   {/* Camera Reticle Target Overlay */}
                   <div className="absolute inset-0 pointer-events-none border-2 border-dashed border-emerald-400/50 m-4 sm:m-6 rounded-xl flex items-center justify-center">
                     <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-400/90 bg-black/50 px-2 py-0.5 rounded backdrop-blur-xs">
-                      Align Leaf Here
+                      {appT.cameraReticle}
                     </span>
                   </div>
 
@@ -1158,11 +1202,11 @@ export default function App() {
                 <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">{appT.presetsTitle}</p>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                   {[
-                    { key: 'Early_Blight', label: appT.presetEarlyBlight, sub: 'Target spots (Alternaria)', icon: '🎯' },
-                    { key: 'Rose_Black_Spot', label: 'Rose Black Spot', sub: 'Feathery margins (Diplocarpon)', icon: '🌹' },
-                    { key: 'Late_Blight', label: appT.presetLateBlight, sub: 'Water-soaked decay', icon: '🥀' },
-                    { key: 'Bacterial_Spot', label: appT.presetBacterialSpot, sub: 'Shot-hole lesions', icon: '🍂' },
-                    { key: 'Healthy', label: appT.presetHealthy, sub: 'Optimal chlorophyll', icon: '🌿' }
+                    { key: 'Early_Blight', label: appT.presetEarlyBlight, sub: appT.presetEarlyBlightSub, icon: '🎯' },
+                    { key: 'Rose_Black_Spot', label: appT.presetRoseBlackSpot, sub: appT.presetRoseBlackSpotSub, icon: '🌹' },
+                    { key: 'Late_Blight', label: appT.presetLateBlight, sub: appT.presetLateBlightSub, icon: '🥀' },
+                    { key: 'Bacterial_Spot', label: appT.presetBacterialSpot, sub: appT.presetBacterialSpotSub, icon: '🍂' },
+                    { key: 'Healthy', label: appT.presetHealthy, sub: appT.presetHealthySub, icon: '🌿' }
                   ].map((item) => (
                     <button
                       key={item.key}
@@ -1183,7 +1227,7 @@ export default function App() {
             {previewUrl && (
               <div className="space-y-2 p-3 bg-slate-50 dark:bg-slate-850 rounded-xl border border-slate-200 dark:border-slate-700">
                 <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                  <span className="font-bold text-slate-700 dark:text-slate-300">Specimen Visual:</span>
+                  <span className="font-bold text-slate-700 dark:text-slate-300">{t('specimenVisual')}</span>
                   <div className="flex items-center gap-1">
                     {diagnosisData?.contour_overlay && (
                       <div className="inline-flex rounded-lg border border-slate-200 dark:border-slate-700 p-0.5 bg-slate-200/60 dark:bg-slate-800">
@@ -1196,7 +1240,7 @@ export default function App() {
                               : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                           }`}
                         >
-                          📷 Photo
+                          {t('photoBtn')}
                         </button>
                         <button
                           type="button"
@@ -1207,7 +1251,7 @@ export default function App() {
                               : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                           }`}
                         >
-                          <span>🔬 Vision Mask</span>
+                          <span>{t('visionMaskBtn')}</span>
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse" />
                         </button>
                       </div>
@@ -1218,12 +1262,13 @@ export default function App() {
                         setSelectedFile(null);
                         setPreviewUrl('');
                         setDiagnosisData(null);
+                        setActivePresetKey(null);
                         setGeminiVerification(null);
                         setFieldFeedback(null);
                       }}
                       className="min-h-[30px] px-2 flex items-center text-rose-500 dark:text-rose-400 hover:underline active:scale-95 font-semibold cursor-pointer text-xs"
                     >
-                      Clear
+                      {appT.clearBtn}
                     </button>
                   </div>
                 </div>
@@ -1255,14 +1300,14 @@ export default function App() {
                   <div className="p-2.5 rounded-lg bg-slate-900/90 text-slate-300 border border-emerald-500/30 text-[11px] space-y-1">
                     <div className="flex items-center gap-3 font-semibold text-[10px] flex-wrap">
                       <span className="flex items-center gap-1 text-emerald-400">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" /> Leaf Boundary (ROI)
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" /> {t('leafBoundaryRoi')}
                       </span>
                       <span className="flex items-center gap-1 text-rose-400">
-                        <span className="w-2 h-2 rounded-full bg-rose-500 inline-block" /> Detected Necrosis ({diagnosisData.affected_area_pct}%)
+                        <span className="w-2 h-2 rounded-full bg-rose-500 inline-block" /> {t('detectedNecrosis', { pct: diagnosisData.affected_area_pct })}
                       </span>
                     </div>
                     <p className="text-[10px] text-slate-400 italic">
-                      💡 Natural lighting normalized via CLAHE. If red outlines touch fingers or the table, retake on a plain surface.
+                      {t('claheTip')}
                     </p>
                   </div>
                 )}
@@ -1273,20 +1318,20 @@ export default function App() {
             <div className="space-y-2 p-3 bg-slate-50 dark:bg-slate-850/80 rounded-xl border border-slate-200 dark:border-slate-800">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                  <span>🌱</span> Select Crop / Plant Type
+                  <span>🌱</span> {t('selectCropType')}
                 </label>
               </div>
               <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-9 gap-1.5 pt-0.5">
                 {[
-                  { id: 'All', label: 'All Plants', icon: '🌾' },
-                  { id: 'Tomato', label: 'Tomato', icon: '🍅' },
-                  { id: 'Potato', label: 'Potato', icon: '🥔' },
-                  { id: 'Pepper', label: 'Pepper', icon: '🌶️' },
-                  { id: 'Cucumber', label: 'Cucumber', icon: '🥒' },
-                  { id: 'Rose', label: 'Rose / Ornamental', icon: '🌹' },
-                  { id: 'Citrus', label: 'Citrus', icon: '🍊' },
-                  { id: 'Apple', label: 'Apple', icon: '🍏' },
-                  { id: 'Fruit Tree', label: 'Fruit Tree / Other', icon: '🌳' },
+                  { id: 'All', label: t('cropAll'), icon: '🌾' },
+                  { id: 'Tomato', label: t('cropTomato'), icon: '🍅' },
+                  { id: 'Potato', label: t('cropPotato'), icon: '🥔' },
+                  { id: 'Pepper', label: t('cropPepper'), icon: '🌶️' },
+                  { id: 'Cucumber', label: t('cropCucumber'), icon: '🥒' },
+                  { id: 'Rose', label: t('cropRose'), icon: '🌹' },
+                  { id: 'Citrus', label: t('cropCitrus'), icon: '🍊' },
+                  { id: 'Apple', label: t('cropApple'), icon: '🍏' },
+                  { id: 'Fruit Tree', label: t('cropFruitTree'), icon: '🌳' },
                 ].map((c) => (
                   <button
                     key={c.id}
@@ -1317,7 +1362,7 @@ export default function App() {
               }`}
             >
               <Play className="w-4 h-4 fill-current flex-shrink-0" />
-              <span>{isLoading ? 'Analyzing Pathology...' : appT.analyzeBtn}</span>
+              <span>{isLoading ? appT.analyzing : appT.analyzeBtn}</span>
             </button>
 
             {/* Grower Tip */}
@@ -1366,7 +1411,7 @@ export default function App() {
                       title="Run secondary botanical verification with Gemini 2.5 Flash Multimodal Vision"
                     >
                       <Sparkles className="w-4 h-4 text-indigo-500 flex-shrink-0" />
-                      <span>{isVerifyingWithGemini ? 'Verifying with Gemini...' : 'Verify with Gemini Vision'}</span>
+                      <span>{isVerifyingWithGemini ? t('verifyingGemini') : t('verifyGeminiBtn')}</span>
                     </button>
 
                     {/* Download Prescription PDF */}
@@ -1378,7 +1423,7 @@ export default function App() {
                       title="Download PDF Diagnostic Prescription"
                     >
                       <FileDown className="w-4 h-4 text-white" />
-                      <span>{isGeneratingPdf ? 'Generating...' : (t('downloadPdfBtn') || 'Prescription PDF')}</span>
+                      <span>{isGeneratingPdf ? t('pdfGenerating') : t('downloadPdfBtn')}</span>
                     </button>
 
                     {/* Tank Calculator Trigger */}
@@ -1389,7 +1434,7 @@ export default function App() {
                       title="Open Spray Tank-Mix Dosage Calculator"
                     >
                       <Calculator className="w-4 h-4 text-emerald-500" />
-                      <span>{t('openSprayCalc') || 'Tank Calculator'}</span>
+                      <span>{t('openSprayCalc')}</span>
                     </button>
 
                     {/* Print Treatment Plan */}
@@ -1489,10 +1534,10 @@ export default function App() {
 
                 <div className="text-center space-y-1">
                   <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                    Analyzing Foliar Pathology…
+                    {t('loadingAnalyzingFoliar')}
                   </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Evaluating HSV color space &amp; retrieving chemical prescription plan
+                    {t('loadingEvaluatingHSV')}
                   </p>
                 </div>
               </div>
@@ -1514,12 +1559,12 @@ export default function App() {
                         <span className="text-base">{geminiVerification.agrees ? '✅' : '🔍'}</span>
                         <span>
                           {geminiVerification.agrees
-                            ? `Gemini Multimodal Vision Verification: Confirmed (${geminiVerification.confidence}%)`
-                            : `Gemini Multimodal Vision Inspection: Correction Suggested (${geminiVerification.confidence}%)`}
+                            ? t('geminiVerifiedConfirmed', { confidence: geminiVerification.confidence })
+                            : t('geminiVerifiedSuggested', { confidence: geminiVerification.confidence })}
                         </span>
                       </div>
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700">
-                        Hybrid Verification Layer
+                        {t('hybridVerificationLayer')}
                       </span>
                     </div>
                     <p className="leading-relaxed font-semibold text-xs sm:text-sm">
@@ -1529,7 +1574,7 @@ export default function App() {
                       <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-indigo-200 dark:border-indigo-800 space-y-2">
                         <div className="flex items-center justify-between flex-wrap gap-2 text-xs">
                           <div>
-                            <span className="text-slate-500 dark:text-slate-400 font-semibold">Gemini Identified: </span>
+                            <span className="text-slate-500 dark:text-slate-400 font-semibold">{t('geminiIdentified')} </span>
                             <strong className="text-slate-900 dark:text-white">{geminiVerification.verified_species}</strong> — <strong className="text-indigo-600 dark:text-indigo-400">{geminiVerification.verified_disease}</strong>
                           </div>
                           <button
@@ -1537,12 +1582,12 @@ export default function App() {
                             onClick={handleApplyGeminiCorrection}
                             className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-xs cursor-pointer active:scale-95 transition-all"
                           >
-                            Apply Corrected Diagnosis
+                            {t('applyCorrectedDiagnosis')}
                           </button>
                         </div>
                         {geminiVerification.recommended_action && (
                           <p className="text-[11px] text-slate-600 dark:text-slate-300 italic">
-                            💡 <strong>Suggested Protocol:</strong> {geminiVerification.recommended_action}
+                            💡 <strong>{t('suggestedProtocol')}</strong> {geminiVerification.recommended_action}
                           </p>
                         )}
                       </div>
@@ -1563,15 +1608,15 @@ export default function App() {
                           ? 'bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-400 border border-amber-300 dark:border-amber-500/30'
                           : 'bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-400 border border-rose-300 dark:border-rose-500/30'
                       }`}>
-                        {diagnosisData.status_display || (diagnosisData.confidence >= 85 ? 'Confirmed Diagnosis' : diagnosisData.confidence >= 60 ? 'Likely Diagnosis' : 'Low-Confidence Assessment')}
+                        {diagnosisData.status_display || (diagnosisData.confidence >= 85 ? t('statusConfirmedDiagnosis') : diagnosisData.confidence >= 60 ? t('statusLikelyDiagnosis') : t('statusLowConfidenceAssessment'))}
                       </span>
                       {diagnosisData.crop && (
                         <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-200/80 dark:bg-slate-750 text-slate-700 dark:text-slate-300">
-                          🌱 {diagnosisData.crop}
+                          🌱 {getLocalizedCropName(diagnosisData.crop, language)}
                         </span>
                       )}
                     </div>
-                    <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">{diagnosisData.disease}</h3>
+                    <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">{getLocalizedDiseaseName(diagnosisData.disease, language)}</h3>
                     <p className="text-xs sm:text-sm italic font-medium text-slate-500 dark:text-slate-400 mt-0.5">{diagnosisData.scientific_name}</p>
                   </div>
 
@@ -1588,11 +1633,11 @@ export default function App() {
                       <div className="flex items-center gap-2">
                         <span className="text-xl">📋</span>
                         <h4 className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-emerald-400">
-                          Standardized Agronomic Diagnostic Report
+                          {t('standardizedReportTitle')}
                         </h4>
                       </div>
                       <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                        AI Pathologist Engine
+                        {t('aiPathologistEngine')}
                       </span>
                     </div>
                     <div className="text-xs sm:text-sm text-slate-200 leading-relaxed font-sans whitespace-pre-line space-y-1 bg-black/40 p-3.5 sm:p-4 rounded-xl border border-slate-800">
@@ -1606,17 +1651,17 @@ export default function App() {
                   <div className="flex items-center gap-2">
                     <span className="text-base">🌾</span>
                     <span className="font-bold text-slate-800 dark:text-slate-200">
-                      Does this match what you see in your field?
+                      {t('fieldMatchQuestion')}
                     </span>
                   </div>
                   {fieldFeedback === 'confirmed' ? (
                     <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/50 px-3 py-1 rounded-lg border border-emerald-300 dark:border-emerald-700">
                       <CheckCircle2 className="w-4 h-4" />
-                      <span>Field diagnosis confirmed by grower!</span>
+                      <span>{t('fieldConfirmedByGrower')}</span>
                     </div>
                   ) : fieldFeedback === 'reported' ? (
                     <div className="flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400 font-bold bg-indigo-50 dark:bg-indigo-950/50 px-3 py-1 rounded-lg border border-indigo-300 dark:border-indigo-700">
-                      <span>🤖 Escalated to Krishi Sakha Visual Inspector</span>
+                      <span>🤖 {t('escalatedToKrishiSakha')}</span>
                     </div>
                   ) : (
                     <div className="flex items-center gap-2">
@@ -1624,12 +1669,12 @@ export default function App() {
                         type="button"
                         onClick={() => {
                           setFieldFeedback('confirmed');
-                          showToast('✓ Field confirmation recorded. Thank you for validating!');
+                          showToast(t('toastFieldConfirmationRecorded'));
                         }}
                         className="px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900 border border-emerald-300 dark:border-emerald-700 text-emerald-800 dark:text-emerald-300 font-bold transition-all active:scale-95 cursor-pointer flex items-center gap-1.5"
                       >
                         <ThumbsUp className="w-3.5 h-3.5" />
-                        <span>👍 Yes, Matches Field</span>
+                        <span>{t('btnYesMatches')}</span>
                       </button>
                       <button
                         type="button"
@@ -1637,7 +1682,7 @@ export default function App() {
                         className="px-3 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/60 dark:hover:bg-rose-900 border border-rose-300 dark:border-rose-700 text-rose-800 dark:text-rose-300 font-bold transition-all active:scale-95 cursor-pointer flex items-center gap-1.5"
                       >
                         <ThumbsDown className="w-3.5 h-3.5" />
-                        <span>👎 No / Different Plant</span>
+                        <span>{t('btnNoDifferent')}</span>
                       </button>
                     </div>
                   )}
@@ -1658,7 +1703,7 @@ export default function App() {
                         {diagnosisData.confidence}%
                       </strong>
                     </div>
-                    <span className="text-[10px] text-slate-400 dark:text-slate-500">Softmax Output Probability</span>
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500">{t('softmaxProb')}</span>
                   </div>
 
                   {/* Card 2: Lesion Surface Area */}
@@ -1678,7 +1723,7 @@ export default function App() {
                         />
                       </div>
                     </div>
-                    <span className="text-[10px] text-slate-400 dark:text-slate-500">HSV Necrosis Area</span>
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500">{t('hsvNecrosisArea')}</span>
                   </div>
 
                   {/* Card 3: Condition Severity Badge */}
@@ -1695,16 +1740,16 @@ export default function App() {
                           ? 'bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-400 border border-amber-300 dark:border-amber-500/40'
                           : 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-500/40'
                       }`}>
-                        {diagnosisData.severity}
+                        {getLocalizedSeverity(diagnosisData.severity, language)}
                       </span>
                     </div>
-                    <span className="text-[10px] text-slate-400 dark:text-slate-500">Intervention Urgency</span>
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500">{t('interventionUrgency')}</span>
                   </div>
 
                   {/* Card 4: Pathology Status */}
                   <div className="p-3.5 sm:p-4 rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-800 flex flex-col justify-between shadow-xs">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold">Tissue Health</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold">{t('tissueHealth')}</span>
                       <span className="text-xs">🍃</span>
                     </div>
                     <div className="my-2">
@@ -1713,11 +1758,11 @@ export default function App() {
                           ? 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-500/40'
                           : 'bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-400 border border-rose-300 dark:border-rose-500/40'
                       }`}>
-                        {diagnosisData.status}
+                        {getLocalizedStatus(diagnosisData.status, language)}
                       </span>
                     </div>
                     <span className="text-[10px] text-slate-400 dark:text-slate-500 truncate">
-                      {diagnosisData.status === 'Healthy' ? 'Optimal condition' : 'Treatment advised'}
+                      {diagnosisData.status === 'Healthy' ? t('optimalCondition') : t('treatmentAdvised')}
                     </span>
                   </div>
                 </div>
@@ -1726,7 +1771,7 @@ export default function App() {
                 {diagnosisData.symptoms && diagnosisData.symptoms.length > 0 && (
                   <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-800 space-y-2">
                     <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                      <span>🔍</span> Visual Pathology Symptoms
+                      <span>🔍</span> {t('visualSymptomsTitle')}
                     </h4>
                     <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-700 dark:text-slate-300">
                       {diagnosisData.symptoms.map((symp, sIdx) => (
@@ -1751,11 +1796,11 @@ export default function App() {
                       <table className="w-full text-left text-xs min-w-[520px]">
                         <thead className="bg-slate-100 dark:bg-slate-850 text-slate-600 dark:text-slate-400 uppercase text-[10px] border-b border-slate-200 dark:border-slate-800">
                           <tr>
-                            <th className="p-3 font-bold">Active Ingredient</th>
-                            <th className="p-3 font-bold">Mode / FRAC</th>
+                            <th className="p-3 font-bold">{t('thActiveIngredient')}</th>
+                            <th className="p-3 font-bold">{t('thModeFrac')}</th>
                             <th className="p-3 font-bold">{t('dosageKnapsack')}</th>
-                            <th className="p-3 font-bold">PHI</th>
-                            <th className="p-3 font-bold">REI</th>
+                            <th className="p-3 font-bold">{t('thPhi')}</th>
+                            <th className="p-3 font-bold">{t('thRei')}</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-200 dark:divide-slate-800/80 bg-white dark:bg-slate-900/60">
@@ -1790,7 +1835,7 @@ export default function App() {
                         className="min-h-[44px] px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs inline-flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer flex-shrink-0"
                       >
                         <Calculator className="w-4 h-4" />
-                        <span>{t('openSprayCalc') || 'Calculate Tank Dosage'}</span>
+                        <span>{t('calcTankDosage')}</span>
                       </button>
                     </div>
                   </div>
@@ -1799,10 +1844,10 @@ export default function App() {
                   <div className="p-4 rounded-xl bg-slate-100 dark:bg-slate-850 border border-slate-300 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-300 space-y-2">
                     <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
                       <span className="text-base">🛡️</span>
-                      <span>Chemical Treatment Prescriptions Suppressed (Low Confidence &lt;60%)</span>
+                      <span>{t('chemicalSuppressedTitle')}</span>
                     </div>
                     <p className="leading-relaxed">
-                      {diagnosisData.chemical_notice || 'FloraScan AI enforces strict confidence gating: chemical pesticide prescriptions are withheld for uncertain or low-confidence foliar scans (<60%) to prevent inappropriate application of synthetic fungicides. Please upload a clearer specimen photo or consult a certified local agricultural extension officer.'}
+                      {diagnosisData.chemical_notice || t('chemicalSuppressedNotice')}
                     </p>
                   </div>
                 )}
@@ -1820,7 +1865,7 @@ export default function App() {
                       </div>
                       <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-800">
                         <strong className="text-slate-800 dark:text-slate-200 block mb-1 font-bold">🛡️ {t('resistanceStewardship')}</strong>
-                        <span className="text-slate-600 dark:text-slate-400 leading-relaxed">{diagnosisData.spraying_schedule.resistance_stewardship || 'Rotate single-site FRAC groups with multi-site contact barriers.'}</span>
+                        <span className="text-slate-600 dark:text-slate-400 leading-relaxed">{diagnosisData.spraying_schedule.resistance_stewardship || t('rotateFracDefault')}</span>
                       </div>
                     </div>
                   </div>
@@ -1830,11 +1875,11 @@ export default function App() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-800 space-y-1.5 text-xs sm:text-sm">
                     <strong className="text-emerald-700 dark:text-emerald-400 block font-bold">🌱 {t('treatmentOrganic')}</strong>
-                    <p className="text-slate-700 dark:text-slate-300 leading-relaxed">{diagnosisData.organic_remedy || 'Apply registered bio-fungicides (e.g. Bacillus subtilis) or neem formulation.'}</p>
+                    <p className="text-slate-700 dark:text-slate-300 leading-relaxed">{diagnosisData.organic_remedy || t('defaultOrganicRemedy')}</p>
                   </div>
                   <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-800 space-y-1.5 text-xs sm:text-sm">
                     <strong className="text-blue-700 dark:text-blue-400 block font-bold">🚜 {t('culturalSanitation')}</strong>
-                    <p className="text-slate-700 dark:text-slate-300 leading-relaxed">{diagnosisData.cultural_remedy || 'Prune symptomatic lower leaves, improve air ventilation, avoid overhead watering, and disinfect tools.'}</p>
+                    <p className="text-slate-700 dark:text-slate-300 leading-relaxed">{diagnosisData.cultural_remedy || t('defaultCulturalRemedy')}</p>
                   </div>
                 </div>
 

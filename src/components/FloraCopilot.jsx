@@ -23,10 +23,27 @@ import { useLanguage } from "../context/LanguageContext";
 
 const STORAGE_KEY = "florascan_copilot_chat";
 
-const DEFAULT_WELCOME_MESSAGE = {
-  id: "welcome-krishi-sakha",
-  role: "assistant",
-  content: `Namaskara! I'm **Krishi Sakha (ಕೃಷಿ ಸಖ)**, your real-time agronomist and farming intelligence companion.
+const getWelcomeMessage = (lang = "en") => {
+  if (lang === "kn") {
+    return {
+      id: "welcome-krishi-sakha",
+      role: "assistant",
+      content: `ನಮಸ್ಕಾರ! ನಾನು **ಕೃಷಿ ಸಖ (Krishi Sakha)**, ನಿಮ್ಮ ನೈಜ-ಸಮಯದ ಕೃಷಿ ವಿಜ್ಞಾನಿ ಮತ್ತು ಡಿಜಿಟಲ್ ಕೃಷಿ ಸಹಾಯಕ.\n\nನಾನು ನಿಮಗೆ ಸಹಾಯ ಮಾಡಬಲ್ಲೆ:\n- 🌿 **ಎಲೆ ರೋಗ ಲಕ್ಷಣಗಳನ್ನು ಗುರುತಿಸುವುದು** (ಚಿಬ್ಬು ರೋಗ, ಅಂಗಮಾರಿ, ಎಲೆ ಚುಕ್ಕೆ, ಇತ್ಯಾದಿ).\n- 🧪 **ರಾಸಾಯನಿಕ ಔಷಧಿ ಪ್ರಮಾಣ ಮತ್ತು ಸಿಂಪಡಣೆ ವೇಳಾಪಟ್ಟಿ** (ಮ್ಯಾಂಕೋಜೆಬ್, ತಾಮ್ರದ ಆಕ್ಸಿಕ್ಲೋರೈಡ್, ಇತ್ಯಾದಿ).\n- 🌾 **ಸಾವಯವ ಜೈವಿಕ ನಿಯಂತ್ರಣ ಕ್ರಮಗಳು** ಮತ್ತು ನೈಸರ್ಗಿಕ ಕೀಟನಾಶಕಗಳು.\n- 📷 **ಡಯಾಗ್ನೋಸ್ಟಿಕ್ ಸ್ಟುಡಿಯೋದ ಸ್ಕ್ಯಾನ್ ಫಲಿತಾಂಶಗಳನ್ನು ವಿಶ್ಲೇಷಿಸುವುದು**.\n- 🌳 **ತೋಟಗಾರಿಕೆ ಬೆಳೆಗಳ ನಿರ್ವಹಣೆ** (ಮಾವಿನ ಮರ, ಅಡಿಕೆ, ತೆಂಗು, ಇತ್ಯಾದಿ).\n\nಇಂದು ನಿಮ್ಮ ಬೆಳೆಗೆ ನಾನು ಹೇಗೆ ಸಹಾಯ ಮಾಡಲಿ?`,
+      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+    };
+  }
+  if (lang === "hi") {
+    return {
+      id: "welcome-krishi-sakha",
+      role: "assistant",
+      content: `नमस्ते! मैं **कृषि सखा (Krishi Sakha)** हूँ, आपका रीयल-टाइम कृषि विशेषज्ञ और खेती साथी।\n\nमैं आपकी मदद कर सकता हूँ:\n- 🌿 **पत्तियों के रोग लक्षणों की पहचान** (झुलसा, रतुआ, पत्ती धब्बा आदि)।\n- 🧪 **दवा की सही मात्रा व छिड़काव सारणी** (मैंकोज़ेब, कॉपर ऑक्सीक्लोराइड आदि) और सुरक्षा अंतराल।\n- 🌾 **जैविक नियंत्रण व जैविक कीटनाशक** के उपाय।\n- 📷 **डायग्नोस्टिक स्टूडियो के स्कैन परिणामों की व्याख्या**।\n- 🌳 **बागवानी व वृक्ष फसलों का प्रबंधन** (आम, नारियल, नींबू आदि)।\n\nआज मैं आपकी फसल के लिए क्या सहायता कर सकता हूँ?`,
+      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+    };
+  }
+  return {
+    id: "welcome-krishi-sakha",
+    role: "assistant",
+    content: `Namaskara! I'm **Krishi Sakha (ಕೃಷಿ ಸಖ)**, your real-time agronomist and farming intelligence companion.
 
 I can help you:
 - 🌿 **Diagnose leaf symptoms** and identify blights, rusts, or spot diseases.
@@ -36,8 +53,11 @@ I can help you:
 - 🌳 **Tree & Orchard Cultivation guides** (Mango, Coconut, Arecanut, Lemon, etc.).
 
 How can I help your crop today?`,
-  timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+    timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+  };
 };
+
+const DEFAULT_WELCOME_MESSAGE = getWelcomeMessage("en");
 
 export default function FloraCopilot({ diagnosisData = null, currentLanguage = null }) {
   const { language: contextLanguage, t } = useLanguage();
@@ -54,16 +74,30 @@ export default function FloraCopilot({ diagnosisData = null, currentLanguage = n
           if (
             parsed.length === 1 &&
             parsed[0].role === "assistant" &&
-            (parsed[0].id === "welcome-1" || parsed[0].content?.includes("Flora Copilot"))
+            (parsed[0].id === "welcome-1" || parsed[0].id === "welcome-krishi-sakha" || parsed[0].content?.includes("Flora Copilot"))
           ) {
-            return [DEFAULT_WELCOME_MESSAGE];
+            return [getWelcomeMessage(language)];
           }
           return parsed;
         }
       }
     } catch (_) {}
-    return [DEFAULT_WELCOME_MESSAGE];
+    return [getWelcomeMessage(language)];
   });
+
+  // Synchronize initial welcome message when language changes
+  useEffect(() => {
+    setMessages((prev) => {
+      if (
+        prev.length === 1 &&
+        prev[0].role === "assistant" &&
+        (prev[0].id === "welcome-krishi-sakha" || prev[0].id === "welcome-1")
+      ) {
+        return [getWelcomeMessage(language)];
+      }
+      return prev;
+    });
+  }, [language]);
 
   const [inputValue, setInputValue] = useState("");
   const [isThinking, setIsThinking] = useState(false);
@@ -149,8 +183,8 @@ export default function FloraCopilot({ diagnosisData = null, currentLanguage = n
       recognition.continuous = false;
       recognition.interimResults = true;
 
-      if (currentLanguage === "kn") recognition.lang = "kn-IN";
-      else if (currentLanguage === "hi") recognition.lang = "hi-IN";
+      if (language === "kn") recognition.lang = "kn-IN";
+      else if (language === "hi") recognition.lang = "hi-IN";
       else recognition.lang = "en-US";
 
       recognition.onstart = () => setIsListening(true);
@@ -256,6 +290,68 @@ export default function FloraCopilot({ diagnosisData = null, currentLanguage = n
   // Quick Action Rufus Chips (Tree Cultivation & Crop Pathology)
   const getPromptChips = () => {
     const chips = [];
+    if (language === 'kn') {
+      if (diagnosisData?.disease) {
+        chips.push({
+          label: `📋 ${diagnosisData.disease} ಸ್ಕ್ಯಾನ್ ವಿಶ್ಲೇಷಿಸಿ`,
+          prompt: `ನನ್ನ ಪ್ರಸ್ತುತ ಸ್ಕ್ಯಾನ್‌ನ ಚಿಕಿತ್ಸಾ ಯೋಜನೆಯನ್ನು ವಿವರಿಸಿ: ${diagnosisData.disease} (${diagnosisData.status}, ಹಾನಿಗೊಳಗಾದ ಪ್ರದೇಶ ${diagnosisData.affected_area_pct}%)?`
+        });
+      }
+      chips.push(
+        {
+          label: "🌳 ಮಾವಿನ ತೋಟದ ಆರೈಕೆ",
+          prompt: "ಮಾವಿನ ತೋಟದ ಕೃಷಿ ಮತ್ತು ರೋಗ ನಿರ್ವಹಣೆಗಾಗಿ ಸಂಪೂರ್ಣ ಮಾರ್ಗದರ್ಶನ ನೀಡಿ."
+        },
+        {
+          label: "🥥 ತೆಂಗಿನ ಕೃಷಿ ಮಾರ್ಗದರ್ಶಿ",
+          prompt: "ತೆಂಗಿನ ತೋಟದ ನಿರ್ವಹಣೆ ಮತ್ತು ರೋಗ ನಿಯಂತ್ರಣಕ್ಕಾಗಿ ಸಂಪೂರ್ಣ ಮಾರ್ಗದರ್ಶಿ ನೀಡಿ."
+        },
+        {
+          label: "🍋 ನಿಂಬೆ ಮತ್ತು ಸಿಟ್ರಸ್ ಕೃಷಿ",
+          prompt: "ನಿಂಬೆ ಮರಗಳ ಕೃಷಿ ಮತ್ತು ರೋಗ ನಿಯಂತ್ರಣದ ಬಗ್ಗೆ ಕೃಷಿ ಸಲಹೆ ನೀಡಿ."
+        },
+        {
+          label: "🌿 ಸಾವಯವ ಜೈವಿಕ ನಿಯಂತ್ರಣ",
+          prompt: "ಎಲೆ ರೋಗಗಳನ್ನು ತಡೆಯಲು ಸಾವಯವ ಕೀಟನಾಶಕಗಳು ಮತ್ತು ಜೈವಿಕ ಪರಿಹಾರಗಳನ್ನು ಸೂಚಿಸಿ."
+        },
+        {
+          label: "🍅 ಟೊಮೆಟೊ ರೋಗ ಲಕ್ಷಣಗಳು",
+          prompt: "ಟೊಮೆಟೊ ಅರ್ಲಿ ಬ್ಲೈಟ್ ಮತ್ತು ಲೇಟ್ ಬ್ಲೈಟ್ ರೋಗಗಳ ಆರಂಭಿಕ ಲಕ್ಷಣಗಳು ಯಾವುವು?"
+        }
+      );
+      return chips;
+    }
+    if (language === 'hi') {
+      if (diagnosisData?.disease) {
+        chips.push({
+          label: `📋 ${diagnosisData.disease} स्कैन का विश्लेषण करें`,
+          prompt: `मेरे वर्तमान स्कैन की उपचार योजना बताएं: ${diagnosisData.disease} (${diagnosisData.status}, प्रभावित क्षेत्र ${diagnosisData.affected_area_pct}%)?`
+        });
+      }
+      chips.push(
+        {
+          label: "🌳 आम के बाग की देखभाल",
+          prompt: "आम के बागवानी और रोग प्रबंधन के लिए संपूर्ण 6-सूत्रीय कृषि मार्गदर्शन दें।"
+        },
+        {
+          label: "🥥 नारियल की खेती गाइड",
+          prompt: "नारियल की फसल प्रबंधन और रोगों की रोकथाम के लिए संपूर्ण जानकारी दें।"
+        },
+        {
+          label: "🍋 नींबू और खट्टे फलों की खेती",
+          prompt: "नींबू के पेड़ों की खेती और रोगों के नियंत्रण के लिए कृषि सलाह दें।"
+        },
+        {
+          label: "🌿 जैविक फफूंदनाशी उपाय",
+          prompt: "पत्ती रोगों को नियंत्रित करने के लिए जैविक कीटनाशक व घरेलू उपाय बताएं।"
+        },
+        {
+          label: "🍅 टमाटर झुलसा के लक्षण",
+          prompt: "टमाटर में अगेती और पछेती झुलसा के शुरुआती लक्षण क्या हैं?"
+        }
+      );
+      return chips;
+    }
     if (diagnosisData?.disease) {
       chips.push({
         label: `📋 Analyze my ${diagnosisData.disease} scan`,
@@ -584,8 +680,8 @@ export default function FloraCopilot({ diagnosisData = null, currentLanguage = n
             {/* Contextual Suggested Prompts (Rufus Pill Chips) */}
             <div className="px-3.5 py-2 border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-100/60 dark:bg-slate-850/50 flex items-center gap-1.5 overflow-x-auto scrollbar-none">
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex-shrink-0">
-                Suggestions:
-            </span>
+                {language === 'kn' ? 'ಸಲಹೆಗಳು:' : language === 'hi' ? 'सुझाव:' : 'Suggestions:'}
+              </span>
             {getPromptChips().map((chip, idx) => (
               <button
                 key={idx}
@@ -683,7 +779,9 @@ export default function FloraCopilot({ diagnosisData = null, currentLanguage = n
                   🌿
                 </div>
                 <div className="copilot-bubble-bot rounded-2xl p-3 px-4 flex items-center gap-2">
-                  <span className="text-xs text-slate-400">Flora is analyzing...</span>
+                  <span className="text-xs text-slate-400">
+                    {language === 'kn' ? 'ಕೃಷಿ ಸಖ ವಿಶ್ಲೇಷಿಸುತ್ತಿದ್ದಾರೆ...' : language === 'hi' ? 'कृषि सखा विश्लेषण कर रहे हैं...' : 'Flora is analyzing...'}
+                  </span>
                   <div className="flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 copilot-dot-pulse" />
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 copilot-dot-pulse" />
@@ -706,7 +804,7 @@ export default function FloraCopilot({ diagnosisData = null, currentLanguage = n
                   className="w-10 h-10 object-cover rounded-md border border-emerald-500/40"
                 />
                 <span className="text-xs text-slate-600 dark:text-slate-300 font-medium">
-                  Leaf image attached for analysis
+                  {language === 'kn' ? 'ವಿಶ್ಲೇಷಣೆಗಾಗಿ ಎಲೆ ಚಿತ್ರ ಲಗತ್ತಿಸಲಾಗಿದೆ' : language === 'hi' ? 'विश्लेषण के लिए पत्ती की छवि संलग्न है' : 'Leaf image attached for analysis'}
                 </span>
               </div>
               <button
@@ -761,7 +859,7 @@ export default function FloraCopilot({ diagnosisData = null, currentLanguage = n
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder={
                   isListening
-                    ? "Listening to your voice..."
+                    ? (language === 'kn' ? 'ಧ್ವನಿ ಆಲಿಸಲಾಗುತ್ತಿದೆ...' : language === 'hi' ? 'आपकी आवाज़ सुनी जा रही है...' : 'Listening to your voice...')
                     : t('assistantPlaceholder')
                 }
                 disabled={isThinking}

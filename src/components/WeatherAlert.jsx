@@ -46,13 +46,13 @@ export default function WeatherAlert() {
           const lon = Number(pos.coords.longitude.toFixed(4));
           setCoords({ lat, lon });
           setIsGpsActive(true);
-          setLocationName(`Field Coordinates: ${lat}°N, ${lon}°E`);
+          setLocationName(t('fieldCoordinates', { lat, lon }, `Field Coordinates: ${lat}°N, ${lon}°E`));
           fetchWeather(lat, lon);
         },
         (err) => {
           console.log('Geolocation permission denied or timed out, using agro default', err);
           setIsGpsActive(false);
-          setLocationName('Regional Agro Station (Default)');
+          setLocationName(t('agroBeltAuto', 'Agricultural Belt (Auto-Detect)'));
           fetchWeather(coords.lat, coords.lon);
         },
         { timeout: 7000, enableHighAccuracy: false }
@@ -122,10 +122,10 @@ export default function WeatherAlert() {
             </div>
             <div className="flex items-center gap-1.5 text-xs text-slate-300 mt-0.5">
               <MapPin className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
-              <span className="truncate">{locationName}</span>
+              <span className="truncate">{locationName || t('agroBeltAuto', 'Agricultural Belt (Auto-Detect)')}</span>
               {isGpsActive && (
                 <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/80 px-1.5 py-0.2 rounded border border-emerald-500/40">
-                  GPS Active
+                  {t('gpsActive', 'GPS Active')}
                 </span>
               )}
             </div>
@@ -142,7 +142,7 @@ export default function WeatherAlert() {
           aria-label="Refresh weather"
         >
           <RefreshCw className={`w-3.5 h-3.5 text-emerald-400 ${isLoading ? 'animate-spin' : ''}`} />
-          <span>{isLoading ? 'Scanning...' : 'Refresh'}</span>
+          <span>{isLoading ? t('scanningWeather', 'Scanning...') : t('refreshWeather', 'Refresh')}</span>
         </button>
       </div>
 
@@ -154,7 +154,7 @@ export default function WeatherAlert() {
           <div className="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 flex flex-col justify-between">
             <span className="text-[11px] text-slate-400 flex items-center gap-1">
               <Thermometer className="w-3.5 h-3.5 text-rose-400" />
-              <span>Temp</span>
+              <span>{t('tempLabel', 'Temp')}</span>
             </span>
             <span className="text-lg sm:text-xl font-bold font-mono text-white mt-1">
               {currentTemp}°C
@@ -165,7 +165,7 @@ export default function WeatherAlert() {
           <div className="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 flex flex-col justify-between">
             <span className="text-[11px] text-slate-400 flex items-center gap-1">
               <Droplets className="w-3.5 h-3.5 text-sky-400" />
-              <span>Humidity</span>
+              <span>{t('humidityLabel', 'Humidity')}</span>
             </span>
             <span className="text-lg sm:text-xl font-bold font-mono text-white mt-1">
               {currentRH}%
@@ -176,7 +176,7 @@ export default function WeatherAlert() {
           <div className="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 flex flex-col justify-between">
             <span className="text-[11px] text-slate-400 flex items-center gap-1">
               <CloudRain className="w-3.5 h-3.5 text-teal-400" />
-              <span>Precip</span>
+              <span>{t('precipLabel', 'Precip')}</span>
             </span>
             <span className="text-lg sm:text-xl font-bold font-mono text-white mt-1">
               {currentPrecip} mm
