@@ -9,4 +9,4 @@ python-dotenv
 requests
 psycopg[binary,pool]
 pyjwt[crypto]
-
+gunicorn
