@@ -1,9 +1,9 @@
 // src/utils/geminiChat.js
 // Client interface calling secure server-side Gemini routes on the Flask backend
 
-const API_BASE =
-  (typeof import.meta !== "undefined" && import.meta.env?.VITE_API_BASE_URL) ||
-  "http://127.0.0.1:5000";
+import { API_BASE_URL, PREDICTION_TIMEOUT_MS } from "../config/api";
+
+const API_BASE = API_BASE_URL;
 
 const DEFAULT_SYSTEM_INSTRUCTION = `You are Krishi Sakha (ಕೃಷಿ ಸಖ), a dedicated, highly knowledgeable Indian Agronomist and Crop Care Companion for the FloraScan AI platform.
 
@@ -466,7 +466,10 @@ If the user asks questions referring to "this leaf", "my scan", "current diagnos
 
   // Call secure backend /api/chat route (Gemini key stored safely on Flask server)
   try {
-    const res = await fetch(`${API_BASE}/api/chat`, {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), PREDICTION_TIMEOUT_MS);
+
+    const res = await fetch(`${API_BASE_URL}/api/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -478,8 +481,10 @@ If the user asks questions referring to "this leaf", "my scan", "current diagnos
           imageMimeType,
           language
         }
-      })
+      }),
+      signal: controller.signal
     });
+    clearTimeout(timeoutId);
     if (res.ok) {
       const data = await res.json();
       if (data && data.reply) {
@@ -575,7 +580,10 @@ export async function verifyDiagnosisWithGemini({
 
   // Query secure backend verification endpoint (Gemini API key managed on Flask server)
   try {
-    const res = await fetch(`${API_BASE}/api/verify`, {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), PREDICTION_TIMEOUT_MS);
+
+    const res = await fetch(`${API_BASE_URL}/api/verify`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -584,8 +592,10 @@ export async function verifyDiagnosisWithGemini({
         diagnosisData,
         selectedCrop,
         language
-      })
+      }),
+      signal: controller.signal
     });
+    clearTimeout(timeoutId);
     if (res.ok) {
       const data = await res.json();
       if (data && data.success) {
@@ -708,7 +718,10 @@ Follow these strict diagnostic rules:
 
   // Call secure backend /api/vision route (Gemini key stored safely on Flask server)
   try {
-    const res = await fetch(`${API_BASE}/api/vision`, {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), PREDICTION_TIMEOUT_MS);
+
+    const res = await fetch(`${API_BASE_URL}/api/vision`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -716,8 +729,10 @@ Follow these strict diagnostic rules:
         imageMimeType,
         selectedCrop,
         language
-      })
+      }),
+      signal: controller.signal
     });
+    clearTimeout(timeoutId);
     if (res.ok) {
       const data = await res.json();
       if (data && data.success && data.result) {

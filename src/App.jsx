@@ -23,6 +23,7 @@ import { addScanToHistory } from './utils/scanStorage';
 import { Camera, Upload, Layers, Play, CheckCircle2, AlertTriangle, ShieldCheck, Printer, Copy, RotateCcw, Sparkles, FileDown, Calculator, Clock, ThumbsUp, ThumbsDown, Eye, RefreshCw } from 'lucide-react';
 import { useLanguage } from './context/LanguageContext';
 import { verifyDiagnosisWithGemini, diagnoseWithGeminiVision } from './utils/geminiChat';
+import { API_BASE_URL, PREDICTION_TIMEOUT_MS } from './config/api';
 import { 
   getLocalizedSample, 
   getLocalizedDiseaseName, 
@@ -721,9 +722,9 @@ export default function App() {
     try {
       console.time('FloraScan: Backend API /predict');
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3500);
+      const timeoutId = setTimeout(() => controller.abort(), PREDICTION_TIMEOUT_MS);
 
-      const res = await fetch('http://127.0.0.1:5000/predict', {
+      const res = await fetch(`${API_BASE_URL}/predict`, {
         method: 'POST',
         body: formData,
         signal: controller.signal
@@ -898,10 +899,15 @@ export default function App() {
       formData.append('crop', answerValue);
 
       try {
-        const res = await fetch('http://127.0.0.1:5000/predict', {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), PREDICTION_TIMEOUT_MS);
+
+        const res = await fetch(`${API_BASE_URL}/predict`, {
           method: 'POST',
-          body: formData
+          body: formData,
+          signal: controller.signal
         });
+        clearTimeout(timeoutId);
         if (res.ok) {
           const data = await res.json();
           setDiagnosisData(data);
